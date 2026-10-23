@@ -224,8 +224,8 @@ function evCard(e,isNow,isNext){
    h('div',{class:'row'},everyone?h('span',{class:'faint',text:T('All six saints')}):e.saints.map(function(i){return h('span',{class:'row'},av(i),h('span',{class:'faint',text:sName(i)}))})),
    ui.canEdit?h('div',{class:'row'},h('button',{class:'btn sm',type:'button',onclick:function(){openForm(e)}},'Edit')):null));
 }
-function openPic(id){var o=h('div',{class:'modal',style:'align-items:center',onclick:function(){o.remove()}},h('img',{src:'/_blob/'+id,alt:'Picture',style:'max-width:100%;max-height:92vh;border-radius:8px;margin:auto'}));document.body.append(o)}
-function picsEl(e){return h('div',{class:'pics'+(e.photos.length===1?' one':'')},e.photos.map(function(p){return h('img',{src:'/_blob/'+p.id,alt:'Picture',loading:'lazy',onclick:function(){openPic(p.id)}})}))}
+function openPic(id){var o=h('div',{class:'modal',style:'align-items:center',onclick:function(){o.remove()}},pimg(id,{alt:'Picture',style:'max-width:100%;max-height:92vh;border-radius:8px;margin:auto'}));document.body.append(o)}
+function picsEl(e){return h('div',{class:'pics'+(e.photos.length===1?' one':'')},e.photos.map(function(p){return pimg(p.id,{alt:'Picture',onclick:function(){openPic(p.id)}})}))}
 function shrink(file){return new Promise(function(res,rej){var img=new Image(),u=URL.createObjectURL(file);img.onload=function(){var r=Math.min(1,1800/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*r);c.height=Math.round(img.height*r);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(function(b){b?res(b):rej()},'image/jpeg',.85)};img.onerror=function(){URL.revokeObjectURL(u);rej()};img.src=u})}
 function copy(t,btn){try{navigator.clipboard.writeText(t).then(function(){btn.textContent=T('Copied')},function(){btn.textContent=t})}catch(x){btn.textContent=t}}
 
@@ -291,7 +291,7 @@ function sumView(){
   row('Vakta not chosen',dg(noV)+' '+T('of')+' '+dg(by.parayan.length)),row('Shastra not chosen',dg(noS)+' '+T('of')+' '+dg(by.parayan.length)),row('Driver not added',dg(noD)+' '+T('of')+' '+dg(rides.length)),row('Pictures added',dg(ph))));
  return root}
 
-function heroImg(){var im=h('img',{src:state.hero?'/_blob/'+state.hero:'https://commons.wikimedia.org/wiki/Special:FilePath/Swaminarayan.jpg',alt:'Bhagwan Swaminarayan'});im.addEventListener('error',function(){var p=im.parentNode;if(p)p.style.gridTemplateColumns='minmax(0,1fr)';im.remove()});return im}
+function heroImg(){var im=state.hero?pimg(state.hero,{alt:'Bhagwan Swaminarayan'}):h('img',{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Swaminarayan.jpg',alt:'Bhagwan Swaminarayan'});im.addEventListener('error',function(){var p=im.parentNode;if(p)p.style.gridTemplateColumns='minmax(0,1fr)';im.remove()});return im}
 function heroBtn(){if(!(ui.canEdit&&ui.assets))return null;return h('label',{class:'btn sm',style:'margin-top:8px;display:inline-block;cursor:pointer'},'Set picture',h('input',{type:'file',accept:'image/*',style:'display:none',onchange:function(ev){var f=ev.target.files[0];if(!f)return;shrink(f).then(function(b){return ui.assets.upload(b)}).then(function(r){state.hero=r.id;ui.dirty++;render()}).catch(function(){ui.msg='Picture could not be uploaded.';render()})}}))}
 function setLang(l){lang=l;try{localStorage.setItem('lang',l)}catch(x){}render()}
 function render(){
@@ -333,7 +333,7 @@ function openForm(ev){
  var checks=h('div',{class:'checks'},state.saints.map(function(s){var c=h('input',{type:'checkbox',value:s.id});c.checked=e.saints.indexOf(s.id)>-1;return h('label',{},c,av(s.id),short(s))}));
  e.photos=e.photos||[];
  var thumbs=h('div',{class:'thumbs'}),pstat=h('span',{class:'note'});
- function drawThumbs(){thumbs.textContent='';e.photos.forEach(function(p,i){thumbs.append(h('div',{class:'th'},h('img',{src:'/_blob/'+p.id,alt:''}),h('button',{type:'button',class:'x','aria-label':'Remove picture',onclick:function(){e.photos.splice(i,1);drawThumbs()}},'×')))})}
+ function drawThumbs(){thumbs.textContent='';e.photos.forEach(function(p,i){thumbs.append(h('div',{class:'th'},pimg(p.id,{alt:''}),h('button',{type:'button',class:'x','aria-label':'Remove picture',onclick:function(){e.photos.splice(i,1);drawThumbs()}},'×')))})}
  drawThumbs();
  var pics=h('div',{class:'f'},h('span',{class:'lab',text:'Pictures (tickets, photos, addresses)'}),thumbs,
   ui.assets?h('input',{type:'file',id:'f_photos',accept:'image/*',multiple:true,onchange:function(ev){
@@ -383,6 +383,14 @@ var SB_URL='https://ootwnvkrnidjhmnhuvfz.supabase.co',SB_KEY='sb_publishable_wxz
 var SBH={apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'};
 function getPass(){try{return localStorage.getItem('tourPass')||''}catch(x){return ''}}
 function setPass(v){try{if(v)localStorage.setItem('tourPass',v);else localStorage.removeItem('tourPass')}catch(x){}}
+var picCache={};
+function pimg(id,attrs){var im=h('img',attrs);if(picCache[id])im.src=picCache[id];else fetch(SB_URL+'/rest/v1/tour_pics?id=eq.'+encodeURIComponent(id)+'&select=data',{headers:SBH}).then(function(r){return r.ok?r.json():[]}).then(function(rows){if(rows&&rows[0]){picCache[id]=rows[0].data;im.src=rows[0].data}else im.dispatchEvent(new Event('error'))}).catch(function(){im.dispatchEvent(new Event('error'))});return im}
+function blobToUrl(b){return new Promise(function(res,rej){var f=new FileReader();f.onload=function(){res(f.result)};f.onerror=rej;f.readAsDataURL(b)})}
+function uploadPic(b){
+ var pass=getPass();if(!pass){pass=prompt('Editor passcode');if(!pass)return Promise.reject();pass=pass.trim()}
+ var id='p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+ return blobToUrl(b).then(function(url){return fetch(SB_URL+'/rest/v1/rpc/save_tour_pic',{method:'POST',headers:SBH,body:JSON.stringify({p_passcode:pass,p_id:id,p_data:url})}).then(function(r){if(!r.ok){return r.json().catch(function(){return {}}).then(function(x){if(/bad_passcode/.test(JSON.stringify(x)))setPass('');throw x})}setPass(pass);picCache[id]=url;return {id:id}})})}
+ui.assets={upload:uploadPic};
 function loadRemote(){return fetch(SB_URL+'/rest/v1/tour_state?id=eq.1&select=data',{headers:SBH}).then(function(r){return r.ok?r.json():[]}).then(function(rows){if(rows&&rows[0]&&rows[0].data&&rows[0].data.events){state=rows[0].data;render()}}).catch(function(){})}
 function unlock(){var v=prompt('Editor passcode');if(!v)return;setPass(v.trim());ui.canEdit=true;ui.msg='';render()}
 function save(){
