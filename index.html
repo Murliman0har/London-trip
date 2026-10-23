@@ -1,0 +1,391 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Mandir Tour Program</title><meta name="claude:viewport-fit-sides" content="cover"><style id="css">
+/* Layout: one narrow column, day-at-a-time program with a colour-block time rail on each event. */
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --fg:#16202E; --muted:#5B6678; --line:#DDE2EA; --accent:#C2410C; --soft:#E9EDF3;
+  --c-parayan:#C2410C; --c-katha:#A21C5B; --c-patotsav:#92600A; --c-pothiyatra:#7E22CE; --c-padramani:#0E7490;
+  --c-vastu:#2F7D32; --c-sabha:#1D4ED8; --c-flight:#475569; --c-car:#6D4C41; --c-other:#52525B;
+  --s-g:#9F1239; --s-hs:#3730A3; --s-mm:#0F766E; --s-hp:#4D7C0F; --s-np:#B45309; --s-ap:#BE185D;
+  --now:#0B7A43;
+  --display:"Bricolage Grotesque","Noto Sans Gujarati","Trebuchet MS",system-ui,sans-serif; --body:"Figtree","Noto Sans Gujarati",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
+*{box-sizing:border-box}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px;padding-top:18px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:28px;line-height:1.1} h2{font-size:20px} h3{font-size:16px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.head{display:flex;flex-direction:column;gap:4px}
+.sub{color:var(--muted);font-size:13px}
+.tabs{display:flex;gap:6px;background:var(--soft);padding:4px;border-radius:12px}
+.tab{flex:1;border:0;background:transparent;padding:9px 6px;border-radius:9px;font-weight:600;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.nav .date{flex:1;min-width:150px;text-align:center;font-family:var(--display);font-size:19px;font-weight:600}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;font-weight:600}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.sm{padding:5px 9px;font-size:13px}
+.btn.danger{color:#C62828;border-color:#C62828}
+.btn[disabled]{opacity:.55;cursor:default}
+.place{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:3px}
+.place .where{font-family:var(--display);font-size:24px;line-height:1.1;font-weight:700}
+.place .meta{color:var(--muted);font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px 4px 5px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600}
+.chip[aria-pressed="true"]{border-color:var(--fg);box-shadow:inset 0 0 0 1px var(--fg)}
+.av{width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font-size:10px;font-weight:700;letter-spacing:.02em;flex:none}
+.av.g{background:var(--s-g)}.av.hs{background:var(--s-hs)}.av.mm{background:var(--s-mm)}.av.hp{background:var(--s-hp)}.av.np{background:var(--s-np)}.av.ap{background:var(--s-ap)}
+.av.all{background:var(--fg);color:var(--bg)}
+.ev{display:grid;grid-template-columns:92px minmax(0,1fr);background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ev.now{border-color:var(--now);box-shadow:0 0 0 2px var(--now)}
+.rail{background:var(--c);color:#fff;padding:12px 10px;display:flex;flex-direction:column;gap:2px;justify-content:center;text-align:center;font-variant-numeric:tabular-nums}
+.rail b{font-size:16px;font-family:var(--display)} .rail span{font-size:12px;opacity:.92}
+.body{padding:12px 14px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tag{--cc:var(--c);font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;color:color-mix(in srgb,var(--cc) 72%,var(--fg));background:color-mix(in srgb,var(--cc) 15%,var(--surface));border:1px solid color-mix(in srgb,var(--cc) 40%,transparent)}
+.pill{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px}
+.pill.now{background:var(--now);color:#fff} .pill.next{background:var(--soft);color:var(--fg);border:1px solid var(--line)}
+.title{font-family:var(--display);font-size:18px;font-weight:600;line-height:1.2}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;overflow-wrap:anywhere}
+.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.faint{color:var(--muted);font-size:13px}
+.t-parayan{--c:var(--c-parayan)}.t-katha{--c:var(--c-katha)}.t-patotsav{--c:var(--c-patotsav)}.t-pothiyatra{--c:var(--c-pothiyatra)}.t-padramani{--c:var(--c-padramani)}.t-vastu{--c:var(--c-vastu)}.t-sabha{--c:var(--c-sabha)}.t-flight{--c:var(--c-flight)}.t-car{--c:var(--c-car)}.t-other{--c:var(--c-other)}.t-pravachan{--c:var(--c-pravachan)}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:20px;text-align:center;color:var(--muted)}
+.stay{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;text-align:left;width:100%}
+.stay.cur{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.stay .n{font-family:var(--display);font-weight:600;font-size:17px}
+.stay .d{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.stay .days{font-family:var(--display);font-weight:700;font-size:18px;text-align:right}
+.stay .tags{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:5px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.srow{display:flex;gap:10px;align-items:center}.srow .av{width:34px;height:34px;font-size:12px}
+.key{display:flex;flex-wrap:wrap;gap:6px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:10px max(16px,env(safe-area-inset-left,0px)) calc(10px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;justify-content:center;flex-wrap:wrap;z-index:5}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:16px max(16px,env(safe-area-inset-left,0px))}
+.form{background:var(--surface);border-radius:16px;max-width:560px;width:100%;padding:18px;display:flex;flex-direction:column;gap:12px;margin:auto}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}.f label,.f .lab{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.f input,.f select,.f textarea{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 10px;width:100%;min-width:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.checks{display:flex;flex-wrap:wrap;gap:6px}
+.checks label{display:flex;align-items:center;gap:6px;font-size:13px;text-transform:none;letter-spacing:0;color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:4px 10px 4px 8px;background:var(--bg)}
+.checks input{width:auto}
+.note{font-size:13px;color:var(--muted)}
+@media (max-width:420px){.ev{grid-template-columns:76px minmax(0,1fr)}.two{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.ev{transition:box-shadow .2s}}
+
+.pics{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.pics.one{grid-template-columns:1fr}
+.pics img{width:100%;height:120px;object-fit:cover;border-radius:10px;cursor:zoom-in;background:var(--soft);display:block}
+.pics.one img{height:auto;max-height:420px;object-fit:contain}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px}
+.th{position:relative;width:84px;height:84px}
+.th img{width:100%;height:100%;object-fit:cover;border-radius:10px;display:block}
+.th .x{position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.7);color:#fff;line-height:1}
+
+/* Swaminarayan devotional theme */
+:root{ color-scheme:light;
+  --bg:#fff8eb; --surface:#fffdf8; --fg:#3f2414; --muted:#80664f; --line:#ead7b5;
+  --accent:#b85b16; --soft:#f7e8ca; --now:#247447;
+  --c-parayan:#b85b16; --c-katha:#9b3568; --c-patotsav:#9a6a12; --c-pothiyatra:#7950a5;
+  --c-padramani:#167b83; --c-vastu:#3b7c43; --c-sabha:#315da8; --c-flight:#586579;
+  --c-car:#85533a; --c-other:#6d5b4c; --c-pravachan:#66771c;
+}
+body{
+ background:
+   radial-gradient(ellipse at top, rgba(255,221,151,.28), transparent 42%),
+   var(--bg);
+}
+.wrap{padding-top:14px}
+.head{
+ position:relative; overflow:hidden; padding:18px; border-radius:20px;
+ border:1px solid #e8c78a;
+ background:linear-gradient(135deg,#fff9e9 0%,#ffedc7 55%,#fffaf0 100%);
+ box-shadow:0 7px 24px rgba(112,65,16,.10);
+}
+.head:after{
+ content:"ॐ"; position:absolute; right:12px; bottom:-28px; font-size:112px;
+ line-height:1; color:rgba(176,101,22,.09); pointer-events:none;
+}
+.head h1{color:#7b3511; letter-spacing:-.035em}
+.head .sub{color:#855e36}
+.hero{
+ display:grid; grid-template-columns:94px minmax(0,1fr); gap:14px; align-items:center;
+ margin-top:14px; padding:12px; border:1px solid #e6c47f; border-radius:16px;
+ background:rgba(255,255,255,.72); position:relative; z-index:1;
+}
+.hero img{
+ width:94px;height:116px;object-fit:cover;object-position:center 20%;
+ border-radius:12px;border:2px solid #d7a64f;box-shadow:0 3px 12px rgba(88,48,8,.18);
+ background:#f8e7bf;
+}
+.hero .mantra{font-family:var(--display);font-size:19px;font-weight:700;color:#8b3c12;line-height:1.2}
+.hero .blessing{font-size:13px;color:#765538;margin-top:5px}
+.hero .ornament{color:#b57b23;letter-spacing:.18em;font-size:12px;margin-top:7px}
+.tabs{border:1px solid #ead6b2;background:#f6e7cc}
+.tab[aria-selected="true"]{color:#8b3c12;background:#fffdf8;box-shadow:0 2px 5px rgba(112,65,16,.13)}
+.place{border-color:#e5c68b;background:linear-gradient(120deg,#fffdf8,#fff3d8)}
+.place .where{color:#8b3c12}
+.ev,.card,.stay,.empty{box-shadow:0 2px 8px rgba(91,56,20,.035)}
+.ev{border-color:#ead7b5}
+.rail{background:linear-gradient(160deg,var(--c),color-mix(in srgb,var(--c) 78%,#6b330d))}
+.btn.pri{background:#a94712;border-color:#a94712}
+.chip[aria-pressed="true"]{border-color:#b85b16;box-shadow:inset 0 0 0 1px #b85b16}
+.bar{background:rgba(255,253,248,.96);border-color:#ead7b5;backdrop-filter:blur(10px)}
+@media(max-width:420px){.head{padding:14px}.hero{grid-template-columns:78px minmax(0,1fr);gap:10px}.hero img{width:78px;height:100px}.hero .mantra{font-size:17px}}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tile{border:0;border-radius:14px;padding:12px 14px;text-align:left;color:#fff;background:linear-gradient(160deg,var(--c),color-mix(in srgb,var(--c) 78%,#6b330d));display:flex;flex-direction:column;gap:2px;min-height:96px}
+.tile b{font-family:var(--display);font-size:36px;line-height:1}.tile span{font-size:14px;font-weight:700}.tile small{font-size:12px;opacity:.92}
+.tile[aria-expanded="true"]{outline:3px solid var(--fg);outline-offset:2px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-family:var(--display);font-size:26px;line-height:1.1}.stat span{font-size:12px;color:var(--muted)}
+.li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;text-align:left;width:100%;background:transparent;border:0;border-top:1px solid var(--line);padding:9px 2px}
+.li:first-of-type{border-top:0}
+.li .a{font-weight:600}.li .b{color:var(--muted);font-size:13px}
+.fill{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--line)}.fill:first-of-type{border-top:0}
+</style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap"><div id="root"></div><script id="seed" type="application/json">{"tripStart":"2026-12-22","tripEnd":"2027-06-19","stays":[{"id":"s0","place":"India","region":"Departure from India","start":"2026-12-22","end":"2026-12-22"},{"id":"s1","place":"Harrow Mandir","region":"London, UK","start":"2026-12-23","end":"2027-01-03"},{"id":"s2","place":"Wilsden Mandir","region":"Bradford, UK","start":"2027-01-03","end":"2027-01-10"},{"id":"s3","place":"Stanmore Mandir","region":"London, UK","start":"2027-01-10","end":"2027-01-17"},{"id":"s4","place":"Woolwich Mandir","region":"London, UK","start":"2027-01-17","end":"2027-01-24"},{"id":"s5","place":"East London Mandir","region":"London, UK","start":"2027-01-24","end":"2027-01-31"},{"id":"s6","place":"Harrow Mandir","region":"London, UK","start":"2027-01-31","end":"2027-02-03"},{"id":"s7","place":"Gambia","region":"Gambia","start":"2027-02-03","end":"2027-02-10"},{"id":"s8","place":"Senegal","region":"Senegal","start":"2027-02-10","end":"2027-02-17"},{"id":"s9","place":"Harrow Mandir","region":"London, UK","start":"2027-02-17","end":"2027-02-19"},{"id":"s10","place":"Mariestad Temple","region":"Sweden","start":"2027-02-19","end":"2027-02-26"},{"id":"s11","place":"Jönköping Temple","region":"Sweden","start":"2027-02-26","end":"2027-03-05"},{"id":"s12","place":"Harrow Mandir","region":"London, UK","start":"2027-03-05","end":"2027-03-07"},{"id":"s13","place":"Cardiff Mandir","region":"Wales, UK","start":"2027-03-07","end":"2027-03-14"},{"id":"s14","place":"Bolton Mandir","region":"UK","start":"2027-03-14","end":"2027-03-21"},{"id":"s15","place":"Oldham Mandir","region":"UK","start":"2027-03-21","end":"2027-03-28"},{"id":"s16","place":"Woolwich Mandir","region":"London, UK","start":"2027-03-28","end":"2027-04-04"},{"id":"s17","place":"Cardiff Mandir","region":"Wales, UK","start":"2027-04-04","end":"2027-04-11"},{"id":"s18","place":"Wilsden Mandir","region":"Bradford, UK","start":"2027-04-11","end":"2027-04-18"},{"id":"s19","place":"Stanmore Mandir","region":"London, UK","start":"2027-04-18","end":"2027-04-25"},{"id":"s20","place":"East London Mandir","region":"London, UK","start":"2027-04-25","end":"2027-05-02"},{"id":"s21","place":"Bolton Mandir","region":"UK","start":"2027-05-02","end":"2027-05-09"},{"id":"s22","place":"Oldham Mandir","region":"UK","start":"2027-05-09","end":"2027-05-16"},{"id":"s23","place":"ISSO Mandir","region":"UK","start":"2027-05-16","end":"2027-05-23"},{"id":"s24","place":"Wilsden Mandir","region":"Bradford, UK","start":"2027-05-23","end":"2027-05-30"},{"id":"s25","place":"Stanmore Mandir","region":"London, UK","start":"2027-05-30","end":"2027-06-09"},{"id":"s26","place":"Harrow Mandir","region":"London, UK","start":"2027-06-09","end":"2027-06-12"},{"id":"s27","place":"Dubai","region":"UAE","start":"2027-06-12","end":"2027-06-19"}],"events":[{"id":"e1","type":"flight","title":"Depart India for London","date":"2026-12-22","endDate":"","start":"","end":"","place":"India","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"","to":"London Heathrow","driver":"","phone":"","flight":"","notes":"Add ticket details","from":"India"},{"id":"e2","type":"car","title":"Heathrow to Harrow Mandir","date":"2026-12-23","endDate":"","start":"","end":"","place":"London","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Harrow Mandir","driver":"","phone":"","flight":"","notes":"","from":"Heathrow"},{"id":"e3","type":"pothiyatra","title":"Pothiyatra","date":"2026-12-25","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e4","type":"patotsav","title":"Harrow Patotsav","date":"2026-12-26","endDate":"2027-01-01","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e5","type":"parayan","title":"Harrow Parayan","date":"2026-12-26","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e6","type":"parayan","title":"Harrow Parayan","date":"2026-12-26","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e7","type":"parayan","title":"Harrow Parayan","date":"2026-12-27","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e8","type":"parayan","title":"Harrow Parayan","date":"2026-12-27","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e10","type":"parayan","title":"Harrow Parayan","date":"2026-12-28","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e9","type":"parayan","title":"Harrow Parayan","date":"2026-12-28","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e11","type":"parayan","title":"Harrow Parayan","date":"2026-12-29","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e12","type":"parayan","title":"Harrow Parayan","date":"2026-12-29","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e13","type":"parayan","title":"Harrow Parayan","date":"2026-12-30","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e14","type":"parayan","title":"Harrow Parayan","date":"2026-12-30","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e15","type":"parayan","title":"Harrow Parayan","date":"2026-12-31","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e16","type":"parayan","title":"Harrow Parayan","date":"2026-12-31","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e17","type":"parayan","title":"Harrow Parayan","date":"2027-01-01","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e18","type":"parayan","title":"Harrow Parayan","date":"2027-01-01","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e49","type":"car","title":"Harrow to Wilsden","date":"2027-01-03","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Wilsden Mandir","driver":"","phone":"","flight":"","notes":"","from":"Harrow Mandir"},{"id":"e50","type":"car","title":"Wilsden to Stanmore","date":"2027-01-10","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Stanmore Mandir","driver":"","phone":"","flight":"","notes":"","from":"Wilsden Mandir"},{"id":"e51","type":"car","title":"Stanmore to Woolwich","date":"2027-01-17","endDate":"","start":"","end":"","place":"Stanmore Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Woolwich Mandir","driver":"","phone":"","flight":"","notes":"","from":"Stanmore Mandir"},{"id":"e52","type":"car","title":"Woolwich to East London","date":"2027-01-24","endDate":"","start":"","end":"","place":"Woolwich Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"East London Mandir","driver":"","phone":"","flight":"","notes":"","from":"Woolwich Mandir"},{"id":"e47","type":"parayan","title":"","date":"2027-01-25","endDate":"2027-01-31","start":"","end":"","place":"East London Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"","driver":"","phone":"","flight":"","notes":"","from":"","photos":[],"yajman":""},{"id":"e1792736422626","type":"other","title":"Happy birthday 🎂 🥳","date":"2027-01-28","endDate":"","start":"","end":"","place":"East London Mandir","saints":["mm"],"vakta":"","shastra":"","portion":"","session":"","car":"both","from":"","to":"","driver":"","phone":"","flight":"","yajman":"","notes":"","photos":[]},{"id":"e53","type":"car","title":"East London to Harrow","date":"2027-01-31","endDate":"","start":"","end":"","place":"East London Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Harrow Mandir","driver":"","phone":"","flight":"","notes":"","from":"East London Mandir"},{"id":"e68","type":"flight","title":"Fly Harrow to Gambia","date":"2027-02-03","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"","to":"Gambia","driver":"","phone":"","flight":"","notes":"Add ticket details","from":"Harrow Mandir"},{"id":"e69","type":"flight","title":"Fly Gambia to Senegal","date":"2027-02-10","endDate":"","start":"","end":"","place":"Gambia","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"","to":"Senegal","driver":"","phone":"","flight":"","notes":"Add ticket details","from":"Gambia"},{"id":"e70","type":"flight","title":"Fly Senegal to London","date":"2027-02-17","endDate":"","start":"","end":"","place":"Senegal","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"","to":"London","driver":"","phone":"","flight":"","notes":"Add ticket details","from":"Senegal"},{"id":"e71","type":"flight","title":"Fly London to Sweden","date":"2027-02-19","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"","to":"Sweden","driver":"","phone":"","flight":"","notes":"Add ticket details","from":"Harrow Mandir"},{"id":"e72","type":"flight","title":"Fly Sweden to London","date":"2027-03-05","endDate":"","start":"","end":"","place":"Jönköping Temple","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"","to":"London","driver":"","phone":"","flight":"","notes":"Add ticket details","from":"Jönköping Temple"},{"id":"e54","type":"car","title":"Harrow to Cardiff","date":"2027-03-07","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Cardiff Mandir","driver":"","phone":"","flight":"","notes":"","from":"Harrow Mandir"},{"id":"e55","type":"car","title":"Cardiff to Bolton","date":"2027-03-14","endDate":"","start":"","end":"","place":"Cardiff Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Bolton Mandir","driver":"","phone":"","flight":"","notes":"","from":"Cardiff Mandir"},{"id":"e56","type":"car","title":"Bolton to Oldham","date":"2027-03-21","endDate":"","start":"","end":"","place":"Bolton Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Oldham Mandir","driver":"","phone":"","flight":"","notes":"","from":"Bolton Mandir"},{"id":"e19","type":"parayan","title":"Oldham Parayan","date":"2027-03-22","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e20","type":"parayan","title":"Oldham Parayan","date":"2027-03-22","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e21","type":"parayan","title":"Oldham Parayan","date":"2027-03-23","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e22","type":"parayan","title":"Oldham Parayan","date":"2027-03-23","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e23","type":"parayan","title":"Oldham Parayan","date":"2027-03-24","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e24","type":"parayan","title":"Oldham Parayan","date":"2027-03-24","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e25","type":"parayan","title":"Oldham Parayan","date":"2027-03-25","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e26","type":"parayan","title":"Oldham Parayan","date":"2027-03-25","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e27","type":"parayan","title":"Oldham Parayan","date":"2027-03-26","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e28","type":"parayan","title":"Oldham Parayan","date":"2027-03-26","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e29","type":"parayan","title":"Oldham Parayan","date":"2027-03-27","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e30","type":"parayan","title":"Oldham Parayan","date":"2027-03-27","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e31","type":"parayan","title":"Oldham Parayan","date":"2027-03-28","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e32","type":"parayan","title":"Oldham Parayan","date":"2027-03-28","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e57","type":"car","title":"Oldham to Woolwich","date":"2027-03-28","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Woolwich Mandir","driver":"","phone":"","flight":"","notes":"","from":"Oldham Mandir"},{"id":"e58","type":"car","title":"Woolwich to Cardiff","date":"2027-04-04","endDate":"","start":"","end":"","place":"Woolwich Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Cardiff Mandir","driver":"","phone":"","flight":"","notes":"","from":"Woolwich Mandir"},{"id":"e59","type":"car","title":"Cardiff to Wilsden","date":"2027-04-11","endDate":"","start":"","end":"","place":"Cardiff Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Wilsden Mandir","driver":"","phone":"","flight":"","notes":"","from":"Cardiff Mandir"},{"id":"e33","type":"parayan","title":"Wilsden Parayan","date":"2027-04-12","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e34","type":"parayan","title":"Wilsden Parayan","date":"2027-04-12","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e35","type":"parayan","title":"Wilsden Parayan","date":"2027-04-13","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e36","type":"parayan","title":"Wilsden Parayan","date":"2027-04-13","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e37","type":"parayan","title":"Wilsden Parayan","date":"2027-04-14","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e38","type":"parayan","title":"Wilsden Parayan","date":"2027-04-14","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e39","type":"parayan","title":"Wilsden Parayan","date":"2027-04-15","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e40","type":"parayan","title":"Wilsden Parayan","date":"2027-04-15","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e41","type":"parayan","title":"Wilsden Parayan","date":"2027-04-16","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e42","type":"parayan","title":"Wilsden Parayan","date":"2027-04-16","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e43","type":"parayan","title":"Wilsden Parayan","date":"2027-04-17","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e44","type":"parayan","title":"Wilsden Parayan","date":"2027-04-17","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e45","type":"parayan","title":"Wilsden Parayan","date":"2027-04-18","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"morning","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e46","type":"parayan","title":"Wilsden Parayan","date":"2027-04-18","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"evening","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e60","type":"car","title":"Wilsden to Stanmore","date":"2027-04-18","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Stanmore Mandir","driver":"","phone":"","flight":"","notes":"","from":"Wilsden Mandir"},{"id":"e61","type":"car","title":"Stanmore to East London","date":"2027-04-25","endDate":"","start":"","end":"","place":"Stanmore Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"East London Mandir","driver":"","phone":"","flight":"","notes":"","from":"Stanmore Mandir"},{"id":"e62","type":"car","title":"East London to Bolton","date":"2027-05-02","endDate":"","start":"","end":"","place":"East London Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Bolton Mandir","driver":"","phone":"","flight":"","notes":"","from":"East London Mandir"},{"id":"e63","type":"car","title":"Bolton to Oldham","date":"2027-05-09","endDate":"","start":"","end":"","place":"Bolton Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Oldham Mandir","driver":"","phone":"","flight":"","notes":"","from":"Bolton Mandir"},{"id":"e64","type":"car","title":"Oldham to ISSO","date":"2027-05-16","endDate":"","start":"","end":"","place":"Oldham Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"ISSO Mandir","driver":"","phone":"","flight":"","notes":"","from":"Oldham Mandir"},{"id":"e65","type":"car","title":"ISSO to Wilsden","date":"2027-05-23","endDate":"","start":"","end":"","place":"ISSO Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Wilsden Mandir","driver":"","phone":"","flight":"","notes":"","from":"ISSO Mandir"},{"id":"e48","type":"patotsav","title":"Stanmore Patotsav","date":"2027-05-29","endDate":"2027-06-06","start":"","end":"","place":"Stanmore Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"","to":"","driver":"","phone":"","flight":"","notes":"","from":""},{"id":"e66","type":"car","title":"Wilsden to Stanmore","date":"2027-05-30","endDate":"","start":"","end":"","place":"Wilsden Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Stanmore Mandir","driver":"","phone":"","flight":"","notes":"","from":"Wilsden Mandir"},{"id":"e67","type":"car","title":"Stanmore to Harrow","date":"2027-06-09","endDate":"","start":"","end":"","place":"Stanmore Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"both","to":"Harrow Mandir","driver":"","phone":"","flight":"","notes":"","from":"Stanmore Mandir"},{"id":"e73","type":"flight","title":"Fly London Heathrow to Dubai","date":"2027-06-12","endDate":"","start":"","end":"","place":"Harrow Mandir","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"","to":"Dubai","driver":"","phone":"","flight":"","notes":"Add ticket details","from":"Harrow Mandir"},{"id":"e74","type":"flight","title":"Trip ends: return from Dubai","date":"2027-06-19","endDate":"","start":"","end":"","place":"Dubai","saints":["g","hs","mm","hp","np","ap"],"vakta":"","shastra":"","portion":"","session":"","car":"","to":"India","driver":"","phone":"","flight":"","notes":"Add ticket details","from":"Dubai"}],"saints":[{"id":"g","name":"GnanPrakash Das Swami","short":"GP","role":"Guru and leader","car":"c1"},{"id":"hs","name":"Hari Sevak Dasji","short":"HS","role":"Elder saint","car":"c2"},{"id":"mm","name":"Murlimanohar Das","short":"MM","role":"Vakta","car":"c1"},{"id":"hp","name":"HariPrasad Das","short":"HP","role":"Vakta","car":"c2"},{"id":"np","name":"NityaPrakash Das","short":"NP","role":"Vakta","car":"c2"},{"id":"ap","name":"AnandPrakash Das","short":"AP","role":"Vakta","car":"c1"}]}</script><script id="app">
+(function(){
+var TITLE_META='<title>Mandir Tour Program</title><meta name="claude:viewport-fit-sides" content="cover">';
+var FONT_LINK='<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap">';
+var SKEL_A='<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>\n';
+var SKEL_B='</body></html>';
+var state=JSON.parse(document.getElementById('seed').textContent);
+var TYPES={parayan:'Parayan',katha:'Katha',patotsav:'Patotsav',pothiyatra:'Pothiyatra',padramani:'Padramani',vastu:'Vastu',sabha:'Utsav',pravachan:'Pravachan',flight:'Flight',car:'Mandir shift',other:'Other'};
+var RIDE=['car','padramani','vastu','flight','sabha','pravachan'];
+var YAJ=['parayan','vastu','padramani'];
+var CARS={c1:'Car 1',c2:'Car 2',both:'Both cars'};
+var ui={sumOpen:'',assets:null,view:'day',date:null,filter:'',canEdit:false,dirty:0,saving:false,msg:''};
+var $=function(s){return document.querySelector(s)};
+var lang='en';try{lang=localStorage.getItem('lang')==='gu'?'gu':'en'}catch(x){}
+var GU={'Day':'દિવસ','Whole tour':'સંપૂર્ણ યાત્રા','Saints and cars':'સંતો અને કાર','Summary':'સારાંશ','sessions':'સત્રો','days':'દિવસ','Days on tour':'યાત્રાના દિવસો','Stops':'સ્થળો','Different mandirs':'જુદા જુદા મંદિરો','Still to fill in':'હજી ભરવાનું બાકી','Vakta not chosen':'વક્તા નક્કી નથી','Shastra not chosen':'શાસ્ત્ર નક્કી નથી','Driver not added':'ડ્રાઇવર ઉમેર્યા નથી','Pictures added':'ઉમેરેલા ચિત્રો','Tap a box to see the list.':'યાદી જોવા બોક્સ પર ટેપ કરો.','Nothing noted yet.':'હજી કંઈ નોંધ્યું નથી.','of':'માંથી','Today':'આજે','Where we are':'અત્યારે ક્યાં છીએ','Happening now':'અત્યારે ચાલુ','Up next':'હવે પછી','Everyone':'બધા','Place':'સ્થળ','Session':'સત્ર','Vakta':'વક્તા','Shastra':'શાસ્ત્ર','Portion':'ભાગ','Route':'માર્ગ','Car':'કાર','Driver':'ડ્રાઇવર','Contact':'સંપર્ક','Flight':'ફ્લાઇટ','Yajman':'યજમાન','Notes':'નોંધ','To be chosen':'નક્કી કરવાનું બાકી','To be added':'ઉમેરવાનું બાકી','Number to be added':'નંબર ઉમેરવાનો બાકી','Morning':'સવાર','Evening':'સાંજ','time TBC':'સમય નક્કી નથી','All day':'આખો દિવસ','All six saints':'બધા છ સંતો','Copy':'નકલ કરો','Copied':'નકલ થઈ','Travel':'પ્રવાસ','The six saints':'છ સંતો','Colour key':'રંગ સૂચિ','Guru and leader':'ગુરુ અને નેતા','Elder saint':'વડીલ સંત','Mandir Tour Program':'મંદિર યાત્રા કાર્યક્રમ','Nothing planned for this day yet.':'આ દિવસ માટે હજી કંઈ આયોજન નથી.','Times are local to where the saints are. Refresh the page to see the latest changes.':'સમય સંતો જ્યાં હોય ત્યાંના સ્થાનિક સમય મુજબ છે. નવા ફેરફાર જોવા પેજ રિફ્રેશ કરો.','This date is outside the tour (22 Dec 2026 to 19 Jun 2027).':'આ તારીખ યાત્રાની બહાર છે (૨૨ ડિસેમ્બર ૨૦૨૬ થી ૧૯ જૂન ૨૦૨૭).'};
+var GN={g:'જ્ઞાનપ્રકાશ દાસ સ્વામી',hs:'હરિસેવક દાસજી',mm:'મુરલીમનોહર દાસ',hp:'હરિપ્રસાદ દાસ',np:'નિત્યપ્રકાશ દાસ',ap:'આનંદપ્રકાશ દાસ'};
+var GS={g:'જ્ઞાનપ્રકાશ',hs:'હરિસેવક',mm:'મુરલીમનોહર',hp:'હરિપ્રસાદ',np:'નિત્યપ્રકાશ',ap:'આનંદપ્રકાશ'};
+var TG={parayan:'પારાયણ',katha:'કથા',patotsav:'પાટોત્સવ',pothiyatra:'પોથીયાત્રા',padramani:'પધરામણી',vastu:'વાસ્તુ',sabha:'ઉત્સવ',pravachan:'પ્રવચન',flight:'ફ્લાઇટ',car:'મંદિર સ્થળાંતર',other:'અન્ય'};
+var CG={c1:'કાર 1',c2:'કાર 2',both:'બંને કાર'};
+var PL={'Harrow Mandir':'હેરો મંદિર','Wilsden Mandir':'વિલ્સડન મંદિર','Stanmore Mandir':'સ્ટેનમોર મંદિર','Woolwich Mandir':'વૂલવિચ મંદિર','East London Mandir':'ઈસ્ટ લંડન મંદિર','Cardiff Mandir':'કાર્ડિફ મંદિર','Bolton Mandir':'બોલ્ટન મંદિર','Oldham Mandir':'ઓલ્ડહામ મંદિર','ISSO Mandir':'ISSO મંદિર','Mariestad Temple':'મારિયેસ્ટાદ મંદિર','Jönköping Temple':'યોન્શોપિંગ મંદિર','Harrow':'હેરો','Wilsden':'વિલ્સડન','Stanmore':'સ્ટેનમોર','Woolwich':'વૂલવિચ','East London':'ઈસ્ટ લંડન','Cardiff':'કાર્ડિફ','Bolton':'બોલ્ટન','Oldham':'ઓલ્ડહામ','ISSO':'ISSO','Heathrow':'હીથ્રો','London Heathrow':'લંડન હીથ્રો','London':'લંડન','India':'ભારત','Gambia':'ગામ્બિયા','Senegal':'સેનેગલ','Sweden':'સ્વીડન','Dubai':'દુબઈ','London, UK':'લંડન, યુકે','Bradford, UK':'બ્રેડફોર્ડ, યુકે','Wales, UK':'વેલ્સ, યુકે','UK':'યુકે','UAE':'યુએઈ','Departure from India':'ભારતથી પ્રસ્થાન','Parayan':'પારાયણ','Patotsav':'પાટોત્સવ','Katha':'કથા','Pothiyatra':'પોથીયાત્રા','Depart India for London':'ભારતથી લંડન પ્રસ્થાન','Trip ends: return from Dubai':'યાત્રા પૂર્ણ: દુબઈથી પરત','Add ticket details':'ટિકિટની વિગતો ઉમેરવી'};
+function T(k){return lang==='gu'&&GU[k]!=null?GU[k]:k}
+function dg(x){return lang==='gu'?String(x).replace(/\d/g,function(c){return '૦૧૨૩૪૫૬૭૮૯'.charAt(+c)}):String(x)}
+function trp(x){return PL[x]||x}
+function tr(x){if(lang!=='gu'||!x)return x;if(PL[x])return PL[x];var m;
+ if((m=/^Fly (.+) to (.+)$/.exec(x)))return trp(m[1])+' થી '+trp(m[2])+' ફ્લાઇટ';
+ if((m=/^(.+) to (.+)$/.exec(x)))return trp(m[1])+' થી '+trp(m[2]);
+ if((m=/^(\S+) (Parayan|Patotsav)$/.exec(x)))return trp(m[1])+' '+PL[m[2]];
+ return x}
+function typeLabel(k){return lang==='gu'&&TG[k]?TG[k]:TYPES[k]||k}
+function carLabel(c){return lang==='gu'?CG[c]:CARS[c]}
+function dayOf(a,b){return lang==='gu'?'દિવસ '+dg(a)+' / '+dg(b):'Day '+a+' of '+b}
+function route(e){return tr(e.from||'')+(e.to?(lang==='gu'?' થી ':' to ')+tr(e.to):'')}
+function fmtTime(t){if(!t)return'';var p=t.split(':'),hh=+p[0],ap=hh>=12?'PM':'AM';hh=hh%12||12;return dg(hh+':'+p[1])+' '+ap}
+
+function h(tag,attrs){var e=document.createElement(tag);attrs=attrs||{};for(var k in attrs){var v=attrs[k];if(v==null||v===false)continue;if(k==='class')e.className=v;else if(k.indexOf('on')===0)e.addEventListener(k.slice(2),v);else if(k==='text')e.textContent=v;else e.setAttribute(k,v===true?'':v);}
+ for(var i=2;i<arguments.length;i++){var c=arguments[i];if(Array.isArray(c)){c.forEach(function(x){if(x!=null&&x!==false)e.append(x.nodeType?x:document.createTextNode(x))})}else if(c!=null&&c!==false)e.append(c.nodeType?c:document.createTextNode(c));}
+ return e}
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function parse(s){var p=s.split('-').map(Number);return new Date(p[0],p[1]-1,p[2])}
+function addDays(s,n){var d=parse(s);d.setDate(d.getDate()+n);return iso(d)}
+function diff(a,b){return Math.round((parse(b)-parse(a))/864e5)}
+function fmt(s,o){return parse(s).toLocaleDateString(lang==='gu'?'gu-IN-u-nu-gujr':'en-GB',o||{weekday:'short',day:'numeric',month:'short'})}
+function short(s){if(lang==='gu')return GS[s.id];return s.name.replace(' Das Swami','').replace(' Dasji','').replace(' Das','')}
+function sName(id){var s=state.saints.find(function(x){return x.id===id});return s?(lang==='gu'?GN[id]:s.name):''}
+function av(id,extra){var s=state.saints.find(function(x){return x.id===id});return h('span',{class:'av '+id+(extra||''),title:s?s.name:'',text:s?s.short:'?'})}
+function stayFor(d){var m=null;state.stays.forEach(function(s){if(s.start<=d&&d<=s.end)m=s});return m}
+function evsOn(d){return state.events.filter(function(e){return e.date<=d&&d<=(e.endDate||e.date)&&(!ui.filter||e.saints.indexOf(ui.filter)>-1)})}
+function toMin(t){if(!t)return null;var p=t.split(':');return +p[0]*60+ +p[1]}
+function sortKey(e){var m=toMin(e.start);if(m!=null)return m;if(e.session==='morning')return 540;if(e.session==='evening')return 1080;return -1}
+function timeLabel(e){if(e.start&&e.end)return[fmtTime(e.start),'\u2013 '+fmtTime(e.end)];if(e.start)return[fmtTime(e.start),''];if(e.session==='morning')return[T('Morning'),T('time TBC')];if(e.session==='evening')return[T('Evening'),T('time TBC')];return[T('All day'),'']}
+function today(){return iso(new Date())}
+function clamp(d){return d<state.tripStart?state.tripStart:d>state.tripEnd?state.tripEnd:d}
+
+function evCard(e,isNow,isNext){
+ var tl=timeLabel(e),kv=[];
+ function add(k,v){if(v)kv.push(h('dt',{text:T(k)}),h('dd',{text:v}))}
+ add('Place',tr(e.place));
+ if(e.type==='parayan'||e.type==='pravachan'){add('Session',e.session?T(e.session==='morning'?'Morning':'Evening'):'');add('Vakta',sName(e.vakta)||T('To be chosen'));add('Shastra',e.shastra||T('To be chosen'));add('Portion',e.portion)}
+ if(e.type==='car')add('Route',route(e));
+ if(RIDE.indexOf(e.type)>-1){add('Car',carLabel(e.car)||'');add('Driver',e.driver||T('To be added'));
+   if(e.phone)kv.push(h('dt',{text:T('Contact')}),h('dd',{},e.phone+' ',h('button',{class:'btn sm',type:'button',onclick:function(ev){copy(e.phone,ev.target)}},T('Copy'))))}
+ if(e.type==='flight'){add('Flight',e.flight||T('Number to be added'));add('Route',route(e))}
+ if(YAJ.indexOf(e.type)>-1)add('Yajman',e.yajman||T('To be added'));
+ add('Notes',tr(e.notes));
+ var allIds=state.saints.map(function(s){return s.id});
+ var everyone=allIds.every(function(i){return e.saints.indexOf(i)>-1});
+ return h('article',{class:'ev t-'+e.type+(isNow?' now':'')},
+  h('div',{class:'rail'},h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null),
+  h('div',{class:'body'},
+   h('div',{class:'top'},h('span',{class:'tag',text:typeLabel(e.type)}),isNow?h('span',{class:'pill now',text:T('Happening now')}):null,isNext?h('span',{class:'pill next',text:T('Up next')}):null),
+   h('div',{class:'title',text:tr(e.title)||typeLabel(e.type)}),
+   kv.length?h('dl',{class:'kv'},kv):null,
+   e.photos&&e.photos.length?picsEl(e):null,
+   h('div',{class:'row'},everyone?h('span',{class:'faint',text:T('All six saints')}):e.saints.map(function(i){return h('span',{class:'row'},av(i),h('span',{class:'faint',text:sName(i)}))})),
+   ui.canEdit?h('div',{class:'row'},h('button',{class:'btn sm',type:'button',onclick:function(){openForm(e)}},'Edit')):null));
+}
+function openPic(id){var o=h('div',{class:'modal',style:'align-items:center',onclick:function(){o.remove()}},h('img',{src:'/_blob/'+id,alt:'Picture',style:'max-width:100%;max-height:92vh;border-radius:8px;margin:auto'}));document.body.append(o)}
+function picsEl(e){return h('div',{class:'pics'+(e.photos.length===1?' one':'')},e.photos.map(function(p){return h('img',{src:'/_blob/'+p.id,alt:'Picture',loading:'lazy',onclick:function(){openPic(p.id)}})}))}
+function shrink(file){return new Promise(function(res,rej){var img=new Image(),u=URL.createObjectURL(file);img.onload=function(){var r=Math.min(1,1800/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*r);c.height=Math.round(img.height*r);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(function(b){b?res(b):rej()},'image/jpeg',.85)};img.onerror=function(){URL.revokeObjectURL(u);rej()};img.src=u})}
+function copy(t,btn){try{navigator.clipboard.writeText(t).then(function(){btn.textContent=T('Copied')},function(){btn.textContent=t})}catch(x){btn.textContent=t}}
+
+function dayView(){
+ var d=ui.date,st=stayFor(d),root=h('div',{class:'wrap-in',style:'display:flex;flex-direction:column;gap:14px'});
+ var inp=h('input',{type:'date',id:'jump',min:state.tripStart,max:state.tripEnd,value:d,'aria-label':'Jump to date',class:'btn',onchange:function(e){if(e.target.value){ui.date=clamp(e.target.value);render()}}});
+ root.append(h('div',{class:'nav'},
+  h('button',{class:'btn',type:'button',onclick:function(){ui.date=clamp(addDays(d,-1));render()},'aria-label':'Previous day'},'‹'),
+  h('div',{class:'date',text:fmt(d,{weekday:'long',day:'numeric',month:'long',year:'numeric'})}),
+  h('button',{class:'btn',type:'button',onclick:function(){ui.date=clamp(addDays(d,1));render()},'aria-label':'Next day'},'›')));
+ root.append(h('div',{class:'nav'},h('button',{class:'btn',type:'button',onclick:function(){ui.date=clamp(today());render()}},T('Today')),inp,
+  h('span',{class:'sub',text:dayOf(diff(state.tripStart,d)+1,diff(state.tripStart,state.tripEnd)+1)})));
+ if(st){var n=diff(st.start,st.end)+1,k=diff(st.start,d)+1,idx=state.stays.indexOf(st),prev=state.stays[idx-1],gu=lang==='gu';
+  var meta=[tr(st.region)];if(st.start!==st.end)meta.push(gu?'અહીં '+dayOf(k,n):'Day '+k+' of '+n+' here');
+  if(d===st.start&&prev&&prev.place!==st.place)meta.push(gu?tr(prev.place)+' થી આગમન':'Arriving from '+prev.place);
+  var nx=state.stays[idx+1];if(d===st.end&&nx)meta.push(gu?'આજે '+tr(nx.place)+' તરફ પ્રસ્થાન':'Moving to '+nx.place+' today');
+  root.append(h('div',{class:'place'},h('div',{class:'meta',text:T('Where we are')}),h('div',{class:'where',text:tr(st.place)}),h('div',{class:'meta',text:meta.join(' · ')})));}
+ else root.append(h('div',{class:'empty',text:T('This date is outside the tour (22 Dec 2026 to 19 Jun 2027).')}));
+ var evs=evsOn(d).slice().sort(function(a,b){return sortKey(a)-sortKey(b)});
+ var now=new Date(),nm=now.getHours()*60+now.getMinutes(),isToday=d===today(),nowId=null,nextId=null;
+ if(isToday){evs.forEach(function(e){var s=toMin(e.start);if(s==null)return;var en=e.end?toMin(e.end):s+90;if(s<=nm&&nm<en&&!nowId)nowId=e.id;else if(s>nm&&!nextId)nextId=e.id});}
+ root.append(h('div',{class:'chips',role:'group','aria-label':'Show saint'},
+  h('button',{class:'chip',type:'button','aria-pressed':ui.filter===''?'true':'false',onclick:function(){ui.filter='';render()}},h('span',{class:'av all',text:lang==='gu'?'બધા':'All'}),T('Everyone')),
+  state.saints.map(function(s){return h('button',{class:'chip',type:'button','aria-pressed':ui.filter===s.id?'true':'false',onclick:function(){ui.filter=s.id;render()}},av(s.id),short(s))})));
+ if(!evs.length)root.append(h('div',{class:'empty',text:ui.canEdit?'Nothing planned for this day. Use Add event below.':T('Nothing planned for this day yet.')}));
+ evs.forEach(function(e){root.append(evCard(e,e.id===nowId,e.id===nextId))});
+ root.append(h('p',{class:'note',text:T('Times are local to where the saints are. Refresh the page to see the latest changes.')}));
+ return root}
+
+function planView(){
+ var root=h('div',{style:'display:flex;flex-direction:column;gap:10px'}),cur=stayFor(today()),yo={weekday:'short',day:'numeric',month:'short',year:'numeric'};
+ state.stays.forEach(function(s){
+  var n=diff(s.start,s.end)+1,seen={},tags=[];
+  state.events.forEach(function(e){if(['parayan','katha','patotsav','pothiyatra','padramani','vastu','sabha','pravachan'].indexOf(e.type)>-1&&e.date<=s.end&&(e.endDate||e.date)>=s.start&&e.place===s.place&&!seen[e.type]){seen[e.type]=1;tags.push(h('span',{class:'tag t-'+e.type,text:typeLabel(e.type)}))}});
+  root.append(h('button',{class:'stay'+(cur&&cur.id===s.id?' cur':''),type:'button',onclick:function(){ui.date=s.start;ui.view='day';render();window.scrollTo(0,0)}},
+   h('div',{class:'n',text:tr(s.place)}),h('div',{class:'days',text:s.start===s.end?T('Travel'):(lang==='gu'?dg(n)+' દિવસ':n+' days')}),
+   h('div',{class:'d',text:(s.start===s.end?fmt(s.start,yo):fmt(s.start)+(lang==='gu'?' થી ':' to ')+fmt(s.end,yo))+' · '+tr(s.region)}),h('span'),
+   tags.length?h('div',{class:'tags'},tags):null))});
+ return root}
+
+var SUMORDER=['parayan','katha','patotsav','pothiyatra','padramani','vastu','sabha','pravachan','flight','car','other'];
+function rangeLabel(e){return e.endDate&&e.endDate!==e.date?fmt(e.date)+' – '+fmt(e.endDate):fmt(e.date)}
+function goDay(d){ui.date=d;ui.view='day';render();window.scrollTo(0,0)}
+function sumView(){
+ var root=h('div',{style:'display:flex;flex-direction:column;gap:14px'}),by={};
+ SUMORDER.forEach(function(k){by[k]=[]});state.events.forEach(function(e){(by[e.type]||by.other).push(e)});
+ var sers=[],map={};by.parayan.forEach(function(e){var key=e.title+'|'+e.place,o=map[key];if(!o){o=map[key]={title:e.title,place:e.place,date:e.date,end:e.date,n:0};sers.push(o)}o.n++;if(e.date>o.end)o.end=e.date;if(e.date<o.date)o.date=e.date});
+ function count(k){return k==='parayan'?sers.length:by[k].length}
+ function sub(k){if(k==='parayan')return by.parayan.length?dg(by.parayan.length)+' '+T('sessions'):'';if(k==='katha'||k==='patotsav'){var d=0;by[k].forEach(function(e){d+=e.endDate?diff(e.date,e.endDate)+1:1});return d?dg(d)+' '+T('days'):''}return ''}
+ var places={},stops=0;state.stays.forEach(function(s){if(s.place!=='India'){stops++;places[s.place]=1}});
+ root.append(h('div',{class:'stats'},
+  [[diff(state.tripStart,state.tripEnd)+1,'Days on tour'],[stops,'Stops'],[Object.keys(places).length,'Different mandirs']].map(function(x){return h('div',{class:'stat'},h('b',{text:dg(x[0])}),h('span',{text:T(x[1])}))})));
+ root.append(h('div',{class:'tiles'},SUMORDER.map(function(k){return h('button',{class:'tile t-'+k,type:'button','aria-expanded':ui.sumOpen===k?'true':'false',onclick:function(){ui.sumOpen=ui.sumOpen===k?'':k;render()}},h('b',{text:dg(count(k))}),h('span',{text:typeLabel(k)}),h('small',{text:sub(k)||' '}))})));
+ if(ui.sumOpen){var k=ui.sumOpen,rows=[];
+  if(k==='parayan')sers.forEach(function(o){rows.push(h('button',{class:'li',type:'button',onclick:function(){goDay(o.date)}},h('span',{class:'a',text:tr(o.title)+' · '+tr(o.place)}),h('span',{class:'b',text:dg(o.n)+' '+T('sessions')}),h('span',{class:'b',text:fmt(o.date)+' – '+fmt(o.end)}),h('span')))});
+  else by[k].forEach(function(e){rows.push(h('button',{class:'li',type:'button',onclick:function(){goDay(e.date)}},h('span',{class:'a',text:tr(e.title)||typeLabel(k)}),h('span',{class:'b',text:rangeLabel(e)}),h('span',{class:'b',text:tr(e.place)}),h('span')))});
+  root.append(h('div',{class:'card t-'+k},h('h3',{text:typeLabel(k)+' ('+dg(count(k))+')'}),rows.length?rows:h('div',{class:'faint',text:T('Nothing noted yet.')})))}
+ else root.append(h('p',{class:'note',text:T('Tap a box to see the list.')}));
+ var noV=by.parayan.filter(function(e){return !e.vakta}).length,noS=by.parayan.filter(function(e){return !e.shastra}).length;
+ var rides=state.events.filter(function(e){return RIDE.indexOf(e.type)>-1}),noD=rides.filter(function(e){return !e.driver}).length,ph=0;state.events.forEach(function(e){ph+=(e.photos||[]).length});
+ function row(l,v){return h('div',{class:'fill'},h('span',{text:T(l)}),h('b',{text:v}))}
+ root.append(h('div',{class:'card'},h('h3',{text:T('Still to fill in')}),
+  row('Vakta not chosen',dg(noV)+' '+T('of')+' '+dg(by.parayan.length)),row('Shastra not chosen',dg(noS)+' '+T('of')+' '+dg(by.parayan.length)),row('Driver not added',dg(noD)+' '+T('of')+' '+dg(rides.length)),row('Pictures added',dg(ph))));
+ return root}
+
+function heroImg(){var im=h('img',{src:state.hero?'/_blob/'+state.hero:'https://commons.wikimedia.org/wiki/Special:FilePath/Swaminarayan.jpg',alt:'Bhagwan Swaminarayan'});im.addEventListener('error',function(){var p=im.parentNode;if(p)p.style.gridTemplateColumns='minmax(0,1fr)';im.remove()});return im}
+function heroBtn(){if(!(ui.canEdit&&ui.assets))return null;return h('label',{class:'btn sm',style:'margin-top:8px;display:inline-block;cursor:pointer'},'Set picture',h('input',{type:'file',accept:'image/*',style:'display:none',onchange:function(ev){var f=ev.target.files[0];if(!f)return;shrink(f).then(function(b){return ui.assets.upload(b)}).then(function(r){state.hero=r.id;ui.dirty++;render()}).catch(function(){ui.msg='Picture could not be uploaded.';render()})}}))}
+function setLang(l){lang=l;try{localStorage.setItem('lang',l)}catch(x){}render()}
+function render(){
+ var root=$('#root');root.textContent='';
+ var w=h('div',{class:'wrap'});
+ w.append(h('header',{class:'head'},
+  h('div',{class:'row',style:'justify-content:space-between;align-items:flex-start;flex-wrap:nowrap'},h('h1',{text:T('Mandir Tour Program')}),
+   h('div',{class:'row',style:'flex:none',role:'group','aria-label':'Language'},
+    h('button',{class:'chip',type:'button','aria-pressed':lang==='en'?'true':'false',style:'padding:5px 11px',onclick:function(){setLang('en')}},'English'),
+    h('button',{class:'chip',type:'button','aria-pressed':lang==='gu'?'true':'false',style:'padding:5px 11px',onclick:function(){setLang('gu')}},'ગુજરાતી'))),
+  h('div',{class:'sub',text:lang==='gu'?'૨૨ ડિસેમ્બર ૨૦૨૬ થી ૧૯ જૂન ૨૦૨૭ · ભારત, યુકે, ગામ્બિયા, સેનેગલ, સ્વીડન, દુબઈ':'22 Dec 2026 to 19 Jun 2027 · India, UK, Gambia, Senegal, Sweden, Dubai'}),
+  h('div',{class:'hero'},
+   heroImg(),
+   h('div',{},
+    h('div',{class:'mantra',text:lang==='gu'?'જય સ્વામિનારાયણ':'Jai Swaminarayan'}),
+    h('div',{class:'blessing',text:lang==='gu'?'ભક્તિ, સેવા અને સત્સંગની પવિત્ર યાત્રા':'A sacred journey of devotion, seva and satsang'}),
+    h('div',{class:'ornament',text:'✦  ॐ  ✦  જય સ્વામિનારાયણ  ✦'}),heroBtn()))));
+ var tabs=[['day','Day'],['plan','Whole tour'],['sum','Summary']];
+ w.append(h('div',{class:'tabs',role:'tablist'},tabs.map(function(t){return h('button',{class:'tab',role:'tab',type:'button','aria-selected':ui.view===t[0]?'true':'false',onclick:function(){ui.view=t[0];render()}},T(t[1]))})));
+ w.append(ui.view==='day'?dayView():ui.view==='plan'?planView():sumView());
+ root.append(w);
+ if(ui.canEdit){root.append(h('div',{class:'bar'},
+  h('button',{class:'btn',type:'button',onclick:function(){openForm(null)}},'Add event'),
+  h('button',{class:'btn pri',type:'button',disabled:!ui.dirty||ui.saving,onclick:save},ui.saving?'Saving':(ui.dirty?'Save and publish ('+ui.dirty+')':'No changes')),
+  ui.msg?h('span',{class:'note',style:'align-self:center',text:ui.msg}):null))}
+}
+
+function openForm(ev){
+ var isNew=!ev,st=stayFor(ui.date);
+ var e=ev?JSON.parse(JSON.stringify(ev)):{id:'e'+Date.now(),type:'sabha',title:'',date:ui.date,endDate:'',start:'',end:'',place:st?st.place:'',saints:state.saints.map(function(s){return s.id}),vakta:'',shastra:'',portion:'',session:'',car:'both',from:'',to:'',driver:'',phone:'',flight:'',yajman:'',notes:'',photos:[]};
+ var F={};
+ function field(id,label,el){F[id]=el;el.id='f_'+id;return h('div',{class:'f'},h('label',{for:'f_'+id,text:label}),el)}
+ function inp(id,type,val){return h('input',{type:type||'text',value:val||''})}
+ function sel(opts,val){var s=h('select',{});opts.forEach(function(o){var op=h('option',{value:o[0],text:o[1]});if(o[0]===val)op.selected=true;s.append(op)});return s}
+ var saintOpts=[['','Not chosen']].concat(state.saints.map(function(s){return[s.id,s.name]}));
+ var typeSel=sel(Object.keys(TYPES).map(function(k){return[k,TYPES[k]]}),e.type);
+ var groups={};
+ function grp(name,kids){var g=h('div',{style:'display:flex;flex-direction:column;gap:12px'},kids);groups[name]=g;return g}
+ var checks=h('div',{class:'checks'},state.saints.map(function(s){var c=h('input',{type:'checkbox',value:s.id});c.checked=e.saints.indexOf(s.id)>-1;return h('label',{},c,av(s.id),short(s))}));
+ e.photos=e.photos||[];
+ var thumbs=h('div',{class:'thumbs'}),pstat=h('span',{class:'note'});
+ function drawThumbs(){thumbs.textContent='';e.photos.forEach(function(p,i){thumbs.append(h('div',{class:'th'},h('img',{src:'/_blob/'+p.id,alt:''}),h('button',{type:'button',class:'x','aria-label':'Remove picture',onclick:function(){e.photos.splice(i,1);drawThumbs()}},'×')))})}
+ drawThumbs();
+ var pics=h('div',{class:'f'},h('span',{class:'lab',text:'Pictures (tickets, photos, addresses)'}),thumbs,
+  ui.assets?h('input',{type:'file',id:'f_photos',accept:'image/*',multiple:true,onchange:function(ev){
+    var files=[].slice.call(ev.target.files);ev.target.value='';var n=0;pstat.textContent='Uploading...';
+    files.reduce(function(p,f){return p.then(function(){return shrink(f).then(function(b){return ui.assets.upload(b)}).then(function(r){e.photos.push({id:r.id});n++;drawThumbs()}).catch(function(){pstat.textContent='One picture could not be uploaded.'})})},Promise.resolve()).then(function(){if(n)pstat.textContent=n+' added. Press Done, then Save and publish.'})}}):h('span',{class:'note',text:'Picture upload needs editor access.'}),pstat);
+ var modal=h('div',{class:'modal',role:'dialog','aria-modal':'true','aria-label':isNew?'Add event':'Edit event'});
+ var form=h('form',{class:'form',onsubmit:function(x){x.preventDefault();commit()}},
+  h('h2',{text:isNew?'Add event':'Edit event'}),
+  field('type','Type',typeSel),
+  field('title','Title',inp('title','text',e.title)),
+  h('div',{class:'two'},field('date','Date',inp('date','date',e.date)),field('endDate','Last day (multi-day only)',inp('endDate','date',e.endDate))),
+  h('div',{class:'two'},field('start','Start time',inp('start','time',e.start)),field('end','End time',inp('end','time',e.end))),
+  field('place','Place',inp('place','text',e.place)),
+  grp('parayan',[field('session','Session',sel([['','Not set'],['morning','Morning'],['evening','Evening']],e.session)),field('vakta','Vakta leading',sel(saintOpts,e.vakta)),field('shastra','Shastra',inp('shastra','text',e.shastra)),field('portion','Part of the Shastra',inp('portion','text',e.portion))]),
+  grp('yajman',[field('yajman','Yajman',inp('yajman','text',e.yajman))]),
+  grp('shift',[h('div',{class:'two'},field('from','Shifting from',inp('from','text',e.from)),field('to','Shifting to',inp('to','text',e.to)))]),
+  grp('ride',[field('car','Car',sel([['both','Both cars'],['c1','Car 1'],['c2','Car 2']],e.car)),h('div',{class:'two'},field('driver','Driver',inp('driver','text',e.driver)),field('phone','Driver contact number',inp('phone','tel',e.phone)))]),
+  grp('flight',[field('flight','Flight number',inp('flight','text',e.flight)),h('div',{class:'two'},field('from2','From',inp('from2','text',e.from)),field('to2','To',inp('to2','text',e.to)))]),
+  h('div',{class:'f'},h('span',{class:'lab',text:'Saints'}),checks),
+  field('notes','Notes',h('textarea',{rows:'2',text:e.notes||''})),
+  pics,
+  h('div',{class:'row',style:'justify-content:space-between'},
+   h('div',{class:'row'},h('button',{class:'btn pri',type:'submit'},'Done'),h('button',{class:'btn',type:'button',onclick:function(){modal.remove()}},'Cancel')),
+   isNew?null:h('button',{class:'btn danger',type:'button',onclick:function(){state.events=state.events.filter(function(x){return x.id!==e.id});ui.dirty++;modal.remove();render()}},'Delete')));
+ function sync(){var t=typeSel.value;groups.parayan.hidden=t!=='parayan'&&t!=='pravachan';groups.yajman.hidden=YAJ.indexOf(t)<0;groups.shift.hidden=t!=='car';groups.ride.hidden=RIDE.indexOf(t)<0;groups.flight.hidden=t!=='flight'}
+ typeSel.addEventListener('change',sync);sync();
+ function commit(){
+  var t=typeSel.value;
+  e.type=t;e.title=F.title.value.trim();e.date=F.date.value;e.endDate=F.endDate.value&&F.endDate.value>F.date.value?F.endDate.value:'';
+  e.start=F.start.value;e.end=F.end.value;e.place=F.place.value.trim();e.notes=F.notes.value.trim();
+  e.saints=[].slice.call(checks.querySelectorAll('input')).filter(function(c){return c.checked}).map(function(c){return c.value});
+  e.session=F.session.value;e.vakta=F.vakta.value;e.shastra=F.shastra.value.trim();e.portion=F.portion.value.trim();
+  e.yajman=F.yajman.value.trim();e.car=F.car.value;e.driver=F.driver.value.trim();e.phone=F.phone.value.trim();e.flight=F.flight.value.trim();
+  if(t==='car'){e.from=F.from.value.trim();e.to=F.to.value.trim()}else if(t==='flight'){e.from=F.from2.value.trim();e.to=F.to2.value.trim()}
+  if(!e.date){F.date.focus();return}
+  if(isNew)state.events.push(e);else state.events=state.events.map(function(x){return x.id===e.id?e:x});
+  state.events.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0});
+  ui.dirty++;ui.date=e.date;modal.remove();render()}
+ modal.append(form);document.body.append(modal);F.title.focus();
+}
+
+function buildDoc(){
+ var css=document.getElementById('css').textContent,code=document.getElementById('app').textContent;
+ var json=JSON.stringify(state).replace(/</g,'\\u003c');
+ return SKEL_A+TITLE_META+'<style id="css">'+css+'</style>'+FONT_LINK+'<div id="root"></div><script id="seed" type="application/json">'+json+'</'+'script><script id="app">'+code+'</'+'script>'+SKEL_B}
+function save(){
+ ui.saving=true;ui.msg='';render();
+ window.claude.use('artifact').then(function(a){if(!a)throw {code:'not_granted'};return a.publish(buildDoc())}).then(function(){ui.msg='Published'},function(err){ui.saving=false;ui.msg=err&&err.code==='conflict'?'Someone else saved first. Reloading.':'Could not publish ('+(err&&err.code||'error')+').';render()});
+}
+ui.date=clamp(today());
+render();
+if(window.claude&&window.claude.use){window.claude.use('assets').then(function(a){ui.assets=a},function(){});window.claude.use('user').then(function(u){if(u&&(u.isOwner()||u.canEdit())){ui.canEdit=true;render()}},function(){})}
+setInterval(function(){if(ui.view==='day'&&ui.date===today()&&!document.querySelector('.modal'))render()},60000);
+})();
+</script></body></html>
