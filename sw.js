@@ -1,6 +1,6 @@
 // Offline shell for the Mandir Tour Program. Program data is never cached here
 // (it comes from the database and is kept on the device by the page after sign-in).
-const CACHE = 'mandir-tour-v1';
+const CACHE = 'mandir-tour-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
@@ -37,4 +37,26 @@ self.addEventListener('fetch', (e) => {
       .then((r) => { const copy = r.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); return r; })
       .catch(() => caches.match(req).then((hit) => hit || (req.mode === 'navigate' ? caches.match('./index.html') : Response.error())))
   );
+});
+
+// Reminder notifications, sent by the server 5 minutes before an event starts.
+self.addEventListener('push', (e) => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (x) { d = { title: 'Event starting soon', body: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(d.title || 'Event starting soon', {
+    body: d.body || '',
+    tag: d.tag || undefined,
+    icon: 'icon-192.png',
+    badge: 'icon-192.png',
+    data: { url: d.url || './' }
+  }));
+});
+
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  const target = new URL((e.notification.data && e.notification.data.url) || './', self.registration.scope).href;
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+    for (const c of list) { if (c.url.startsWith(self.registration.scope) && 'focus' in c) return c.focus(); }
+    return self.clients.openWindow(target);
+  }));
 });

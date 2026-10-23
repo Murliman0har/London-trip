@@ -106,10 +106,6 @@ body{
  background:linear-gradient(135deg,#fff9e9 0%,#ffedc7 55%,#fffaf0 100%);
  box-shadow:0 7px 24px rgba(112,65,16,.10);
 }
-.head:after{
- content:"ॐ"; position:absolute; right:12px; bottom:-28px; font-size:112px;
- line-height:1; color:rgba(176,101,22,.09); pointer-events:none;
-}
 .head h1{color:#7b3511; letter-spacing:-.035em}
 .head .sub{color:#855e36}
 .hero{
@@ -124,7 +120,12 @@ body{
 }
 .hero .mantra{font-family:var(--display);font-size:19px;font-weight:700;color:#8b3c12;line-height:1.2}
 .hero .blessing{font-size:13px;color:#765538;margin-top:5px}
-.hero .ornament{color:#b57b23;letter-spacing:.18em;font-size:12px;margin-top:7px}
+.hero .wx{margin-top:6px;display:flex;flex-direction:column;gap:2px}
+.hero .wx .now{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.hero .wx .t{font-family:var(--display);font-size:30px;font-weight:700;color:#7b3511;line-height:1}
+.hero .wx .d{font-size:14px;font-weight:600;color:#5b3a1f}
+.hero .wx .m{font-size:12.5px;color:#765538}
+.rem{margin-top:8px;display:flex;flex-direction:column;gap:3px;align-items:flex-start}
 .tabs{border:1px solid #ead6b2;background:#f6e7cc}
 .tab[aria-selected="true"]{color:#8b3c12;background:#fffdf8;box-shadow:0 2px 5px rgba(112,65,16,.13)}
 .place{border-color:#e5c68b;background:linear-gradient(120deg,#fffdf8,#fff3d8)}
@@ -294,6 +295,63 @@ function sumView(){
 function heroImg(){var im=state.hero?pimg(state.hero,{alt:'Bhagwan Swaminarayan'}):h('img',{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Swaminarayan.jpg',alt:'Bhagwan Swaminarayan'});im.addEventListener('error',function(){var p=im.parentNode;if(p)p.style.gridTemplateColumns='minmax(0,1fr)';im.remove()});return im}
 function heroBtn(){if(!(ui.canEdit&&ui.assets))return null;return h('label',{class:'btn sm',style:'margin-top:8px;display:inline-block;cursor:pointer'},'Set picture',h('input',{type:'file',accept:'image/*',style:'display:none',onchange:function(ev){var f=ev.target.files[0];if(!f)return;shrink(f).then(function(b){return ui.assets.upload(b)}).then(function(r){state.hero=r.id;ui.dirty++;render()}).catch(function(){ui.msg='Picture could not be uploaded.';render()})}}))}
 function setLang(l){lang=l;try{localStorage.setItem('lang',l)}catch(x){}render()}
+var COORDS={'Harrow Mandir':[51.58,-0.34],'Wilsden Mandir':[53.82,-1.86],'Stanmore Mandir':[51.62,-0.30],'Woolwich Mandir':[51.49,0.06],'East London Mandir':[51.55,0.03],'Cardiff Mandir':[51.48,-3.18],'Bolton Mandir':[53.58,-2.43],'Oldham Mandir':[53.54,-2.12],'ISSO Mandir':[51.55,-0.28],'Mariestad Temple':[58.71,13.82],'Jönköping Temple':[57.78,14.16],'Gambia':[13.45,-16.58],'Senegal':[14.69,-17.45],'Dubai':[25.20,55.27],'India':[28.61,77.21]};
+var WXC={0:['☀️','Clear'],1:['🌤️','Mostly clear'],2:['⛅','Partly cloudy'],3:['☁️','Cloudy'],45:['🌫️','Fog'],48:['🌫️','Fog'],51:['🌦️','Light drizzle'],53:['🌦️','Drizzle'],55:['🌧️','Heavy drizzle'],56:['🌧️','Freezing drizzle'],57:['🌧️','Freezing drizzle'],61:['🌧️','Light rain'],63:['🌧️','Rain'],65:['🌧️','Heavy rain'],66:['🌧️','Freezing rain'],67:['🌧️','Freezing rain'],71:['🌨️','Light snow'],73:['🌨️','Snow'],75:['❄️','Heavy snow'],77:['🌨️','Snow grains'],80:['🌦️','Showers'],81:['🌧️','Showers'],82:['⛈️','Heavy showers'],85:['🌨️','Snow showers'],86:['🌨️','Snow showers'],95:['⛈️','Thunderstorm'],96:['⛈️','Thunderstorm, hail'],99:['⛈️','Thunderstorm, hail']};
+var wxCache={};
+function dayDiff(a,b){return Math.round((new Date(a+'T00:00:00Z')-new Date(b+'T00:00:00Z'))/86400000)}
+function wxQuery(date,xy){
+ var td=today(),df=dayDiff(date,td),kind,qd=date;
+ if(df>=-5&&df<=15)kind='forecast';
+ else if(df<-5)kind='past';
+ else{kind='lastyear';qd=(+date.slice(0,4)-1)+date.slice(4)}
+ var base=kind==='forecast'?'https://api.open-meteo.com/v1/forecast':'https://archive-api.open-meteo.com/v1/archive';
+ return {kind:kind,url:base+'?latitude='+xy[0]+'&longitude='+xy[1]+'&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&start_date='+qd+'&end_date='+qd}}
+function weatherEl(){
+ var box=h('div',{class:'wx'}),st=stayFor(ui.date);if(!st)return box;
+ var xy=COORDS[st.place];if(!xy)return box;
+ var q=wxQuery(ui.date,xy),key=q.url;
+ function fill(r){
+  box.textContent='';var c=WXC[r.code]||['',''];
+  box.append(h('div',{class:'now'},h('span',{class:'t',text:dg(Math.round(r.max))+'°C'}),h('span',{class:'d',text:(c[0]?c[0]+' ':'')+c[1]})),
+   h('div',{class:'m',text:'Low '+dg(Math.round(r.min))+'°C · '+tr(st.place)+' · '+(q.kind==='forecast'?'Forecast':q.kind==='past'?'On the day':'Same day last year')}))}
+ if(wxCache[key])fill(wxCache[key]);
+ else fetch(q.url).then(function(r){return r.ok?r.json():null}).then(function(j){
+  var d=j&&j.daily;if(!d||!d.time||!d.time.length||d.temperature_2m_max[0]==null)return;
+  wxCache[key]={code:d.weather_code[0],max:d.temperature_2m_max[0],min:d.temperature_2m_min[0]};fill(wxCache[key])}).catch(function(){});
+ return box}
+
+var REMINDERS_READY=false;
+var VAPID_PUB='BCcJdkIY9eKIjmq3HxBmDlKcrnUHwlKwvlPLV1X7pzWvmmS0DjZLWMWMSf33DvWAPK2TkrAwnNEkJPIbtSTcSF8';
+function isIOS(){return /iPad|iPhone|iPod/.test(navigator.userAgent)}
+function standalone(){return (window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true}
+function b64u(s){var p='='.repeat((4-s.length%4)%4),b=(s+p).replace(/-/g,'+').replace(/_/g,'/'),r=atob(b),o=new Uint8Array(r.length);for(var i=0;i<r.length;i++)o[i]=r.charCodeAt(i);return o}
+ui.rem='';ui.remMsg='';
+function remSupported(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window}
+function remRefresh(){
+ if(!remSupported()){ui.rem='unsupported';return Promise.resolve()}
+ if(Notification.permission==='denied'){ui.rem='denied';return Promise.resolve()}
+ return navigator.serviceWorker.ready.then(function(reg){return reg.pushManager.getSubscription()}).then(function(sub){ui.rem=sub&&Notification.permission==='granted'?'on':'off'}).catch(function(){ui.rem='off'})}
+function remOn(){
+ ui.remMsg='';
+ if(isIOS()&&!standalone()){ui.remMsg='On iPhone, first tap Share, then Add to Home Screen, and open the app from there.';render();return}
+ Notification.requestPermission().then(function(p){
+  if(p!=='granted'){ui.remMsg=p==='denied'?'Notifications are blocked. Allow them in the browser settings for this site.':'';return remRefresh()}
+  return navigator.serviceWorker.ready.then(function(reg){return reg.pushManager.getSubscription().then(function(s){return s||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(VAPID_PUB)})})})
+  .then(function(sub){return rpc('save_push_sub',{p_passcode:getPass(),p_sub:sub.toJSON()})}).then(function(){ui.remMsg='Reminders are on.';return remRefresh()})
+ }).catch(function(){ui.remMsg='Could not turn on reminders. Check your connection and try again.';return remRefresh()}).then(render)}
+function remOff(){
+ navigator.serviceWorker.ready.then(function(reg){return reg.pushManager.getSubscription()}).then(function(sub){
+  if(!sub)return;var ep=sub.endpoint;return sub.unsubscribe().then(function(){return rpc('delete_push_sub',{p_passcode:getPass(),p_endpoint:ep}).catch(function(){})})
+ }).then(function(){ui.remMsg='Reminders are off.';return remRefresh()}).then(render)}
+function remEl(){
+ var box=h('div',{class:'rem'});
+ if(!REMINDERS_READY||!ui.authed||ui.offline)return box;
+ if(ui.rem==='unsupported'){if(isIOS()&&!standalone())box.append(h('div',{class:'m faint',text:'For reminders on iPhone: Share, Add to Home Screen, then open from there.'}));return box}
+ if(ui.rem==='on')box.append(h('button',{class:'btn sm',type:'button',onclick:remOff},'Reminders on · turn off'));
+ else if(ui.rem==='denied')box.append(h('div',{class:'faint',text:'Reminders are blocked in this browser. Allow notifications for this site to use them.'}));
+ else if(ui.rem==='off')box.append(h('button',{class:'btn sm',type:'button',onclick:remOn},'Remind me 5 min before events'));
+ if(ui.remMsg)box.append(h('div',{class:'faint',text:ui.remMsg}));
+ return box}
 function render(){
  var root=$('#root');root.textContent='';
  var w=h('div',{class:'wrap'});
@@ -306,9 +364,9 @@ function render(){
   h('div',{class:'hero'},
    heroImg(),
    h('div',{},
-    h('div',{class:'mantra',text:lang==='gu'?'જય સ્વામિનારાયણ':'Jai Swaminarayan'}),
-    h('div',{class:'blessing',text:lang==='gu'?'ભક્તિ, સેવા અને સત્સંગની પવિત્ર યાત્રા':'A sacred journey of devotion, seva and satsang'}),
-    h('div',{class:'ornament',text:'✦  ॐ  ✦  જય સ્વામિનારાયણ  ✦'}),heroBtn()))));
+    h('div',{class:'mantra',text:lang==='gu'?'લંડન યાત્રા':'London Yatra'}),
+    weatherEl(),
+    remEl(),heroBtn()))));
  var tabs=[['day','Day'],['plan','Whole tour'],['sum','Summary']];
  w.append(h('div',{class:'tabs',role:'tablist'},tabs.map(function(t){return h('button',{class:'tab',role:'tab',type:'button','aria-selected':ui.view===t[0]?'true':'false',onclick:function(){ui.view=t[0];render()}},T(t[1]))})));
  w.append(ui.view==='day'?dayView():ui.view==='plan'?planView():sumView());
@@ -397,7 +455,7 @@ function enter(pass){
  ui.gateMsg='';ui.busy=true;render();
  return rpc('get_tour_state',{p_passcode:pass}).then(function(res){
   if(!res||!res.data||!res.data.events)throw {message:'empty'};
-  setPass(pass);try{localStorage.setItem('tourCache',JSON.stringify({pass:pass,res:res}))}catch(x){}state=res.data;ui.canEdit=res.role==='editor';ui.authed=true;ui.busy=false;ui.date=clamp(today());render()
+  setPass(pass);try{localStorage.setItem('tourCache',JSON.stringify({pass:pass,res:res}))}catch(x){}state=res.data;ui.canEdit=res.role==='editor';ui.authed=true;ui.busy=false;ui.date=clamp(today());render();remRefresh().then(render)
  }).catch(function(err){
   ui.busy=false;ui.authed=false;
   if(/bad_passcode/.test(JSON.stringify(err||{}))){setPass('');try{localStorage.removeItem('tourCache')}catch(x){}ui.gateMsg='Wrong password.'}
