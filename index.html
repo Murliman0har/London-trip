@@ -205,6 +205,8 @@ function toMin(t){if(!t)return null;var p=t.split(':');return +p[0]*60+ +p[1]}
 function sortKey(e){var m=toMin(e.start);if(m!=null)return m;if(e.session==='morning')return 540;if(e.session==='evening')return 1080;return -1}
 function timeLabel(e){if(e.start&&e.end)return[fmtTime(e.start),'\u2013 '+fmtTime(e.end)];if(e.start)return[fmtTime(e.start),''];if(e.session==='morning')return[T('Morning'),T('time TBC')];if(e.session==='evening')return[T('Evening'),T('time TBC')];return[T('All day'),'']}
 function today(){return iso(new Date())}
+var CAL_MIN='2010-01-01',CAL_MAX='2027-12-31';
+function calClamp(d){return d<CAL_MIN?CAL_MIN:d>CAL_MAX?CAL_MAX:d}
 function clamp(d){return d<state.tripStart?state.tripStart:d>state.tripEnd?state.tripEnd:d}
 
 function evCard(e,isNow,isNext){
@@ -237,19 +239,19 @@ function copy(t,btn){try{navigator.clipboard.writeText(t).then(function(){btn.te
 
 function dayView(){
  var d=ui.date,st=stayFor(d),root=h('div',{class:'wrap-in',style:'display:flex;flex-direction:column;gap:14px'});
- var inp=h('input',{type:'date',id:'jump',min:state.tripStart,max:state.tripEnd,value:d,'aria-label':'Jump to date',class:'btn',onchange:function(e){if(e.target.value){ui.date=clamp(e.target.value);render()}}});
+ var inp=h('input',{type:'date',id:'jump',min:CAL_MIN,max:CAL_MAX,value:d,'aria-label':'Jump to date',class:'btn',onchange:function(e){if(e.target.value){ui.date=calClamp(e.target.value);render()}}});
  root.append(h('div',{class:'nav'},
-  h('button',{class:'btn',type:'button',onclick:function(){ui.date=clamp(addDays(d,-1));render()},'aria-label':'Previous day'},'‹'),
+  h('button',{class:'btn',type:'button',onclick:function(){ui.date=calClamp(addDays(d,-1));render()},'aria-label':'Previous day'},'‹'),
   h('div',{class:'date',text:fmt(d,{weekday:'long',day:'numeric',month:'long',year:'numeric'})}),
-  h('button',{class:'btn',type:'button',onclick:function(){ui.date=clamp(addDays(d,1));render()},'aria-label':'Next day'},'›')));
- root.append(h('div',{class:'nav'},h('button',{class:'btn',type:'button',onclick:function(){ui.date=clamp(today());render()}},T('Today')),inp,
-  h('span',{class:'sub',text:dayOf(diff(state.tripStart,d)+1,diff(state.tripStart,state.tripEnd)+1)})));
+  h('button',{class:'btn',type:'button',onclick:function(){ui.date=calClamp(addDays(d,1));render()},'aria-label':'Next day'},'›')));
+ root.append(h('div',{class:'nav'},h('button',{class:'btn',type:'button',onclick:function(){ui.date=calClamp(today());render()}},T('Today')),inp,
+  h('span',{class:'sub',text:st?dayOf(diff(state.tripStart,d)+1,diff(state.tripStart,state.tripEnd)+1):''})));
  if(st){var n=diff(st.start,st.end)+1,k=diff(st.start,d)+1,idx=state.stays.indexOf(st),prev=state.stays[idx-1],gu=lang==='gu';
   var meta=[tr(st.region)];if(st.start!==st.end)meta.push(gu?'અહીં '+dayOf(k,n):'Day '+k+' of '+n+' here');
   if(d===st.start&&prev&&prev.place!==st.place)meta.push(gu?tr(prev.place)+' થી આગમન':'Arriving from '+prev.place);
   var nx=state.stays[idx+1];if(d===st.end&&nx)meta.push(gu?'આજે '+tr(nx.place)+' તરફ પ્રસ્થાન':'Moving to '+nx.place+' today');
   root.append(h('div',{class:'place'},h('div',{class:'meta',text:T('Where we are')}),h('div',{class:'where',text:tr(st.place)}),h('div',{class:'meta',text:meta.join(' · ')})));}
- else root.append(h('div',{class:'empty',text:T('This date is outside the tour (22 Dec 2026 to 19 Jun 2027).')}));
+ else{root.append(h('p',{class:'note',text:T('This date is outside the tour (22 Dec 2026 to 19 Jun 2027).')}));return root}
  var evs=evsOn(d).slice().sort(function(a,b){return sortKey(a)-sortKey(b)});
  var now=new Date(),nm=now.getHours()*60+now.getMinutes(),isToday=d===today(),nowId=null,nextId=null;
  if(isToday){evs.forEach(function(e){var s=toMin(e.start);if(s==null)return;var en=e.end?toMin(e.end):s+90;if(s<=nm&&nm<en&&!nowId)nowId=e.id;else if(s>nm&&!nextId)nextId=e.id});}
@@ -324,17 +326,19 @@ function weatherEl(){
    var r={t:c.temperature_2m,c:c.cloud_cover,day:c.is_day===1};wxCache[key]={r:r,at:Date.now()};fill(r)}).catch(function(){})}
  return box}
 
-var tithi=null;ui.tithiOpen='';
-function loadTithi(){if(tithi)return;fetch('tithi.json').then(function(r){return r.ok?r.json():null}).then(function(j){if(j){tithi=j;render()}}).catch(function(){})}
+var tithiL=null,tithiI={},tithiBusy={};ui.tithiOpen='';
+function loadTithi(){if(tithiL)return;fetch('tithi-l.json').then(function(r){return r.ok?r.json():null}).then(function(j){tithiL=j||{};render()}).catch(function(){tithiL={}})}
+function loadYear(y){if(tithiI[y]||tithiBusy[y])return;tithiBusy[y]=1;fetch('tithi-i-'+y+'.json').then(function(r){return r.ok?r.json():{}}).then(function(j){tithiI[y]=j||{};render()}).catch(function(){delete tithiBusy[y]})}
 function tithiEl(){
- var box=h('div',{class:'tithi'});if(!tithi)return box;
- var e=tithi[ui.date];if(!e)return box;
- var all=ui.tithiOpen===ui.date,room=all?999:4,total=e.l.length+e.i.length;
+ var box=h('div',{class:'tithi'}),y=ui.date.slice(0,4);
+ loadYear(y);if(!tithiL)loadTithi();
+ var l=(tithiL&&tithiL[ui.date])||[],i=(tithiI[y]&&tithiI[y][ui.date])||[];
+ var all=ui.tithiOpen===ui.date,room=all?999:4,total=l.length+i.length;
  function grp(cls,label,items){
   if(!items.length||room<=0)return null;
   var shown=items.slice(0,room);room-=shown.length;
   return h('div',{class:'tg '+cls},h('span',{class:'tgh',text:label}),h('ul',{},shown.map(function(x){return h('li',{text:lang==='gu'&&x[1]?x[1]:x[0]})})))}
- box.append(grp('l',lang==='gu'?'લંડન':'London',e.l),grp('i',lang==='gu'?'ભારત':'India',e.i));
+ [grp('l',lang==='gu'?'લંડન':'London',l),grp('i',lang==='gu'?'ભારત':'India',i)].forEach(function(g){if(g)box.append(g)});
  if(total>4&&!all)box.append(h('button',{class:'btn sm',type:'button',style:'align-self:flex-start',onclick:function(){ui.tithiOpen=ui.date;render()}},(lang==='gu'?'વધુ બતાવો ':'Show ')+dg(total-4)+(lang==='gu'?'':' more')));
  return box}
 var REMINDERS_READY=false;
@@ -472,12 +476,12 @@ function enter(pass){
  ui.gateMsg='';ui.busy=true;render();
  return rpc('get_tour_state',{p_passcode:pass}).then(function(res){
   if(!res||!res.data||!res.data.events)throw {message:'empty'};
-  setPass(pass);try{localStorage.setItem('tourCache',JSON.stringify({pass:pass,res:res}))}catch(x){}state=res.data;ui.canEdit=res.role==='editor';ui.authed=true;ui.busy=false;ui.date=clamp(today());render();loadTithi();remRefresh().then(render)
+  setPass(pass);try{localStorage.setItem('tourCache',JSON.stringify({pass:pass,res:res}))}catch(x){}state=res.data;ui.canEdit=res.role==='editor';ui.authed=true;ui.busy=false;ui.date=calClamp(today());render();loadTithi();remRefresh().then(render)
  }).catch(function(err){
   ui.busy=false;ui.authed=false;
   if(/bad_passcode/.test(JSON.stringify(err||{}))){setPass('');try{localStorage.removeItem('tourCache')}catch(x){}ui.gateMsg='Wrong password.'}
   else{var c=null;try{c=JSON.parse(localStorage.getItem('tourCache')||'null')}catch(x){}
-   if(c&&c.pass===pass&&c.res&&c.res.data){state=c.res.data;ui.canEdit=false;ui.authed=true;ui.offline=true;ui.date=clamp(today());render();return}
+   if(c&&c.pass===pass&&c.res&&c.res.data){state=c.res.data;ui.canEdit=false;ui.authed=true;ui.offline=true;ui.date=calClamp(today());render();return}
    ui.gateMsg='Could not open the program. Check your connection and try again.'}
   render()})}
 function drawGate(){
@@ -495,7 +499,7 @@ function save(){
  ui.saving=true;ui.msg='';render();
  rpc('save_tour_state',{p_passcode:pass,p_data:state}).then(function(){ui.dirty=0;ui.saving=false;ui.msg='Saved';render()}).catch(function(err){ui.saving=false;ui.msg=/bad_passcode/.test(JSON.stringify(err||{}))?'Wrong password.':'Could not save.';render()})}
 var _render=render;render=function(){if(!ui.authed){drawGate();return}_render()};
-ui.date=clamp(today());
+ui.date=calClamp(today());
 if(getPass())enter(getPass());else render();
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
 setInterval(function(){if(ui.authed&&ui.view==='day'&&ui.date===today()&&!document.querySelector('.modal'))render()},60000);
