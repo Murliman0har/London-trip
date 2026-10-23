@@ -379,13 +379,25 @@ function buildDoc(){
  var css=document.getElementById('css').textContent,code=document.getElementById('app').textContent;
  var json=JSON.stringify(state).replace(/</g,'\\u003c');
  return SKEL_A+TITLE_META+'<style id="css">'+css+'</style>'+FONT_LINK+'<div id="root"></div><script id="seed" type="application/json">'+json+'</'+'script><script id="app">'+code+'</'+'script>'+SKEL_B}
+var SB_URL='https://ootwnvkrnidjhmnhuvfz.supabase.co',SB_KEY='sb_publishable_wxzr5HiOqgtTXPAp7oTgDw_qFtS7dur';
+var SBH={apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'};
+function getPass(){try{return localStorage.getItem('tourPass')||''}catch(x){return ''}}
+function setPass(v){try{if(v)localStorage.setItem('tourPass',v);else localStorage.removeItem('tourPass')}catch(x){}}
+function loadRemote(){return fetch(SB_URL+'/rest/v1/tour_state?id=eq.1&select=data',{headers:SBH}).then(function(r){return r.ok?r.json():[]}).then(function(rows){if(rows&&rows[0]&&rows[0].data&&rows[0].data.events){state=rows[0].data;render()}}).catch(function(){})}
+function unlock(){var v=prompt('Editor passcode');if(!v)return;setPass(v.trim());ui.canEdit=true;ui.msg='';render()}
 function save(){
+ var pass=getPass();if(!pass){pass=prompt('Editor passcode');if(!pass)return;pass=pass.trim()}
  ui.saving=true;ui.msg='';render();
- window.claude.use('artifact').then(function(a){if(!a)throw {code:'not_granted'};return a.publish(buildDoc())}).then(function(){ui.msg='Published'},function(err){ui.saving=false;ui.msg=err&&err.code==='conflict'?'Someone else saved first. Reloading.':'Could not publish ('+(err&&err.code||'error')+').';render()});
+ fetch(SB_URL+'/rest/v1/rpc/save_tour_state',{method:'POST',headers:SBH,body:JSON.stringify({p_passcode:pass,p_data:state})}).then(function(r){
+  if(r.ok){setPass(pass);ui.dirty=0;ui.saving=false;ui.msg='Saved';render();return}
+  return r.json().catch(function(){return {}}).then(function(b){ui.saving=false;if(/bad_passcode/.test(JSON.stringify(b))){setPass('');ui.msg='Wrong passcode.'}else ui.msg='Could not save.';render()})
+ }).catch(function(){ui.saving=false;ui.msg='Could not save (offline?).';render()});
 }
+var _render=render;render=function(){_render();var b=document.getElementById('unlockBtn');if(b)b.hidden=ui.canEdit};
 ui.date=clamp(today());
-render();
-if(window.claude&&window.claude.use){window.claude.use('assets').then(function(a){ui.assets=a},function(){});window.claude.use('user').then(function(u){if(u&&(u.isOwner()||u.canEdit())){ui.canEdit=true;render()}},function(){})}
+var ub=h('button',{id:'unlockBtn',class:'btn sm',type:'button',style:'position:fixed;right:12px;bottom:12px;opacity:.75;z-index:4',onclick:unlock},'Edit');document.body.append(ub);
+if(getPass())ui.canEdit=true;
+render();loadRemote();
 setInterval(function(){if(ui.view==='day'&&ui.date===today()&&!document.querySelector('.modal'))render()},60000);
 })();
 </script></body></html>
