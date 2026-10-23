@@ -1,5 +1,5 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#a94712"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Mandir Tour"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Mandir Tour Program</title><meta name="claude:viewport-fit-sides" content="cover"><style id="css">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#a94712"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="London Yatra"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>London Yatra</title><meta name="claude:viewport-fit-sides" content="cover"><style id="css">
 /* Layout: one narrow column, day-at-a-time program with a colour-block time rail on each event. */
 :root{
   --bg:#F3F5F8; --surface:#FFFFFF; --fg:#16202E; --muted:#5B6678; --line:#DDE2EA; --accent:#C2410C; --soft:#E9EDF3;
@@ -151,7 +151,7 @@ body{
 .fill{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--line)}.fill:first-of-type{border-top:0}
 </style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap"><div id="root"></div><script id="seed" type="application/json">{"tripStart":"2026-12-22","tripEnd":"2027-06-19","stays":[],"events":[],"saints":[]}</script><script id="app">
 (function(){
-var TITLE_META='<title>Mandir Tour Program</title><meta name="claude:viewport-fit-sides" content="cover">';
+var TITLE_META='<title>London Yatra</title><meta name="claude:viewport-fit-sides" content="cover">';
 var FONT_LINK='<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap">';
 var SKEL_A='<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>\n';
 var SKEL_B='</body></html>';
@@ -296,28 +296,27 @@ function heroImg(){var im=state.hero?pimg(state.hero,{alt:'Bhagwan Swaminarayan'
 function heroBtn(){if(!(ui.canEdit&&ui.assets))return null;return h('label',{class:'btn sm',style:'margin-top:8px;display:inline-block;cursor:pointer'},'Set picture',h('input',{type:'file',accept:'image/*',style:'display:none',onchange:function(ev){var f=ev.target.files[0];if(!f)return;shrink(f).then(function(b){return ui.assets.upload(b)}).then(function(r){state.hero=r.id;ui.dirty++;render()}).catch(function(){ui.msg='Picture could not be uploaded.';render()})}}))}
 function setLang(l){lang=l;try{localStorage.setItem('lang',l)}catch(x){}render()}
 var COORDS={'Harrow Mandir':[51.58,-0.34],'Wilsden Mandir':[53.82,-1.86],'Stanmore Mandir':[51.62,-0.30],'Woolwich Mandir':[51.49,0.06],'East London Mandir':[51.55,0.03],'Cardiff Mandir':[51.48,-3.18],'Bolton Mandir':[53.58,-2.43],'Oldham Mandir':[53.54,-2.12],'ISSO Mandir':[51.55,-0.28],'Mariestad Temple':[58.71,13.82],'Jönköping Temple':[57.78,14.16],'Gambia':[13.45,-16.58],'Senegal':[14.69,-17.45],'Dubai':[25.20,55.27],'India':[28.61,77.21]};
-var WXC={0:['☀️','Clear'],1:['🌤️','Mostly clear'],2:['⛅','Partly cloudy'],3:['☁️','Cloudy'],45:['🌫️','Fog'],48:['🌫️','Fog'],51:['🌦️','Light drizzle'],53:['🌦️','Drizzle'],55:['🌧️','Heavy drizzle'],56:['🌧️','Freezing drizzle'],57:['🌧️','Freezing drizzle'],61:['🌧️','Light rain'],63:['🌧️','Rain'],65:['🌧️','Heavy rain'],66:['🌧️','Freezing rain'],67:['🌧️','Freezing rain'],71:['🌨️','Light snow'],73:['🌨️','Snow'],75:['❄️','Heavy snow'],77:['🌨️','Snow grains'],80:['🌦️','Showers'],81:['🌧️','Showers'],82:['⛈️','Heavy showers'],85:['🌨️','Snow showers'],86:['🌨️','Snow showers'],95:['⛈️','Thunderstorm'],96:['⛈️','Thunderstorm, hail'],99:['⛈️','Thunderstorm, hail']};
 var wxCache={};
-function dayDiff(a,b){return Math.round((new Date(a+'T00:00:00Z')-new Date(b+'T00:00:00Z'))/86400000)}
-function wxQuery(date,xy){
- var td=today(),df=dayDiff(date,td),kind,qd=date;
- if(df>=-5&&df<=15)kind='forecast';
- else if(df<-5)kind='past';
- else{kind='lastyear';qd=(+date.slice(0,4)-1)+date.slice(4)}
- var base=kind==='forecast'?'https://api.open-meteo.com/v1/forecast':'https://archive-api.open-meteo.com/v1/archive';
- return {kind:kind,url:base+'?latitude='+xy[0]+'&longitude='+xy[1]+'&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&start_date='+qd+'&end_date='+qd}}
+function skyLabel(c,day){
+ if(day){return c<=15?'Sunny':c<=40?'Mostly sunny':c<=70?'Partly cloudy':c<=90?'Mostly cloudy':'Overcast'}
+ return c<=15?'Clear night':c<=40?'Mostly clear':c<=70?'Partly cloudy':c<=90?'Mostly cloudy':'Overcast'}
+function skyIcon(c,day){
+ if(day){return c<=15?'☀️':c<=40?'🌤️':c<=70?'⛅':c<=90?'🌥️':'☁️'}
+ return c<=40?'🌙':'☁️'}
 function weatherEl(){
- var box=h('div',{class:'wx'}),st=stayFor(ui.date);if(!st)return box;
+ var box=h('div',{class:'wx'}),st=stayFor(clamp(today()));if(!st)return box;
  var xy=COORDS[st.place];if(!xy)return box;
- var q=wxQuery(ui.date,xy),key=q.url;
+ var key=st.place;
  function fill(r){
-  box.textContent='';var c=WXC[r.code]||['',''];
-  box.append(h('div',{class:'now'},h('span',{class:'t',text:dg(Math.round(r.max))+'°C'}),h('span',{class:'d',text:(c[0]?c[0]+' ':'')+c[1]})),
-   h('div',{class:'m',text:'Low '+dg(Math.round(r.min))+'°C · '+tr(st.place)+' · '+(q.kind==='forecast'?'Forecast':q.kind==='past'?'On the day':'Same day last year')}))}
- if(wxCache[key])fill(wxCache[key]);
- else fetch(q.url).then(function(r){return r.ok?r.json():null}).then(function(j){
-  var d=j&&j.daily;if(!d||!d.time||!d.time.length||d.temperature_2m_max[0]==null)return;
-  wxCache[key]={code:d.weather_code[0],max:d.temperature_2m_max[0],min:d.temperature_2m_min[0]};fill(wxCache[key])}).catch(function(){});
+  box.textContent='';
+  box.append(h('div',{class:'now'},h('span',{class:'t',text:dg(Math.round(r.t))+'°C'}),h('span',{class:'d',text:skyIcon(r.c,r.day)+' '+skyLabel(r.c,r.day)})),
+   h('div',{class:'m',text:'Cloud cover '+dg(Math.round(r.c))+'% · Now in '+tr(st.place)}))}
+ var hit=wxCache[key];
+ if(hit)fill(hit.r);
+ if(!hit||Date.now()-hit.at>600000){
+  fetch('https://api.open-meteo.com/v1/forecast?latitude='+xy[0]+'&longitude='+xy[1]+'&current=temperature_2m,cloud_cover,is_day&timezone=auto').then(function(r){return r.ok?r.json():null}).then(function(j){
+   var c=j&&j.current;if(!c||c.temperature_2m==null||c.cloud_cover==null)return;
+   var r={t:c.temperature_2m,c:c.cloud_cover,day:c.is_day===1};wxCache[key]={r:r,at:Date.now()};fill(r)}).catch(function(){})}
  return box}
 
 var REMINDERS_READY=false;
@@ -356,7 +355,7 @@ function render(){
  var root=$('#root');root.textContent='';
  var w=h('div',{class:'wrap'});
  w.append(h('header',{class:'head'},
-  h('div',{class:'row',style:'justify-content:space-between;align-items:flex-start;flex-wrap:nowrap'},h('h1',{text:T('Mandir Tour Program')}),
+  h('div',{class:'row',style:'justify-content:space-between;align-items:flex-start;flex-wrap:nowrap'},h('h1',{text:lang==='gu'?'લંડન યાત્રા':'London Yatra'}),
    h('div',{class:'row',style:'flex:none',role:'group','aria-label':'Language'},
     h('button',{class:'chip',type:'button','aria-pressed':lang==='en'?'true':'false',style:'padding:5px 11px',onclick:function(){setLang('en')}},'English'),
     h('button',{class:'chip',type:'button','aria-pressed':lang==='gu'?'true':'false',style:'padding:5px 11px',onclick:function(){setLang('gu')}},'ગુજરાતી'))),
@@ -364,7 +363,6 @@ function render(){
   h('div',{class:'hero'},
    heroImg(),
    h('div',{},
-    h('div',{class:'mantra',text:lang==='gu'?'લંડન યાત્રા':'London Yatra'}),
     weatherEl(),
     remEl(),heroBtn()))));
  var tabs=[['day','Day'],['plan','Whole tour'],['sum','Summary']];
@@ -467,7 +465,7 @@ function drawGate(){
  var r=document.getElementById('root');r.textContent='';
  var inp=h('input',{type:'password',id:'gp',autocomplete:'current-password',placeholder:'Password'});
  var form=h('form',{class:'form',style:'margin-top:18vh',onsubmit:function(e){e.preventDefault();var v=inp.value.trim();if(v)enter(v)}},
-  h('h1',{text:'Mandir Tour Program'}),
+  h('h1',{text:'London Yatra'}),
   h('p',{class:'note',text:'Enter the password to open the program.'}),
   h('div',{class:'f'},h('label',{for:'gp',text:'Password'}),inp),
   ui.gateMsg?h('p',{class:'note',style:'color:#C62828',text:ui.gateMsg}):null,

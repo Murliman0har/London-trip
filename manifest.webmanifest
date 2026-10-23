@@ -1,6 +1,6 @@
 {
-  "name": "Mandir Tour Program",
-  "short_name": "Mandir Tour",
+  "name": "London Yatra",
+  "short_name": "London Yatra",
   "description": "Day-by-day program for the saints' tour: UK, Sweden, Gambia, Senegal and Dubai.",
   "start_url": "./",
   "scope": "./",
