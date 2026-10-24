@@ -525,6 +525,8 @@ function save(){
 var _render=render;render=function(){if(!ui.authed){drawGate();return}_render()};
 ui.date=calClamp(today());
 if(getPass())enter(getPass());else render();
+function speak(t){try{if(!('speechSynthesis' in window))return;var u=new SpeechSynthesisUtterance(t);u.lang='gu-IN';var vs=speechSynthesis.getVoices(),v=null;for(var i=0;i<vs.length;i++){if(/^gu/i.test(vs[i].lang)){v=vs[i];break}}if(v)u.voice=v;u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(x){}}
+if('serviceWorker' in navigator){navigator.serviceWorker.addEventListener('message',function(ev){var d=ev.data;if(d&&d.type==='speak'&&d.text)speak(d.text)})}
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
 setInterval(function(){if(ui.authed&&ui.view==='day'&&ui.date===today()&&!document.querySelector('.modal'))render()},60000);
 })();
