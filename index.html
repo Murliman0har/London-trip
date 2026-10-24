@@ -341,8 +341,8 @@ function tithiEl(){
  [grp('l',lang==='gu'?'લંડન':'London',l),grp('i',lang==='gu'?'ભારત':'India',i)].forEach(function(g){if(g)box.append(g)});
  if(total>4&&!all)box.append(h('button',{class:'btn sm',type:'button',style:'align-self:flex-start',onclick:function(){ui.tithiOpen=ui.date;render()}},(lang==='gu'?'વધુ બતાવો ':'Show ')+dg(total-4)+(lang==='gu'?'':' more')));
  return box}
-var REMINDERS_READY=false;
-var VAPID_PUB='BCcJdkIY9eKIjmq3HxBmDlKcrnUHwlKwvlPLV1X7pzWvmmS0DjZLWMWMSf33DvWAPK2TkrAwnNEkJPIbtSTcSF8';
+var REMINDERS_READY=true;
+var VAPID_PUB='BLJi4mgsBe6I95p6yNNfc7_VnTVb0ZJuLRhLWuTtWyttsjbQmifWkvzp3LD0cxC0pfSgb_H9GD-aSq_kkKHPSJ0';
 function isIOS(){return /iPad|iPhone|iPod/.test(navigator.userAgent)}
 function standalone(){return (window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true}
 function b64u(s){var p='='.repeat((4-s.length%4)%4),b=(s+p).replace(/-/g,'+').replace(/_/g,'/'),r=atob(b),o=new Uint8Array(r.length);for(var i=0;i<r.length;i++)o[i]=r.charCodeAt(i);return o}
