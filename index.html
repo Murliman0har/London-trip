@@ -130,7 +130,7 @@ body{
 .tg .tgh{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:1px 9px;border-radius:999px;color:#fff;background:var(--c)}
 .tg ul{margin:4px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px}
 .tg li{font-size:13px;line-height:1.3;padding-left:8px;border-left:3px solid var(--c);color:var(--fg)}
-.rem{margin-top:8px;display:flex;flex-direction:row;gap:8px;align-items:center;flex-wrap:wrap}
+.rem{display:flex;justify-content:flex-end}
 .bell{width:46px;height:40px;border-radius:999px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:#a8998a;padding:0;cursor:pointer}
 .bell svg{width:34px;height:26px;overflow:visible}
 .bell .vib{opacity:0}
@@ -386,23 +386,24 @@ function remEl(){
  else if(ui.rem==='on')box.append(bellBtn('on','Reminders on. Tap to turn off',remOff));
  else if(ui.rem==='denied')box.append(bellBtn('','Notifications are blocked. Allow them in your browser settings for this site',function(){ui.remMsg='Notifications are blocked. Allow them in your browser settings for this site.';render()}));
  else if(ui.rem==='off')box.append(bellBtn('',ASK,remOn));
- if(ui.remMsg&&box.firstChild)box.append(h('span',{class:'faint',text:ui.remMsg}));
  return box}
+function remMsgEl(){return ui.remMsg&&ui.authed&&!ui.offline?h('div',{class:'faint',style:'position:relative;z-index:1',text:ui.remMsg}):null}
 function render(){
  var root=$('#root');root.textContent='';
  var w=h('div',{class:'wrap'});
  w.append(h('header',{class:'head'},
   h('div',{class:'row',style:'justify-content:space-between;align-items:flex-start;flex-wrap:nowrap'},h('h1',{text:lang==='gu'?'લંડન યાત્રા':'London Yatra'}),
-   h('div',{class:'row',style:'flex:none',role:'group','aria-label':'Language'},
+   h('div',{style:'display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none'},h('div',{class:'row',style:'flex:none',role:'group','aria-label':'Language'},
     h('button',{class:'chip',type:'button','aria-pressed':lang==='en'?'true':'false',style:'padding:5px 11px',onclick:function(){setLang('en')}},'English'),
-    h('button',{class:'chip',type:'button','aria-pressed':lang==='gu'?'true':'false',style:'padding:5px 11px',onclick:function(){setLang('gu')}},'ગુજરાતી'))),
+    h('button',{class:'chip',type:'button','aria-pressed':lang==='gu'?'true':'false',style:'padding:5px 11px',onclick:function(){setLang('gu')}},'ગુજરાતી')),remEl())),
   h('div',{class:'sub',text:lang==='gu'?'૨૨ ડિસેમ્બર ૨૦૨૬ થી ૧૯ જૂન ૨૦૨૭ · ભારત, યુકે, ગામ્બિયા, સેનેગલ, સ્વીડન, દુબઈ':'22 Dec 2026 to 19 Jun 2027 · India, UK, Gambia, Senegal, Sweden, Dubai'}),
+  remMsgEl(),
   h('div',{class:'hero'},
    heroImg(),
    h('div',{},
     weatherEl(),
     tithiEl(),
-    remEl(),heroBtn()))));
+    heroBtn()))));
  var tabs=[['day','Day'],['plan','Whole tour'],['sum','Summary']];
  w.append(h('div',{class:'tabs',role:'tablist'},tabs.map(function(t){return h('button',{class:'tab',role:'tab',type:'button','aria-selected':ui.view===t[0]?'true':'false',onclick:function(){ui.view=t[0];render()}},T(t[1]))})));
  w.append(ui.view==='day'?dayView():ui.view==='plan'?planView():sumView());
