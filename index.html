@@ -209,7 +209,7 @@ var CARS={c1:'Car 1',c2:'Car 2',both:'Both cars'};
 var ui={sumOpen:'',assets:null,view:'day',date:null,filter:'',sel:[],canEdit:false,dirty:0,saving:false,msg:''};
 var $=function(s){return document.querySelector(s)};
 var lang='en';try{lang=localStorage.getItem('lang')==='gu'?'gu':'en'}catch(x){}
-var GU={'London Yatra':'લંડન યાત્રા','Other days':'અન્ય દિવસો','Events':'કાર્યક્રમો','Days with events':'કાર્યક્રમવાળા દિવસો','Places':'સ્થળો','Outside London Yatra':'લંડન યાત્રા સિવાય','Day':'દિવસ','Whole tour':'સંપૂર્ણ યાત્રા','Saints and cars':'સંતો અને કાર','Summary':'સારાંશ','sessions':'સત્રો','days':'દિવસ','Days on tour':'યાત્રાના દિવસો','Stops':'સ્થળો','Different mandirs':'જુદા જુદા મંદિરો','Still to fill in':'હજી ભરવાનું બાકી','Vakta not chosen':'વક્તા નક્કી નથી','Shastra not chosen':'શાસ્ત્ર નક્કી નથી','Driver not added':'ડ્રાઇવર ઉમેર્યા નથી','Pictures added':'ઉમેરેલા ચિત્રો','Tap a box to see the list.':'યાદી જોવા બોક્સ પર ટેપ કરો.','Nothing noted yet.':'હજી કંઈ નોંધ્યું નથી.','of':'માંથી','Today':'આજે','Where we are':'અત્યારે ક્યાં છીએ','Happening now':'અત્યારે ચાલુ','Up next':'હવે પછી','Everyone':'બધા','Place':'સ્થળ','Session':'સત્ર','Vakta':'વક્તા','Shastra':'શાસ્ત્ર','Portion':'ભાગ','Route':'માર્ગ','Car':'કાર','Driver':'ડ્રાઇવર','Contact':'સંપર્ક','Flight':'ફ્લાઇટ','Yajman':'યજમાન','Notes':'નોંધ','To be chosen':'નક્કી કરવાનું બાકી','To be added':'ઉમેરવાનું બાકી','Number to be added':'નંબર ઉમેરવાનો બાકી','Morning':'સવાર','Evening':'સાંજ','time TBC':'સમય નક્કી નથી','All day':'આખો દિવસ','All six saints':'બધા છ સંતો','Copy':'નકલ કરો','Copied':'નકલ થઈ','Travel':'પ્રવાસ','The six saints':'છ સંતો','Colour key':'રંગ સૂચિ','Guru and leader':'ગુરુ અને નેતા','Elder saint':'વડીલ સંત','Mandir Tour Program':'મંદિર યાત્રા કાર્યક્રમ','Nothing planned for this day yet.':'આ દિવસ માટે હજી કંઈ આયોજન નથી.','Times are local to where the saints are. Refresh the page to see the latest changes.':'સમય સંતો જ્યાં હોય ત્યાંના સ્થાનિક સમય મુજબ છે. નવા ફેરફાર જોવા પેજ રિફ્રેશ કરો.','This date is outside the tour (22 Dec 2026 to 19 Jun 2027).':'આ તારીખ યાત્રાની બહાર છે (૨૨ ડિસેમ્બર ૨૦૨૬ થી ૧૯ જૂન ૨૦૨૭).'};
+var GU={'Tours':'યાત્રાઓ','London Tour':'લંડન યાત્રા','London Yatra':'લંડન યાત્રા','Other days':'અન્ય દિવસો','Events':'કાર્યક્રમો','Days with events':'કાર્યક્રમવાળા દિવસો','Places':'સ્થળો','Outside London Yatra':'લંડન યાત્રા સિવાય','Day':'દિવસ','Whole tour':'સંપૂર્ણ યાત્રા','Saints and cars':'સંતો અને કાર','Summary':'સારાંશ','sessions':'સત્રો','days':'દિવસ','Days on tour':'યાત્રાના દિવસો','Stops':'સ્થળો','Different mandirs':'જુદા જુદા મંદિરો','Still to fill in':'હજી ભરવાનું બાકી','Vakta not chosen':'વક્તા નક્કી નથી','Shastra not chosen':'શાસ્ત્ર નક્કી નથી','Driver not added':'ડ્રાઇવર ઉમેર્યા નથી','Pictures added':'ઉમેરેલા ચિત્રો','Tap a box to see the list.':'યાદી જોવા બોક્સ પર ટેપ કરો.','Nothing noted yet.':'હજી કંઈ નોંધ્યું નથી.','of':'માંથી','Today':'આજે','Where we are':'અત્યારે ક્યાં છીએ','Happening now':'અત્યારે ચાલુ','Up next':'હવે પછી','Everyone':'બધા','Place':'સ્થળ','Session':'સત્ર','Vakta':'વક્તા','Shastra':'શાસ્ત્ર','Portion':'ભાગ','Route':'માર્ગ','Car':'કાર','Driver':'ડ્રાઇવર','Contact':'સંપર્ક','Flight':'ફ્લાઇટ','Yajman':'યજમાન','Notes':'નોંધ','To be chosen':'નક્કી કરવાનું બાકી','To be added':'ઉમેરવાનું બાકી','Number to be added':'નંબર ઉમેરવાનો બાકી','Morning':'સવાર','Evening':'સાંજ','time TBC':'સમય નક્કી નથી','All day':'આખો દિવસ','All six saints':'બધા છ સંતો','Copy':'નકલ કરો','Copied':'નકલ થઈ','Travel':'પ્રવાસ','The six saints':'છ સંતો','Colour key':'રંગ સૂચિ','Guru and leader':'ગુરુ અને નેતા','Elder saint':'વડીલ સંત','Mandir Tour Program':'મંદિર યાત્રા કાર્યક્રમ','Nothing planned for this day yet.':'આ દિવસ માટે હજી કંઈ આયોજન નથી.','Times are local to where the saints are. Refresh the page to see the latest changes.':'સમય સંતો જ્યાં હોય ત્યાંના સ્થાનિક સમય મુજબ છે. નવા ફેરફાર જોવા પેજ રિફ્રેશ કરો.','This date is outside the tour (22 Dec 2026 to 19 Jun 2027).':'આ તારીખ યાત્રાની બહાર છે (૨૨ ડિસેમ્બર ૨૦૨૬ થી ૧૯ જૂન ૨૦૨૭).'};
 var GN={g:'જ્ઞાનપ્રકાશ દાસ સ્વામી',hs:'હરિસેવક દાસજી',mm:'મુરલીમનોહર દાસ',hp:'હરિપ્રસાદ દાસ',np:'નિત્યપ્રકાશ દાસ',ap:'આનંદપ્રકાશ દાસ'};
 var GS={g:'જ્ઞાનપ્રકાશ',hs:'હરિસેવક',mm:'મુરલીમનોહર',hp:'હરિપ્રસાદ',np:'નિત્યપ્રકાશ',ap:'આનંદપ્રકાશ'};
 var TG={parayan:'પારાયણ',katha:'કથા',patotsav:'પાટોત્સવ',pothiyatra:'પોથીયાત્રા',padramani:'પધરામણી',vastu:'વાસ્તુ',sabha:'ઉત્સવ',pravachan:'પ્રવચન',flight:'ફ્લાઇટ',car:'મંદિર સ્થળાંતર',other:'અન્ય'};
@@ -303,7 +303,22 @@ function dayView(){
  root.append(h('p',{class:'note',text:T('Times are local to where the saints are. Refresh the page to see the latest changes.')}));
  return root}
 
+ui.tourOpen='';
 function planView(){
+ if(ui.tourOpen==='london'){
+  var w=h('div',{style:'display:flex;flex-direction:column;gap:10px'});
+  w.append(h('div',{class:'row'},h('button',{class:'btn sm',type:'button',onclick:function(){ui.tourOpen='';render()}},'‹ '+T('Tours')),h('b',{text:T('London Tour')})));
+  w.append(planDetail());return w}
+ var stops=0;state.stays.forEach(function(s){if(s.place!=='India')stops++});
+ var yo={day:'numeric',month:'short',year:'numeric'};
+ var days=state.stays.length?diff(state.tripStart,state.tripEnd)+1:0;
+ var card=h('button',{class:'stay',type:'button',onclick:function(){ui.tourOpen='london';render()}},
+  h('span',{class:'n',text:T('London Tour')}),
+  h('span',{class:'days',text:'›'}),
+  h('span',{class:'d',text:state.stays.length?fmt(state.tripStart,yo)+' – '+fmt(state.tripEnd,yo):''}),
+  h('span',{class:'d',text:state.stays.length?dg(days)+' '+T('days')+' · '+dg(stops)+' '+T('Stops'):''}));
+ return h('div',{style:'display:flex;flex-direction:column;gap:10px'},card)}
+function planDetail(){
  var root=h('div',{style:'display:flex;flex-direction:column;gap:10px'}),cur=stayFor(today()),yo={weekday:'short',day:'numeric',month:'short',year:'numeric'};
  state.stays.forEach(function(s){
   var n=diff(s.start,s.end)+1,seen={},tags=[];
@@ -519,8 +534,8 @@ function render(){
     weatherEl(),
     tithiEl(),
     ))));
- var tabs=[['day','Day'],['plan','Whole tour'],['sum','Summary']];
- w.append(h('div',{class:'tabs',role:'tablist'},tabs.map(function(t){return h('button',{class:'tab',role:'tab',type:'button','aria-selected':ui.view===t[0]?'true':'false',onclick:function(){ui.view=t[0];render()}},T(t[1]))})));
+ var tabs=[['day','Day'],['plan','Tours'],['sum','Summary']];
+ w.append(h('div',{class:'tabs',role:'tablist'},tabs.map(function(t){return h('button',{class:'tab',role:'tab',type:'button','aria-selected':ui.view===t[0]?'true':'false',onclick:function(){ui.view=t[0];if(t[0]==='plan')ui.tourOpen='';render()}},T(t[1]))})));
  w.append(ui.view==='day'?dayView():ui.view==='plan'?planView():sumView());
  root.append(w);
  if(ui.sideOpen)root.append(sideDrawer());
