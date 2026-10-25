@@ -131,6 +131,16 @@ body{
 .tg ul{margin:4px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px}
 .tg li{font-size:13px;line-height:1.3;padding-left:8px;border-left:3px solid var(--c);color:var(--fg)}
 .rem{display:flex;justify-content:flex-end}
+.stab{position:fixed;left:0;top:42%;z-index:6;width:30px;height:58px;border:1px solid var(--line);border-left:0;border-radius:0 14px 14px 0;background:var(--surface);box-shadow:2px 2px 10px rgba(91,56,20,.15);display:grid;place-items:center;padding:0;color:#8b3c12}
+.stab svg{width:18px;height:18px}
+.stab .av{width:22px;height:22px;font-size:9px;outline:2px solid #b85b16;outline-offset:1px}
+.dback{position:fixed;inset:0;background:rgba(40,20,5,.38);z-index:19}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:min(290px,84vw);background:var(--surface);z-index:20;padding:16px;display:flex;flex-direction:column;gap:8px;box-shadow:4px 0 24px rgba(40,20,5,.3);overflow:auto;padding-top:max(16px,env(safe-area-inset-top,0px))}
+.drawer .dh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.drawer .chip{width:100%;padding:8px 12px 8px 8px;font-size:15px;justify-content:flex-start}
+.drawer .av{width:30px;height:30px;font-size:11px}
+@media (prefers-reduced-motion:no-preference){.drawer{animation:dslide .18s ease-out}}
+@keyframes dslide{from{transform:translateX(-100%)}to{transform:none}}
 .bell{width:46px;height:40px;border-radius:999px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:#a8998a;padding:0;cursor:pointer}
 .bell svg{width:34px;height:26px;overflow:visible}
 .bell .vib{opacity:0}
@@ -225,12 +235,12 @@ function evCard(e,isNow,isNext){
  var tl=timeLabel(e),kv=[];
  function add(k,v){if(v)kv.push(h('dt',{text:T(k)}),h('dd',{text:v}))}
  add('Place',tr(e.place));
- if(e.type==='parayan'||e.type==='pravachan'){add('Session',e.session?T(e.session==='morning'?'Morning':'Evening'):'');add('Vakta',sName(e.vakta)||T('To be chosen'));add('Shastra',e.shastra||T('To be chosen'));add('Portion',e.portion)}
+ if(e.type==='parayan'||e.type==='pravachan'){add('Session',e.session?T(e.session==='morning'?'Morning':'Evening'):'');add('Vakta',sName(e.vakta));add('Shastra',e.shastra);add('Portion',e.portion)}
  if(e.type==='car')add('Route',route(e));
- if(RIDE.indexOf(e.type)>-1){add('Car',carLabel(e.car)||'');add('Driver',e.driver||T('To be added'));
+ if(RIDE.indexOf(e.type)>-1){if(e.driver||e.phone||(e.car&&e.car!=='both'))add('Car',carLabel(e.car)||'');add('Driver',e.driver);
    if(e.phone)kv.push(h('dt',{text:T('Contact')}),h('dd',{},e.phone+' ',h('button',{class:'btn sm',type:'button',onclick:function(ev){copy(e.phone,ev.target)}},T('Copy'))))}
- if(e.type==='flight'){add('Flight',e.flight||T('Number to be added'));add('Route',route(e))}
- if(YAJ.indexOf(e.type)>-1)add('Yajman',e.yajman||T('To be added'));
+ if(e.type==='flight'){add('Flight',e.flight);add('Route',route(e))}
+ if(YAJ.indexOf(e.type)>-1)add('Yajman',e.yajman);
  add('Notes',tr(e.notes));
  var allIds=state.saints.map(function(s){return s.id});
  var everyone=allIds.every(function(i){return e.saints.indexOf(i)>-1});
@@ -241,7 +251,7 @@ function evCard(e,isNow,isNext){
    h('div',{class:'title',text:tr(e.title)||typeLabel(e.type)}),
    kv.length?h('dl',{class:'kv'},kv):null,
    e.photos&&e.photos.length?picsEl(e):null,
-   h('div',{class:'row'},everyone?h('span',{class:'faint',text:T('All six saints')}):e.saints.map(function(i){return h('span',{class:'row'},av(i),h('span',{class:'faint',text:sName(i)}))})),
+   (!everyone&&e.saints.length)?h('div',{class:'row'},e.saints.map(function(i){return h('span',{class:'row'},av(i),h('span',{class:'faint',text:sName(i)}))})):null,
    ui.canEdit?h('div',{class:'row'},h('button',{class:'btn sm',type:'button',onclick:function(){openForm(e)}},'Edit')):null));
 }
 function openPic(id){var o=h('div',{class:'modal',style:'align-items:center',onclick:function(){o.remove()}},pimg(id,{alt:'Picture',style:'max-width:100%;max-height:92vh;border-radius:8px;margin:auto'}));document.body.append(o)}
@@ -267,9 +277,7 @@ function dayView(){
  var evs=evsOn(d).slice().sort(function(a,b){return sortKey(a)-sortKey(b)});
  var now=new Date(),nm=now.getHours()*60+now.getMinutes(),isToday=d===today(),nowId=null,nextId=null;
  if(isToday){evs.forEach(function(e){var s=toMin(e.start);if(s==null)return;var en=e.end?toMin(e.end):s+90;if(s<=nm&&nm<en&&!nowId)nowId=e.id;else if(s>nm&&!nextId)nextId=e.id});}
- root.append(h('div',{class:'chips',role:'group','aria-label':'Show saint'},
-  h('button',{class:'chip',type:'button','aria-pressed':ui.filter===''?'true':'false',onclick:function(){ui.filter='';render()}},h('span',{class:'av all',text:lang==='gu'?'બધા':'All'}),T('Everyone')),
-  state.saints.map(function(s){return h('button',{class:'chip',type:'button','aria-pressed':ui.filter===s.id?'true':'false',onclick:function(){ui.filter=s.id;render()}},av(s.id),short(s))})));
+ if(ui.filter){var fs=state.saints.find(function(x){return x.id===ui.filter});if(fs)root.append(h('div',{class:'row'},h('button',{class:'chip',type:'button','aria-label':T('Everyone'),onclick:function(){ui.filter='';render()}},av(ui.filter),short(fs),h('span',{text:' ×'}))))}
  if(!evs.length)root.append(h('div',{class:'empty',text:ui.canEdit?'Nothing planned for this day. Use Add event below.':T('Nothing planned for this day yet.')}));
  evs.forEach(function(e){root.append(evCard(e,e.id===nowId,e.id===nextId))});
  root.append(h('p',{class:'note',text:T('Times are local to where the saints are. Refresh the page to see the latest changes.')}));
@@ -396,6 +404,24 @@ function remEl(){
  else if(ui.rem==='off')box.append(bellBtn('',ASK,remOn));
  return box}
 function remMsgEl(){return ui.remMsg&&ui.authed&&!ui.offline?h('div',{class:'faint',style:'position:relative;z-index:1',text:ui.remMsg}):null}
+ui.sideOpen=false;
+function closeSide(){ui.sideOpen=false;render()}
+function sideTab(){
+ var fs=ui.filter&&state.saints.find(function(x){return x.id===ui.filter});
+ var b=h('button',{class:'stab',type:'button','aria-label':lang==='gu'?'સંત પસંદ કરો':'Choose saint','aria-expanded':ui.sideOpen?'true':'false',onclick:function(){ui.sideOpen=true;render()}});
+ if(fs)b.append(av(ui.filter));else b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 5.2a3.2 3.2 0 0 1 0 5.8"/><path d="M18 14.8c2 .7 3.2 2.4 3.2 5.2"/></svg>';
+ return b}
+function sideDrawer(){
+ var wrap=h('div',{});
+ var back=h('div',{class:'dback',onclick:closeSide});
+ function pick(id){return function(){ui.filter=id;ui.sideOpen=false;render()}}
+ var close=h('button',{class:'btn sm',type:'button','aria-label':'Close',onclick:closeSide},'×');
+ var dr=h('div',{class:'drawer',role:'dialog','aria-modal':'true','aria-label':lang==='gu'?'સંત પસંદ કરો':'Choose saint'},
+  h('div',{class:'dh'},h('h2',{text:lang==='gu'?'સંતો':'Saints'}),close),
+  h('button',{class:'chip',type:'button','aria-pressed':ui.filter===''?'true':'false',onclick:pick('')},h('span',{class:'av all',text:lang==='gu'?'બધા':'All'}),T('Everyone')),
+  state.saints.map(function(s){return h('button',{class:'chip',type:'button','aria-pressed':ui.filter===s.id?'true':'false',onclick:pick(s.id)},av(s.id),short(s))}));
+ wrap.append(back,dr);setTimeout(function(){try{close.focus()}catch(x){}},0);return wrap}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ui.sideOpen)closeSide()});
 function render(){
  var root=$('#root');root.textContent='';
  var w=h('div',{class:'wrap'});
@@ -416,6 +442,8 @@ function render(){
  w.append(h('div',{class:'tabs',role:'tablist'},tabs.map(function(t){return h('button',{class:'tab',role:'tab',type:'button','aria-selected':ui.view===t[0]?'true':'false',onclick:function(){ui.view=t[0];render()}},T(t[1]))})));
  w.append(ui.view==='day'?dayView():ui.view==='plan'?planView():sumView());
  root.append(w);
+ if(ui.authed!==false&&ui.view==='day')root.append(sideTab());
+ if(ui.sideOpen&&ui.view==='day')root.append(sideDrawer());
  if(ui.canEdit){root.append(h('div',{class:'bar'},
   h('button',{class:'btn',type:'button',onclick:function(){openForm(null)}},'Add event'),
   h('button',{class:'btn pri',type:'button',disabled:!ui.dirty||ui.saving,onclick:save},ui.saving?'Saving':(ui.dirty?'Save and publish ('+ui.dirty+')':'No changes')),
