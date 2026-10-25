@@ -358,8 +358,24 @@ function heroPic(){
  im.addEventListener('error',function(){im.remove();if(!ui.canEdit){var hr=w.parentNode;w.remove();if(hr)hr.style.gridTemplateColumns='minmax(0,1fr)'}else{w.classList.add('empty')}});
  return w}
 function setLang(l){lang=l;try{localStorage.setItem('lang',l)}catch(x){}render()}
-var COORDS={'Harrow Mandir':[51.58,-0.34],'Wilsden Mandir':[53.82,-1.86],'Stanmore Mandir':[51.62,-0.30],'Woolwich Mandir':[51.49,0.06],'East London Mandir':[51.55,0.03],'Cardiff Mandir':[51.48,-3.18],'Bolton Mandir':[53.58,-2.43],'Oldham Mandir':[53.54,-2.12],'ISSO Mandir':[51.55,-0.28],'Mariestad Temple':[58.71,13.82],'Jönköping Temple':[57.78,14.16],'Gambia':[13.45,-16.58],'Senegal':[14.69,-17.45],'Dubai':[25.20,55.27],'India':[28.61,77.21]};
 var wxCache={};
+var wxPos=null,wxBusy=false,wxTried=false,wxErr='',wxNames={};
+try{wxPos=JSON.parse(localStorage.getItem('wxPos')||'null')}catch(x){}
+function locate(){
+ if(wxBusy)return;
+ if(!navigator.geolocation){wxErr='unsupported';return}
+ wxBusy=true;
+ navigator.geolocation.getCurrentPosition(function(p){
+  wxBusy=false;wxErr='';
+  wxPos={lat:+p.coords.latitude.toFixed(2),lon:+p.coords.longitude.toFixed(2)};
+  try{localStorage.setItem('wxPos',JSON.stringify(wxPos))}catch(x){}
+  render()
+ },function(e){wxBusy=false;wxErr=e&&e.code===1?'denied':'fail';render()},{enableHighAccuracy:false,timeout:15000,maximumAge:1800000})}
+function placeName(pos,cb){
+ var k=pos.lat+','+pos.lon;if(wxNames[k]!==undefined){cb(wxNames[k]);return}
+ wxNames[k]='';
+ fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+pos.lat+'&longitude='+pos.lon+'&localityLanguage=en').then(function(r){return r.ok?r.json():null}).then(function(j){
+  wxNames[k]=(j&&(j.city||j.locality||j.principalSubdivision))||'';cb(wxNames[k])}).catch(function(){})}
 function skyLabel(c,day){
  if(day){return c<=15?'Sunny':c<=40?'Mostly sunny':c<=70?'Partly cloudy':c<=90?'Mostly cloudy':'Overcast'}
  return c<=15?'Clear night':c<=40?'Mostly clear':c<=70?'Partly cloudy':c<=90?'Mostly cloudy':'Overcast'}
@@ -367,21 +383,28 @@ function skyIcon(c,day){
  if(day){return c<=15?'☀️':c<=40?'🌤️':c<=70?'⛅':c<=90?'🌥️':'☁️'}
  return c<=40?'🌙':'☁️'}
 function weatherEl(){
- var box=h('div',{class:'wx'}),st=stayFor(clamp(today()));if(!st)return box;
- var xy=COORDS[st.place];if(!xy)return box;
- var key=st.place;
+ var box=h('div',{class:'wx'});
+ if(!wxTried){wxTried=true;locate()}   // asks once per visit; silent if already allowed
+ if(!wxPos){
+  if(wxBusy)box.append(h('div',{class:'m',text:'Finding your location…'}));
+  else{
+   box.append(h('div',{class:'m',text:wxErr==='denied'?'Location is blocked. Allow location for this site to see the weather where you are.':wxErr==='unsupported'?'This device cannot share its location.':'Could not find your location.'}));
+   if(wxErr!=='unsupported')box.append(h('button',{class:'btn sm',type:'button',style:'align-self:flex-start;margin-top:4px',onclick:function(){wxTried=true;locate();render()}},'Show weather here'));
+  }
+  return box}
+ var key=wxPos.lat+','+wxPos.lon;
  function fill(r){
-  box.textContent='';
+  box.textContent='';var nm=wxNames[key]||'';
   box.append(h('div',{class:'now'},h('span',{class:'t',text:dg(Math.round(r.t))+'°C'}),h('span',{class:'d',text:skyIcon(r.c,r.day)+' '+skyLabel(r.c,r.day)})),
-   h('div',{class:'m',text:'Cloud cover '+dg(Math.round(r.c))+'% · Now in '+tr(st.place)}))}
+   h('div',{class:'m',text:'Cloud cover '+dg(Math.round(r.c))+'%'+(nm?' · '+nm:'')}))}
  var hit=wxCache[key];
  if(hit)fill(hit.r);
+ placeName(wxPos,function(){var h2=wxCache[key];if(h2&&box.isConnected)fill(h2.r)});
  if(!hit||Date.now()-hit.at>600000){
-  fetch('https://api.open-meteo.com/v1/forecast?latitude='+xy[0]+'&longitude='+xy[1]+'&current=temperature_2m,cloud_cover,is_day&timezone=auto').then(function(r){return r.ok?r.json():null}).then(function(j){
+  fetch('https://api.open-meteo.com/v1/forecast?latitude='+wxPos.lat+'&longitude='+wxPos.lon+'&current=temperature_2m,cloud_cover,is_day&timezone=auto').then(function(r){return r.ok?r.json():null}).then(function(j){
    var c=j&&j.current;if(!c||c.temperature_2m==null||c.cloud_cover==null)return;
    var r={t:c.temperature_2m,c:c.cloud_cover,day:c.is_day===1};wxCache[key]={r:r,at:Date.now()};fill(r)}).catch(function(){})}
  return box}
-
 var tithiL=null,tithiI={},tithiBusy={};ui.tithiOpen='';
 function loadTithi(){if(tithiL)return;fetch('tithi-l.json').then(function(r){return r.ok?r.json():null}).then(function(j){tithiL=j||{};render()}).catch(function(){tithiL={}})}
 function loadYear(y){if(tithiI[y]||tithiBusy[y])return;tithiBusy[y]=1;fetch('tithi-i-'+y+'.json').then(function(r){return r.ok?r.json():{}}).then(function(j){tithiI[y]=j||{};render()}).catch(function(){delete tithiBusy[y]})}
@@ -484,11 +507,10 @@ function render(){
  var root=$('#root');root.textContent='';
  var w=h('div',{class:'wrap'});
  w.append(h('header',{class:'head'},
-  h('div',{class:'row',style:'justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px'},h('div',{style:'display:flex;align-items:center;gap:8px;min-width:0'},h('h1',{text:lang==='gu'?'લંડન યાત્રા':'London Yatra'}),sideTab(),remEl()),
+  h('div',{class:'row',style:'justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px'},h('div',{style:'display:flex;align-items:center;gap:8px;min-width:0'},sideTab(),remEl()),
    h('div',{style:'display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none'},h('div',{class:'row',style:'flex:none',role:'group','aria-label':'Language'},
     h('button',{class:'chip',type:'button','aria-pressed':lang==='en'?'true':'false',style:'padding:5px 11px','aria-label':'English',onclick:function(){setLang('en')}},h('span',{class:'lf',text:'English'}),h('span',{class:'ls',text:'EN'})),
     h('button',{class:'chip',type:'button','aria-pressed':lang==='gu'?'true':'false',style:'padding:5px 11px','aria-label':'ગુજરાતી',onclick:function(){setLang('gu')}},h('span',{class:'lf',text:'ગુજરાતી'}),h('span',{class:'ls',text:'ગુજ'}))))),
-  h('div',{class:'sub',text:lang==='gu'?'૨૨ ડિસેમ્બર ૨૦૨૬ થી ૧૯ જૂન ૨૦૨૭ · ભારત, યુકે, ગામ્બિયા, સેનેગલ, સ્વીડન, દુબઈ':'22 Dec 2026 to 19 Jun 2027 · India, UK, Gambia, Senegal, Sweden, Dubai'}),
   remMsgEl(),
   h('div',{class:'hero'},
    heroPic(),
