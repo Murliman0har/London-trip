@@ -287,14 +287,14 @@ function dayView(){
   h('button',{class:'btn',type:'button',onclick:function(){ui.date=calClamp(addDays(d,-1));render()},'aria-label':'Previous day'},'‹'),
   h('div',{class:'date',style:'position:relative;cursor:pointer',title:'Pick a date'},fmt(d,{weekday:'long',day:'numeric',month:'long',year:'numeric'}),inp),
   h('button',{class:'btn',type:'button',onclick:function(){ui.date=calClamp(addDays(d,1));render()},'aria-label':'Next day'},'›')));
- root.append(h('div',{class:'nav'},h('button',{class:'btn',type:'button',onclick:function(){ui.date=calClamp(today());render()}},T('Today')),
+ root.append(h('div',{class:'nav',style:'justify-content:center'},h('button',{class:'btn',type:'button',onclick:function(){ui.date=calClamp(today());render()}},T('Today')),
   h('span',{class:'sub',text:st?dayOf(diff(state.tripStart,d)+1,diff(state.tripStart,state.tripEnd)+1):''})));
  if(st){var n=diff(st.start,st.end)+1,k=diff(st.start,d)+1,idx=state.stays.indexOf(st),prev=state.stays[idx-1],gu=lang==='gu';
   var meta=[tr(st.region)];if(st.start!==st.end)meta.push(gu?'અહીં '+dayOf(k,n):'Day '+k+' of '+n+' here');
   if(d===st.start&&prev&&prev.place!==st.place)meta.push(gu?tr(prev.place)+' થી આગમન':'Arriving from '+prev.place);
   var nx=state.stays[idx+1];if(d===st.end&&nx)meta.push(gu?'આજે '+tr(nx.place)+' તરફ પ્રસ્થાન':'Moving to '+nx.place+' today');
   root.append(h('div',{class:'place'},h('div',{class:'meta',text:T('Where we are')}),h('div',{class:'where',text:tr(st.place)}),h('div',{class:'meta',text:meta.join(' · ')})));}
- else root.append(h('p',{class:'note',text:T('This date is outside the tour (22 Dec 2026 to 19 Jun 2027).')}));
+
  var evs=evsOn(d).slice().sort(function(a,b){return sortKey(a)-sortKey(b)});
  var now=new Date(),nm=now.getHours()*60+now.getMinutes(),isToday=d===today(),nowId=null,nextId=null;
  if(isToday){evs.forEach(function(e){var s=toMin(e.start);if(s==null)return;var en=e.end?toMin(e.end):s+90;if(s<=nm&&nm<en&&!nowId)nowId=e.id;else if(s>nm&&!nextId)nextId=e.id});}
