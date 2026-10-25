@@ -131,6 +131,7 @@ body{
 .tg ul{margin:4px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px}
 .tg li{font-size:13px;line-height:1.3;padding-left:8px;border-left:3px solid var(--c);color:var(--fg)}
 .rem{display:flex;justify-content:flex-end}
+#sumDetail,#sumTiles{scroll-margin-top:10px}
 .hpic{position:relative;width:94px;align-self:start}
 .hpic img{display:block}
 .hpic.empty{height:116px;border-radius:12px;border:2px dashed #d7a64f;background:#f8e7bf}
@@ -333,11 +334,11 @@ function sumView(){
  else{var dset={},pset={};evs.forEach(function(e){var n=e.endDate?diff(e.date,e.endDate)+1:1;for(var i=0;i<n;i++)dset[addDays(e.date,i)]=1;if(e.place)pset[e.place]=1});statList=[[evs.length,'Events'],[Object.keys(dset).length,'Days with events'],[Object.keys(pset).length,'Places']]}
  root.append(h('div',{class:'stats'},
   statList.map(function(x){return h('div',{class:'stat'},h('b',{text:dg(x[0])}),h('span',{text:T(x[1])}))})));
- root.append(h('div',{class:'tiles'},SUMORDER.map(function(k){return h('button',{class:'tile t-'+k,type:'button','aria-expanded':ui.sumOpen===k?'true':'false',onclick:function(){ui.sumOpen=ui.sumOpen===k?'':k;render()}},h('b',{text:dg(count(k))}),h('span',{text:typeLabel(k)}),h('small',{text:sub(k)||' '}))})));
+ root.append(h('div',{class:'tiles',id:'sumTiles'},SUMORDER.map(function(k){return h('button',{class:'tile t-'+k,type:'button','aria-expanded':ui.sumOpen===k?'true':'false',onclick:function(){ui.sumOpen=ui.sumOpen===k?'':k;render();if(ui.sumOpen)setTimeout(function(){var el=document.getElementById('sumDetail');if(el)el.scrollIntoView({behavior:'smooth',block:'start'})},40)}},h('b',{text:dg(count(k))}),h('span',{text:typeLabel(k)}),h('small',{text:sub(k)||' '}))})));
  if(ui.sumOpen){var k=ui.sumOpen,rows=[];
   if(k==='parayan')sers.forEach(function(o){rows.push(h('button',{class:'li',type:'button',onclick:function(){goDay(o.date)}},h('span',{class:'a',text:tr(o.title)+' · '+tr(o.place)}),h('span',{class:'b',text:dg(o.n)+' '+T('sessions')}),h('span',{class:'b',text:fmt(o.date)+' – '+fmt(o.end)}),h('span')))});
   else by[k].forEach(function(e){rows.push(h('button',{class:'li',type:'button',onclick:function(){goDay(e.date)}},h('span',{class:'a',text:tr(e.title)||typeLabel(k)}),h('span',{class:'b',text:rangeLabel(e)}),h('span',{class:'b',text:tr(e.place)}),h('span')))});
-  root.append(h('div',{class:'card t-'+k},h('h3',{text:typeLabel(k)+' ('+dg(count(k))+')'}),rows.length?rows:h('div',{class:'faint',text:T('Nothing noted yet.')})))}
+  root.append(h('div',{class:'card t-'+k,id:'sumDetail'},h('div',{class:'row',style:'justify-content:space-between'},h('h3',{text:typeLabel(k)+' ('+dg(count(k))+')'}),h('button',{class:'btn sm',type:'button','aria-label':lang==='gu'?'ઉપર':'Back up',onclick:function(){var t=document.getElementById('sumTiles');if(t)t.scrollIntoView({behavior:'smooth',block:'start'})}},'↑')),rows.length?rows:h('div',{class:'faint',text:T('Nothing noted yet.')})))}
  else root.append(h('p',{class:'note',text:T('Tap a box to see the list.')}));
  var noV=by.parayan.filter(function(e){return !e.vakta}).length,noS=by.parayan.filter(function(e){return !e.shastra}).length;
  var rides=evs.filter(function(e){return RIDE.indexOf(e.type)>-1}),noD=rides.filter(function(e){return !e.driver}).length,ph=0;evs.forEach(function(e){ph+=(e.photos||[]).length});
