@@ -126,7 +126,7 @@ body{
 .hero .wx .d{font-size:14px;font-weight:600;color:#5b3a1f}
 .hero .wx .m{font-size:12.5px;color:#765538}
 .tithi{margin-top:9px;display:flex;flex-direction:column;gap:7px}
-.tg{--c:#9b3568}.tg.i{--c:#167b83}
+.tg{--c:#9b3568}.tg.i{--c:#167b83}.tg.b{--c:#6b5b2a}
 .tg .tgh{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:1px 9px;border-radius:999px;color:#fff;background:var(--c)}
 .tg ul{margin:4px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px}
 .tg li{font-size:13px;line-height:1.3;padding-left:8px;border-left:3px solid var(--c);color:var(--fg)}
@@ -428,12 +428,16 @@ function tithiEl(){
  var box=h('div',{class:'tithi'}),y=ui.date.slice(0,4);
  loadYear(y);if(!tithiL)loadTithi();
  var l=(tithiL&&tithiL[ui.date])||[],i=(tithiI[y]&&tithiI[y][ui.date])||[];
- var all=ui.tithiOpen===ui.date,room=all?999:4,total=l.length+i.length;
+ var nk=function(x){return x[0].toLowerCase().replace(/[^a-z0-9]/g,'')},ik={},lk={};
+ i.forEach(function(x){ik[nk(x)]=1});l.forEach(function(x){lk[nk(x)]=1});
+ var both=l.filter(function(x){return ik[nk(x)]});
+ l=l.filter(function(x){return !ik[nk(x)]});i=i.filter(function(x){return !lk[nk(x)]});
+ var all=ui.tithiOpen===ui.date,room=all?999:4,total=both.length+l.length+i.length;
  function grp(cls,label,items){
   if(!items.length||room<=0)return null;
   var shown=items.slice(0,room);room-=shown.length;
   return h('div',{class:'tg '+cls},h('span',{class:'tgh',text:label}),h('ul',{},shown.map(function(x){return h('li',{text:lang==='gu'&&x[1]?x[1]:x[0]})})))}
- [grp('l',lang==='gu'?'લંડન':'London',l),grp('i',lang==='gu'?'ભારત':'India',i)].forEach(function(g){if(g)box.append(g)});
+ [grp('b',lang==='gu'?'ભારત અને લંડન':'India & London',both),grp('l',lang==='gu'?'લંડન':'London',l),grp('i',lang==='gu'?'ભારત':'India',i)].forEach(function(g){if(g)box.append(g)});
  if(total>4&&!all)box.append(h('button',{class:'btn sm',type:'button',style:'align-self:flex-start',onclick:function(){ui.tithiOpen=ui.date;render()}},(lang==='gu'?'વધુ બતાવો ':'Show ')+dg(total-4)+(lang==='gu'?'':' more')));
  return box}
 var REMINDERS_READY=true;
