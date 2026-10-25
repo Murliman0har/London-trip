@@ -456,6 +456,20 @@ function sideDrawer(){
  if(fresh)setTimeout(function(){try{close.focus()}catch(x){}},0);
  return wrap}
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ui.sideOpen)closeSide()});
+function signOut(){
+ var warn=ui.dirty>0;
+ var msg=lang==='gu'?(warn?'સેવ ન કરેલા ફેરફાર છે. છતાં સાઇન આઉટ કરવું છે?':'સાઇન આઉટ કરવું છે? ફરી ખોલવા પાસવર્ડ જોઈશે.'):(warn?'You have unsaved changes. Sign out anyway?':'Sign out? You will need the password to open it again.');
+ if(!confirm(msg))return;
+ var pass=getPass();
+ var stopPush=remSupported()?navigator.serviceWorker.ready.then(function(reg){return reg.pushManager.getSubscription()}).then(function(sub){
+   if(!sub)return;var ep=sub.endpoint;
+   return rpc('delete_push_sub',{p_passcode:pass,p_endpoint:ep}).catch(function(){}).then(function(){return sub.unsubscribe()})
+  }).catch(function(){}):Promise.resolve();
+ Promise.race([stopPush,new Promise(function(r){setTimeout(r,4000)})]).then(function(){
+  setPass('');try{localStorage.removeItem('tourCache')}catch(x){}
+  state={tripStart:state.tripStart,tripEnd:state.tripEnd,stays:[],events:[],saints:[]};
+  picCache={};ui.authed=false;ui.canEdit=false;ui.offline=false;ui.role='';ui.rem='';ui.remMsg='';ui.sideOpen=false;ui.dirty=0;ui.msg='';ui.gateMsg='';
+  render()})}
 function render(){
  var root=$('#root');root.textContent='';
  var w=h('div',{class:'wrap'});
@@ -475,6 +489,9 @@ function render(){
  var tabs=[['day','Day'],['plan','Whole tour'],['sum','Summary']];
  w.append(h('div',{class:'tabs',role:'tablist'},tabs.map(function(t){return h('button',{class:'tab',role:'tab',type:'button','aria-selected':ui.view===t[0]?'true':'false',onclick:function(){ui.view=t[0];render()}},T(t[1]))})));
  w.append(ui.view==='day'?dayView():ui.view==='plan'?planView():sumView());
+ w.append(h('div',{class:'row',style:'justify-content:center;gap:10px;margin-top:4px'},
+  h('span',{class:'faint',text:(lang==='gu'?(ui.role==='editor'?'સંપાદક તરીકે સાઇન ઇન':'વાચક તરીકે સાઇન ઇન'):('Signed in as '+(ui.role==='editor'?'editor':'reader')))+(ui.offline?(lang==='gu'?' · ઑફલાઇન':' · offline'):'')}),
+  h('button',{class:'btn sm',type:'button',onclick:signOut},lang==='gu'?'સાઇન આઉટ':'Sign out')));
  root.append(w);
  if(ui.authed!==false&&ui.view==='day')root.append(sideTab());
  if(ui.sideOpen&&ui.view==='day')root.append(sideDrawer());
@@ -562,12 +579,12 @@ function enter(pass){
  ui.gateMsg='';ui.busy=true;render();
  return rpc('get_tour_state',{p_passcode:pass}).then(function(res){
   if(!res||!res.data||!res.data.events)throw {message:'empty'};
-  setPass(pass);try{localStorage.setItem('tourCache',JSON.stringify({pass:pass,res:res}))}catch(x){}state=res.data;ui.canEdit=res.role==='editor';ui.authed=true;ui.busy=false;ui.date=calClamp(today());render();loadTithi();remRefresh().then(render)
+  setPass(pass);try{localStorage.setItem('tourCache',JSON.stringify({pass:pass,res:res}))}catch(x){}state=res.data;ui.role=res.role;ui.canEdit=res.role==='editor';ui.authed=true;ui.busy=false;ui.date=calClamp(today());render();loadTithi();remRefresh().then(render)
  }).catch(function(err){
   ui.busy=false;ui.authed=false;
   if(/bad_passcode/.test(JSON.stringify(err||{}))){setPass('');try{localStorage.removeItem('tourCache')}catch(x){}ui.gateMsg='Wrong password.'}
   else{var c=null;try{c=JSON.parse(localStorage.getItem('tourCache')||'null')}catch(x){}
-   if(c&&c.pass===pass&&c.res&&c.res.data){state=c.res.data;ui.canEdit=false;ui.authed=true;ui.offline=true;ui.date=calClamp(today());render();return}
+   if(c&&c.pass===pass&&c.res&&c.res.data){state=c.res.data;ui.role='reader';ui.canEdit=false;ui.authed=true;ui.offline=true;ui.date=calClamp(today());render();return}
    ui.gateMsg='Could not open the program. Check your connection and try again.'}
   render()})}
 function drawGate(){
