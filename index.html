@@ -137,15 +137,18 @@ body{
 .hcam{position:absolute;right:-8px;bottom:-8px;width:34px;height:34px;border-radius:50%;background:#a94712;color:#fff;display:grid;place-items:center;cursor:pointer;border:2px solid #fff;box-shadow:0 2px 8px rgba(60,30,5,.35)}
 .hcam svg{width:17px;height:17px}
 @media(max-width:420px){.hpic{width:78px}.hpic.empty{height:100px}}
-.stab{position:fixed;left:0;top:42%;z-index:6;width:30px;height:58px;border:1px solid var(--line);border-left:0;border-radius:0 14px 14px 0;background:var(--surface);box-shadow:2px 2px 10px rgba(91,56,20,.15);display:grid;place-items:center;padding:0;color:#8b3c12}
-.stab svg{width:18px;height:18px}
+.stab{position:relative;flex:none;width:40px;height:40px;border:1px solid #e0c48a;border-radius:50%;background:var(--surface);box-shadow:0 2px 8px rgba(91,56,20,.15);display:grid;place-items:center;padding:0;color:#8b3c12;cursor:pointer}
+.stab svg{width:20px;height:20px}
+@media(max-width:430px){.head h1{font-size:25px;white-space:nowrap}.stab{width:34px;height:34px}.stab svg{width:18px;height:18px}.head .chip{padding:4px 9px!important;font-size:12.5px}}
 .stab.on{color:#fff;background:#b85b16;border-color:#b85b16;box-shadow:0 0 0 3px rgba(240,180,60,.35),0 0 14px 3px rgba(240,170,40,.55)}
-.stab .cnt{position:absolute;right:-9px;top:-9px;min-width:20px;height:20px;border-radius:999px;background:#fff;color:#8b3c12;border:2px solid #b85b16;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 4px;line-height:1}
+.stab .cnt{position:absolute;right:-7px;top:-7px;min-width:20px;height:20px;border-radius:999px;background:#fff;color:#8b3c12;border:2px solid #b85b16;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 4px;line-height:1}
 .stab .av{width:22px;height:22px;font-size:9px;outline:2px solid #b85b16;outline-offset:1px}
 .dback{position:fixed;inset:0;background:rgba(40,20,5,.38);z-index:19}
 .drawer{position:fixed;top:0;bottom:0;left:0;width:min(290px,84vw);background:var(--surface);z-index:20;padding:16px;display:flex;flex-direction:column;gap:8px;box-shadow:4px 0 24px rgba(40,20,5,.3);overflow:auto;padding-top:max(16px,env(safe-area-inset-top,0px))}
 .drawer .dh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
 .drawer .chip{width:100%;padding:8px 12px 8px 8px;font-size:15px;justify-content:flex-start}
+.drawer .dfoot{margin-top:10px;padding-top:12px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.drawer .signout{color:#c62828;border-color:#c62828;background:#fff;padding:4px 10px;font-size:12.5px}
 .drawer .chip .ct{margin-left:auto;font-size:12px;color:var(--muted);font-weight:700;min-width:18px;text-align:right}
 .drawer .chip .ck{width:16px;text-align:center;font-weight:800;color:#8b3c12}
 .drawer .chip.hl{background:#ffeccd;border-color:#b85b16;box-shadow:inset 0 0 0 1px #b85b16}
@@ -430,7 +433,7 @@ function closeSide(){ui.sideOpen=false;render()}
 try{var _ss=JSON.parse(localStorage.getItem('saintSel')||'[]');if(Array.isArray(_ss))ui.sel=_ss}catch(x){}
 function saveSel(){try{localStorage.setItem('saintSel',JSON.stringify(ui.sel))}catch(x){}}
 function sideTab(){
- var on=ui.sel.length>0,n=on?evsOn(ui.date).length:0;
+ var on=ui.sel.length>0&&ui.view==='day',n=on?evsOn(ui.date).length:0;
  var lbl=on?(lang==='gu'?'સંત પસંદ કરેલા · ':'Saints highlighted · ')+n+(lang==='gu'?' કાર્યક્રમ':' events'):(lang==='gu'?'સંત પસંદ કરો':'Choose saints');
  var b=h('button',{class:'stab'+(on?' on':''),type:'button','aria-label':lbl,title:lbl,'aria-expanded':ui.sideOpen?'true':'false',onclick:function(){ui.sideOpen=true;ui.sideFresh=true;render()}});
  b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 5.2a3.2 3.2 0 0 1 0 5.8"/><path d="M18 14.8c2 .7 3.2 2.4 3.2 5.2"/></svg>';
@@ -451,7 +454,10 @@ function sideDrawer(){
   h('p',{class:'note',style:'margin:0 0 4px',text:lang==='gu'?'જેમના કાર્યક્રમ જોવા હોય તેમને ટેપ કરો':'Tap to highlight the saints you want to follow.'}),
   h('button',{class:'chip'+(ui.sel.length?'':' hl'),type:'button','aria-pressed':ui.sel.length?'false':'true',onclick:clear},h('span',{class:'av all',text:lang==='gu'?'બધા':'All'}),T('Everyone'),h('span',{class:'ct',text:dg(day.length)})),
   state.saints.map(function(s){var sel=ui.sel.indexOf(s.id)>-1;return h('button',{class:'chip'+(sel?' hl':''),type:'button','aria-pressed':sel?'true':'false',onclick:toggle(s.id)},av(s.id),short(s),h('span',{class:'ct',text:dg(cnt(s.id))}),h('span',{class:'ck',text:sel?'✓':''}))}),
-  h('p',{class:'note',style:'margin:6px 0 0',text:ui.sel.length?(lang==='gu'?'આ દિવસે '+dg(shown)+' કાર્યક્રમ બતાવ્યા ('+dg(day.length)+' માંથી)':'Showing '+shown+' of '+day.length+' events on this day'):(lang==='gu'?'આ દિવસે '+dg(day.length)+' કાર્યક્રમ':day.length+' events on this day')}));
+  h('p',{class:'note',style:'margin:6px 0 0',text:ui.sel.length?(lang==='gu'?'આ દિવસે '+dg(shown)+' કાર્યક્રમ બતાવ્યા ('+dg(day.length)+' માંથી)':'Showing '+shown+' of '+day.length+' events on this day'):(lang==='gu'?'આ દિવસે '+dg(day.length)+' કાર્યક્રમ':day.length+' events on this day')}),
+  h('div',{class:'dfoot'},
+   h('span',{class:'faint',text:(lang==='gu'?(ui.role==='editor'?'સંપાદક તરીકે સાઇન ઇન':'વાચક તરીકે સાઇન ઇન'):('Signed in as '+(ui.role==='editor'?'editor':'reader')))+(ui.offline?(lang==='gu'?' · ઑફલાઇન':' · offline'):'')}),
+   h('button',{class:'btn sm signout',type:'button',onclick:signOut},lang==='gu'?'સાઇન આઉટ':'Sign out')));
  wrap.append(back,dr);
  if(fresh)setTimeout(function(){try{close.focus()}catch(x){}},0);
  return wrap}
@@ -474,7 +480,7 @@ function render(){
  var root=$('#root');root.textContent='';
  var w=h('div',{class:'wrap'});
  w.append(h('header',{class:'head'},
-  h('div',{class:'row',style:'justify-content:space-between;align-items:flex-start;flex-wrap:nowrap'},h('h1',{text:lang==='gu'?'લંડન યાત્રા':'London Yatra'}),
+  h('div',{class:'row',style:'justify-content:space-between;align-items:flex-start;flex-wrap:nowrap'},h('div',{style:'display:flex;align-items:center;gap:10px;min-width:0'},h('h1',{text:lang==='gu'?'લંડન યાત્રા':'London Yatra'}),sideTab()),
    h('div',{style:'display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none'},h('div',{class:'row',style:'flex:none',role:'group','aria-label':'Language'},
     h('button',{class:'chip',type:'button','aria-pressed':lang==='en'?'true':'false',style:'padding:5px 11px',onclick:function(){setLang('en')}},'English'),
     h('button',{class:'chip',type:'button','aria-pressed':lang==='gu'?'true':'false',style:'padding:5px 11px',onclick:function(){setLang('gu')}},'ગુજરાતી')),remEl())),
@@ -489,12 +495,8 @@ function render(){
  var tabs=[['day','Day'],['plan','Whole tour'],['sum','Summary']];
  w.append(h('div',{class:'tabs',role:'tablist'},tabs.map(function(t){return h('button',{class:'tab',role:'tab',type:'button','aria-selected':ui.view===t[0]?'true':'false',onclick:function(){ui.view=t[0];render()}},T(t[1]))})));
  w.append(ui.view==='day'?dayView():ui.view==='plan'?planView():sumView());
- w.append(h('div',{class:'row',style:'justify-content:center;gap:10px;margin-top:4px'},
-  h('span',{class:'faint',text:(lang==='gu'?(ui.role==='editor'?'સંપાદક તરીકે સાઇન ઇન':'વાચક તરીકે સાઇન ઇન'):('Signed in as '+(ui.role==='editor'?'editor':'reader')))+(ui.offline?(lang==='gu'?' · ઑફલાઇન':' · offline'):'')}),
-  h('button',{class:'btn sm',type:'button',onclick:signOut},lang==='gu'?'સાઇન આઉટ':'Sign out')));
  root.append(w);
- if(ui.authed!==false&&ui.view==='day')root.append(sideTab());
- if(ui.sideOpen&&ui.view==='day')root.append(sideDrawer());
+ if(ui.sideOpen)root.append(sideDrawer());
  if(ui.canEdit){root.append(h('div',{class:'bar'},
   h('button',{class:'btn',type:'button',onclick:function(){openForm(null)}},'Add event'),
   h('button',{class:'btn pri',type:'button',disabled:!ui.dirty||ui.saving,onclick:save},ui.saving?'Saving':(ui.dirty?'Save and publish ('+ui.dirty+')':'No changes')),
