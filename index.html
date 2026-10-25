@@ -139,7 +139,11 @@ body{
 @media(max-width:420px){.hpic{width:78px}.hpic.empty{height:100px}}
 .stab{position:relative;flex:none;width:40px;height:40px;border:1px solid #e0c48a;border-radius:50%;background:var(--surface);box-shadow:0 2px 8px rgba(91,56,20,.15);display:grid;place-items:center;padding:0;color:#8b3c12;cursor:pointer}
 .stab svg{width:20px;height:20px}
-@media(max-width:430px){.head h1{font-size:25px;white-space:nowrap}.stab{width:34px;height:34px}.stab svg{width:18px;height:18px}.head .chip{padding:4px 9px!important;font-size:12.5px}}
+.ls{display:none}
+@media(max-width:430px){.head h1{font-size:22px;white-space:nowrap}.stab{width:34px;height:34px}.stab svg{width:18px;height:18px}.head .chip{padding:5px 9px!important;font-size:12.5px}.lf{display:none}.ls{display:inline}.head .bell{width:40px;height:34px}.head .bell svg{width:28px;height:22px}}
+@media(max-width:380px){.head h1{font-size:20px}.head .row{gap:6px!important}.stab{width:32px;height:32px}.head .bell{width:36px;height:32px}.head .bell svg{width:26px;height:20px}.head .chip{padding:4px 8px!important}}
+@media(max-width:340px){.head h1{font-size:18px}.stab{width:30px;height:30px}.head .bell{width:34px;height:30px}.head .chip{padding:4px 6px!important;font-size:12px}}
+.head h1{white-space:nowrap}
 .stab.on{color:#fff;background:#b85b16;border-color:#b85b16;box-shadow:0 0 0 3px rgba(240,180,60,.35),0 0 14px 3px rgba(240,170,40,.55)}
 .stab .cnt{position:absolute;right:-7px;top:-7px;min-width:20px;height:20px;border-radius:999px;background:#fff;color:#8b3c12;border:2px solid #b85b16;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 4px;line-height:1}
 .stab .av{width:22px;height:22px;font-size:9px;outline:2px solid #b85b16;outline-offset:1px}
@@ -480,10 +484,10 @@ function render(){
  var root=$('#root');root.textContent='';
  var w=h('div',{class:'wrap'});
  w.append(h('header',{class:'head'},
-  h('div',{class:'row',style:'justify-content:space-between;align-items:flex-start;flex-wrap:nowrap'},h('div',{style:'display:flex;align-items:center;gap:10px;min-width:0'},h('h1',{text:lang==='gu'?'લંડન યાત્રા':'London Yatra'}),sideTab()),
+  h('div',{class:'row',style:'justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px'},h('div',{style:'display:flex;align-items:center;gap:8px;min-width:0'},h('h1',{text:lang==='gu'?'લંડન યાત્રા':'London Yatra'}),sideTab(),remEl()),
    h('div',{style:'display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none'},h('div',{class:'row',style:'flex:none',role:'group','aria-label':'Language'},
-    h('button',{class:'chip',type:'button','aria-pressed':lang==='en'?'true':'false',style:'padding:5px 11px',onclick:function(){setLang('en')}},'English'),
-    h('button',{class:'chip',type:'button','aria-pressed':lang==='gu'?'true':'false',style:'padding:5px 11px',onclick:function(){setLang('gu')}},'ગુજરાતી')),remEl())),
+    h('button',{class:'chip',type:'button','aria-pressed':lang==='en'?'true':'false',style:'padding:5px 11px','aria-label':'English',onclick:function(){setLang('en')}},h('span',{class:'lf',text:'English'}),h('span',{class:'ls',text:'EN'})),
+    h('button',{class:'chip',type:'button','aria-pressed':lang==='gu'?'true':'false',style:'padding:5px 11px','aria-label':'ગુજરાતી',onclick:function(){setLang('gu')}},h('span',{class:'lf',text:'ગુજરાતી'}),h('span',{class:'ls',text:'ગુજ'}))))),
   h('div',{class:'sub',text:lang==='gu'?'૨૨ ડિસેમ્બર ૨૦૨૬ થી ૧૯ જૂન ૨૦૨૭ · ભારત, યુકે, ગામ્બિયા, સેનેગલ, સ્વીડન, દુબઈ':'22 Dec 2026 to 19 Jun 2027 · India, UK, Gambia, Senegal, Sweden, Dubai'}),
   remMsgEl(),
   h('div',{class:'hero'},
