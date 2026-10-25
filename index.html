@@ -131,6 +131,12 @@ body{
 .tg ul{margin:4px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px}
 .tg li{font-size:13px;line-height:1.3;padding-left:8px;border-left:3px solid var(--c);color:var(--fg)}
 .rem{display:flex;justify-content:flex-end}
+.hpic{position:relative;width:94px;align-self:start}
+.hpic img{display:block}
+.hpic.empty{height:116px;border-radius:12px;border:2px dashed #d7a64f;background:#f8e7bf}
+.hcam{position:absolute;right:-8px;bottom:-8px;width:34px;height:34px;border-radius:50%;background:#a94712;color:#fff;display:grid;place-items:center;cursor:pointer;border:2px solid #fff;box-shadow:0 2px 8px rgba(60,30,5,.35)}
+.hcam svg{width:17px;height:17px}
+@media(max-width:420px){.hpic{width:78px}.hpic.empty{height:100px}}
 .stab{position:fixed;left:0;top:42%;z-index:6;width:30px;height:58px;border:1px solid var(--line);border-left:0;border-radius:0 14px 14px 0;background:var(--surface);box-shadow:2px 2px 10px rgba(91,56,20,.15);display:grid;place-items:center;padding:0;color:#8b3c12}
 .stab svg{width:18px;height:18px}
 .stab.on{color:#fff;background:#b85b16;border-color:#b85b16;box-shadow:0 0 0 3px rgba(240,180,60,.35),0 0 14px 3px rgba(240,170,40,.55)}
@@ -333,8 +339,17 @@ function sumView(){
   row('Vakta not chosen',dg(noV)+' '+T('of')+' '+dg(by.parayan.length)),row('Shastra not chosen',dg(noS)+' '+T('of')+' '+dg(by.parayan.length)),row('Driver not added',dg(noD)+' '+T('of')+' '+dg(rides.length)),row('Pictures added',dg(ph))));
  return root}
 
-function heroImg(){var im=state.hero?pimg(state.hero,{alt:'Bhagwan Swaminarayan'}):h('img',{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Swaminarayan.jpg',alt:'Bhagwan Swaminarayan'});im.addEventListener('error',function(){var p=im.parentNode;if(p)p.style.gridTemplateColumns='minmax(0,1fr)';im.remove()});return im}
-function heroBtn(){if(!(ui.canEdit&&ui.assets))return null;return h('label',{class:'btn sm',style:'margin-top:8px;display:inline-block;cursor:pointer'},'Set picture',h('input',{type:'file',accept:'image/*',style:'display:none',onchange:function(ev){var f=ev.target.files[0];if(!f)return;shrink(f).then(function(b){return ui.assets.upload(b)}).then(function(r){state.hero=r.id;ui.dirty++;render()}).catch(function(){ui.msg='Picture could not be uploaded.';render()})}}))}
+function heroImg(){var im=state.hero?pimg(state.hero,{alt:'Bhagwan Swaminarayan'}):h('img',{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Swaminarayan.jpg',alt:'Bhagwan Swaminarayan'});return im}
+function heroBtn(){
+ if(ui.canEdit!==true||!ui.assets)return null;
+ var l=h('label',{class:'hcam',title:'Change picture','aria-label':'Change picture'});
+ l.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+ l.append(h('input',{type:'file',accept:'image/*',style:'display:none',onchange:function(ev){var f=ev.target.files[0];if(!f)return;shrink(f).then(function(b){return ui.assets.upload(b)}).then(function(r){state.hero=r.id;ui.dirty++;render()}).catch(function(){ui.msg='Picture could not be uploaded.';render()})}}));
+ return l}
+function heroPic(){
+ var w=h('div',{class:'hpic'}),im=heroImg();w.append(im);var b=heroBtn();if(b)w.append(b);
+ im.addEventListener('error',function(){im.remove();if(!ui.canEdit){var hr=w.parentNode;w.remove();if(hr)hr.style.gridTemplateColumns='minmax(0,1fr)'}else{w.classList.add('empty')}});
+ return w}
 function setLang(l){lang=l;try{localStorage.setItem('lang',l)}catch(x){}render()}
 var COORDS={'Harrow Mandir':[51.58,-0.34],'Wilsden Mandir':[53.82,-1.86],'Stanmore Mandir':[51.62,-0.30],'Woolwich Mandir':[51.49,0.06],'East London Mandir':[51.55,0.03],'Cardiff Mandir':[51.48,-3.18],'Bolton Mandir':[53.58,-2.43],'Oldham Mandir':[53.54,-2.12],'ISSO Mandir':[51.55,-0.28],'Mariestad Temple':[58.71,13.82],'Jönköping Temple':[57.78,14.16],'Gambia':[13.45,-16.58],'Senegal':[14.69,-17.45],'Dubai':[25.20,55.27],'India':[28.61,77.21]};
 var wxCache={};
@@ -452,11 +467,11 @@ function render(){
   h('div',{class:'sub',text:lang==='gu'?'૨૨ ડિસેમ્બર ૨૦૨૬ થી ૧૯ જૂન ૨૦૨૭ · ભારત, યુકે, ગામ્બિયા, સેનેગલ, સ્વીડન, દુબઈ':'22 Dec 2026 to 19 Jun 2027 · India, UK, Gambia, Senegal, Sweden, Dubai'}),
   remMsgEl(),
   h('div',{class:'hero'},
-   heroImg(),
+   heroPic(),
    h('div',{},
     weatherEl(),
     tithiEl(),
-    heroBtn()))));
+    ))));
  var tabs=[['day','Day'],['plan','Whole tour'],['sum','Summary']];
  w.append(h('div',{class:'tabs',role:'tablist'},tabs.map(function(t){return h('button',{class:'tab',role:'tab',type:'button','aria-selected':ui.view===t[0]?'true':'false',onclick:function(){ui.view=t[0];render()}},T(t[1]))})));
  w.append(ui.view==='day'?dayView():ui.view==='plan'?planView():sumView());
