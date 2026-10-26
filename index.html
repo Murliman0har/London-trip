@@ -53,6 +53,7 @@ button{cursor:pointer}
 
 .pill.now{animation:nowblink 1.4s ease-in-out infinite}@keyframes nowblink{50%{opacity:.6}}
 .rail{background:var(--c);color:#fff;padding:12px 10px;display:flex;flex-direction:column;gap:2px;justify-content:center;text-align:center;font-variant-numeric:tabular-nums}
+.rail.prog{position:relative;overflow:hidden}.rail.prog>*{position:relative;z-index:1}.rail .fill{position:absolute!important;left:0;right:0;top:0;z-index:0!important;background:linear-gradient(180deg,#1f9d57,#33c26f);box-shadow:0 2px 10px rgba(51,194,111,.9);transition:height 1s linear}.rail .fill::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:#b6ffd3;box-shadow:0 0 8px #b6ffd3}
 .rail b{font-size:16px;font-family:var(--display)} .rail span{font-size:12px;opacity:.92}
 .body{padding:12px 14px;display:flex;flex-direction:column;gap:7px;min-width:0}
 .top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
@@ -264,6 +265,7 @@ var CAL_MIN='2010-01-01',CAL_MAX='2027-12-31';
 function calClamp(d){return d<CAL_MIN?CAL_MIN:d>CAL_MAX?CAL_MAX:d}
 function clamp(d){return d<state.tripStart?state.tripStart:d>state.tripEnd?state.tripEnd:d}
 
+function nowPct(e){var n=new Date(),nm=n.getHours()*60+n.getMinutes()+n.getSeconds()/60,st=toMin(e.start),en=e.end?toMin(e.end):st+90;if(st==null||en<=st)return 0;return Math.max(0,Math.min(100,(nm-st)/(en-st)*100)).toFixed(1)}
 function evCard(e,isNow,isNext){
  var tl=timeLabel(e),kv=[];
  function add(k,v){if(v)kv.push(h('dt',{text:T(k)}),h('dd',{text:v}))}
@@ -279,7 +281,7 @@ function evCard(e,isNow,isNext){
  var everyone=allIds.every(function(i){return e.saints.indexOf(i)>-1});
  return h('article',{class:'ev t-'+e.type+(isNow?' now':'')},
   isNow?[1,2,3,4,5,6,7,8,9,10,11,12].map(function(i){return h('i',{class:'spark s'+i,'aria-hidden':'true'})}):null,
-  h('div',{class:'rail'},h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null),
+  h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'height:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null),
   h('div',{class:'body'},
    h('div',{class:'top'},h('span',{class:'tag',text:typeLabel(e.type)}),isNow?h('span',{class:'pill now',text:T('Happening now')}):null,isNext?h('span',{class:'pill next',text:T('Up next')}):null),
    h('div',{class:'title',text:tr(e.title)||typeLabel(e.type)}),
