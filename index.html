@@ -48,6 +48,21 @@ button{cursor:pointer}
 .ev.now::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(110deg,rgba(46,200,110,0) 30%,rgba(46,200,110,.16) 50%,rgba(46,200,110,0) 70%);background-size:250% 100%;animation:nowsweep 3s linear infinite}
 @keyframes nowsweep{from{background-position:150% 0}to{background-position:-100% 0}}
 
+
+.ev.now.t-pothiyatra .body{padding-right:76px}
+.aarti{position:absolute;right:10px;top:50%;width:60px;height:60px;margin-top:-30px;pointer-events:none;z-index:2}
+.aarti .orbit{position:absolute;inset:0;animation:aorbit 5s linear infinite}
+@keyframes aorbit{to{transform:rotate(360deg)}}
+.aarti .lamp{position:absolute;left:50%;top:0;width:26px;height:30px;margin-left:-13px;animation:acounter 5s linear infinite}
+@keyframes acounter{to{transform:rotate(-360deg)}}
+.lamp .bowl{position:absolute;left:0;bottom:0;width:26px;height:10px;border-radius:2px 2px 13px 13px/2px 2px 10px 10px;background:linear-gradient(180deg,#c9792b,#7a3e12);box-shadow:inset 0 2px 2px rgba(255,220,150,.6),0 1px 2px rgba(0,0,0,.35)}
+.lamp .wick{position:absolute;left:12px;bottom:9px;width:2px;height:4px;background:#3b2412;border-radius:1px}
+.lamp .flame{position:absolute;left:7px;bottom:12px;width:12px;height:19px;border-radius:50% 50% 50% 50%/62% 62% 38% 38%;background:radial-gradient(ellipse at 50% 78%,#fff6bf 0%,#ffd24a 35%,#ff8a1a 65%,rgba(255,60,0,.85) 100%);transform-origin:50% 100%;animation:aflick .45s ease-in-out infinite alternate;filter:blur(.4px)}
+.lamp .flame .core{position:absolute;left:50%;bottom:2px;width:5px;height:9px;margin-left:-2.5px;border-radius:50%;background:radial-gradient(ellipse at 50% 70%,#fff,#fff2a0 60%,rgba(255,240,150,0));animation:acore .3s ease-in-out infinite alternate}
+@keyframes aflick{0%{transform:scale(1,1) skewX(-4deg)}35%{transform:scale(.92,1.08) skewX(3deg)}70%{transform:scale(1.05,.95) skewX(-2deg)}100%{transform:scale(.96,1.1) skewX(5deg)}}
+@keyframes acore{from{opacity:.8;transform:scaleY(.9)}to{opacity:1;transform:scaleY(1.1)}}
+.lamp .glow{position:absolute;left:-10px;top:-6px;width:46px;height:46px;border-radius:50%;background:radial-gradient(circle,rgba(255,170,40,.55),rgba(255,140,0,0) 70%);animation:aglow .6s ease-in-out infinite alternate}
+@keyframes aglow{from{opacity:.65}to{opacity:1}}
 .fx{position:absolute;pointer-events:none;font-style:normal;font-size:18px;line-height:1;z-index:2;filter:drop-shadow(0 0 4px rgba(255,255,255,.8))}
 .fx-pothiyatra{font-size:20px;animation:flame 5s ease-in-out infinite}
 .fx-pothiyatra.f1{left:30%;top:55%}.fx-pothiyatra.f2{left:60%;top:30%;animation-delay:-1.7s;font-size:15px}.fx-pothiyatra.f3{left:80%;top:60%;animation-delay:-3.2s;font-size:13px}
@@ -285,8 +300,9 @@ var CAL_MIN='2010-01-01',CAL_MAX='2027-12-31';
 function calClamp(d){return d<CAL_MIN?CAL_MIN:d>CAL_MAX?CAL_MAX:d}
 function clamp(d){return d<state.tripStart?state.tripStart:d>state.tripEnd?state.tripEnd:d}
 
-var FX={pothiyatra:['🔥',3],pravachan:['🎤',2],flight:['✈️',2],sabha:['🌼',9],katha:['📖',2]};
-function fxEls(t){var f=FX[t],o=[],i;if(!f){for(i=1;i<=12;i++)o.push(h('i',{class:'spark s'+i,'aria-hidden':'true'}));return o}
+var FX={pravachan:['🎤',2],flight:['✈️',2],sabha:['🌼',9],katha:['📖',2]};
+function fxEls(t){var f=FX[t],o=[],i;
+ if(t==='pothiyatra')return h('div',{class:'aarti','aria-hidden':'true'},h('div',{class:'orbit'},h('div',{class:'lamp'},h('div',{class:'glow'}),h('div',{class:'flame'},h('div',{class:'core'})),h('div',{class:'wick'}),h('div',{class:'bowl'}))));if(!f){for(i=1;i<=12;i++)o.push(h('i',{class:'spark s'+i,'aria-hidden':'true'}));return o}
  for(i=1;i<=f[1];i++)o.push(h('i',{class:'fx fx-'+t+' f'+i,'aria-hidden':'true',text:f[0]}));return o}
 function nowPct(e){var n=new Date(),nm=n.getHours()*60+n.getMinutes()+n.getSeconds()/60,st=toMin(e.start),en=e.end?toMin(e.end):st+90;if(st==null||en<=st)return 0;return Math.max(0,Math.min(100,(nm-st)/(en-st)*100)).toFixed(1)}
 function evCard(e,isNow,isNext){
