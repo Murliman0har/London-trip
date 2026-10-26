@@ -422,11 +422,12 @@ function goDay(d){ui.date=d;ui.view='day';render();window.scrollTo(0,0)}
 function inYatra(e){return e.date>=state.tripStart&&e.date<=state.tripEnd}
 function sumView(){
  var root=h('div',{style:'display:flex;flex-direction:column;gap:14px'}),by={};
- var scope=ui.sumScope||'yatra',isY=scope==='yatra',evs=state.events.filter(function(e){return inYatra(e)===isY});
+ var scope=ui.sumScope||'yatra',isY=scope==='yatra',evs=state.events.filter(function(e){return inYatra(e)===isY&&hasSel(e)});
  root.append(h('div',{class:'chips',role:'group','aria-label':'Summary of'},
   [['yatra',T('London Yatra')],['other',T('Other days')]].map(function(x){return h('button',{class:'chip',type:'button','aria-pressed':scope===x[0]?'true':'false',style:'padding:6px 14px',onclick:function(){ui.sumScope=x[0];ui.sumOpen='';render()}},x[1])})));
  if(isY)root.append(h('p',{class:'note',style:'margin:0',text:fmt(state.tripStart,{day:'numeric',month:'short',year:'numeric'})+' – '+fmt(state.tripEnd,{day:'numeric',month:'short',year:'numeric'})}));
  else root.append(h('p',{class:'note',style:'margin:0',text:lang==='gu'?'લંડન યાત્રાના સમયગાળા સિવાયના કાર્યક્રમો':'Events on days outside the London Yatra period.'}));
+ if(ui.sel.length)root.append(h('p',{class:'note',style:'margin:0',text:(lang==='gu'?'સંત પસંદ કરેલા: ':'Showing only: ')+ui.sel.map(sName).filter(Boolean).join(', ')}));
  SUMORDER.forEach(function(k){by[k]=[]});evs.forEach(function(e){(by[e.type]||by.other).push(e)});
  var sers=[],map={};by.parayan.forEach(function(e){var key=e.title+'|'+e.place,o=map[key];if(!o){o=map[key]={title:e.title,place:e.place,date:e.date,end:e.date,n:0};sers.push(o)}o.n++;if(e.date>o.end)o.end=e.date;if(e.date<o.date)o.date=e.date});
  function count(k){return k==='parayan'?sers.length:by[k].length}
