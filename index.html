@@ -3,8 +3,8 @@
 /* Layout: one narrow column, day-at-a-time program with a colour-block time rail on each event. */
 :root{
   --bg:#F3F5F8; --surface:#FFFFFF; --fg:#16202E; --muted:#5B6678; --line:#DDE2EA; --accent:#C2410C; --soft:#E9EDF3;
-  --c-parayan:#C2410C; --c-katha:#A21C5B; --c-patotsav:#92600A; --c-pothiyatra:#7E22CE; --c-padramani:#0E7490;
-  --c-vastu:#2F7D32; --c-sabha:#1D4ED8; --c-flight:#475569; --c-car:#6D4C41; --c-other:#52525B;
+  --c-parayan:#C62828; --c-katha:#A21C5B; --c-patotsav:#92600A; --c-pothiyatra:#E8780E; --c-padramani:#0E7490;
+  --c-vastu:#2F7D32; --c-sabha:#1D4ED8; --c-flight:#2BA3DF; --c-car:#6D4C41; --c-other:#52525B;
   --s-g:#9F1239; --s-hs:#3730A3; --s-mm:#0F766E; --s-hp:#4D7C0F; --s-np:#B45309; --s-ap:#BE185D;
   --now:#0B7A43;
   --display:"Bricolage Grotesque","Noto Sans Gujarati","Trebuchet MS",system-ui,sans-serif; --body:"Figtree","Noto Sans Gujarati",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -42,11 +42,31 @@ button{cursor:pointer}
 .ev.now{border-color:var(--now);box-shadow:0 0 0 2px var(--now)}
 @keyframes nowpulse{0%{box-shadow:0 0 0 2px var(--now),0 0 0 2px rgba(36,160,90,.55)}70%{box-shadow:0 0 0 2px var(--now),0 0 0 12px rgba(36,160,90,0)}100%{box-shadow:0 0 0 2px var(--now),0 0 0 2px rgba(36,160,90,0)}}
 .ev.now{animation:nowpulse 1.8s ease-out infinite}
-.ev.now{position:relative;overflow:visible}
+.ev.now{position:relative;overflow:hidden}
 .ev.now .rail b{animation:nowtxt 1.6s ease-in-out infinite}
 @keyframes nowtxt{0%,100%{text-shadow:0 0 0 rgba(36,160,90,0);color:#fff}50%{text-shadow:0 0 6px #5dff9f,0 0 14px #2ee66f,0 0 26px rgba(46,230,111,.8);color:#eafff1}}
 .ev.now::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(110deg,rgba(46,200,110,0) 30%,rgba(46,200,110,.16) 50%,rgba(46,200,110,0) 70%);background-size:250% 100%;animation:nowsweep 3s linear infinite}
 @keyframes nowsweep{from{background-position:150% 0}to{background-position:-100% 0}}
+
+.fx{position:absolute;pointer-events:none;font-style:normal;font-size:18px;line-height:1;z-index:2;filter:drop-shadow(0 0 4px rgba(255,255,255,.8))}
+.fx-pothiyatra{font-size:20px;animation:flame 5s ease-in-out infinite}
+.fx-pothiyatra.f1{left:30%;top:55%}.fx-pothiyatra.f2{left:60%;top:30%;animation-delay:-1.7s;font-size:15px}.fx-pothiyatra.f3{left:80%;top:60%;animation-delay:-3.2s;font-size:13px}
+@keyframes flame{0%{transform:translate(0,0) scale(1) rotate(-6deg)}20%{transform:translate(28px,-14px) scale(1.2) rotate(6deg)}40%{transform:translate(52px,6px) scale(.9) rotate(-5deg)}60%{transform:translate(18px,16px) scale(1.15) rotate(7deg)}80%{transform:translate(-26px,-6px) scale(1) rotate(-7deg)}100%{transform:translate(0,0) scale(1) rotate(-6deg)}}
+.fx-pravachan{font-size:24px;animation:mic 1.1s ease-in-out infinite}
+.fx-pravachan.f1{right:12%;top:46%}.fx-pravachan.f2{right:30%;top:14%;font-size:15px;animation-delay:-.5s;opacity:.8}
+@keyframes mic{0%,100%{transform:scale(1) rotate(-8deg)}50%{transform:scale(1.28) rotate(8deg)}}
+.fx-pravachan.f1::before,.fx-pravachan.f1::after{content:'';position:absolute;left:50%;top:50%;width:100%;height:100%;border:2px solid rgba(220,40,40,.65);border-radius:50%;transform:translate(-50%,-50%) scale(1);animation:ring 1.4s ease-out infinite}
+.fx-pravachan.f1::after{animation-delay:.7s}
+@keyframes ring{to{transform:translate(-50%,-50%) scale(2.6);opacity:0}}
+.fx-flight{font-size:22px;top:25%;animation:fly 5s linear infinite}
+.fx-flight.f2{top:62%;font-size:15px;animation-delay:-2.5s;animation-duration:7s;opacity:.85}
+@keyframes fly{from{left:-8%;transform:translateY(8px) rotate(-8deg)}50%{transform:translateY(-8px) rotate(-8deg)}to{left:104%;transform:translateY(8px) rotate(-8deg)}}
+.fx-sabha{top:-10%;animation:petal 4.5s linear infinite}
+.fx-sabha.f1{left:12%;animation-delay:0s}.fx-sabha.f2{left:24%;animation-delay:-1.2s;font-size:14px}.fx-sabha.f3{left:38%;animation-delay:-2.6s}.fx-sabha.f4{left:50%;animation-delay:-.7s;font-size:13px}.fx-sabha.f5{left:62%;animation-delay:-3.4s}.fx-sabha.f6{left:72%;animation-delay:-1.9s;font-size:15px}.fx-sabha.f7{left:82%;animation-delay:-4s}.fx-sabha.f8{left:92%;animation-delay:-2.2s;font-size:13px}.fx-sabha.f9{left:46%;animation-delay:-3.8s;font-size:16px}
+@keyframes petal{0%{transform:translate(0,0) rotate(0);opacity:0}10%{opacity:1}50%{transform:translate(14px,45px) rotate(180deg)}100%{transform:translate(-10px,110px) rotate(360deg);opacity:0}}
+.fx-katha{font-size:24px;animation:book 2.4s ease-in-out infinite}
+.fx-katha.f1{right:10%;top:42%}.fx-katha.f2{right:34%;top:12%;font-size:15px;animation-delay:-1.2s;opacity:.8}
+@keyframes book{0%,100%{transform:translateY(0) rotateY(0)}25%{transform:translateY(-5px) rotateY(40deg)}50%{transform:translateY(0) rotateY(0) scale(1.12)}75%{transform:translateY(-5px) rotateY(-40deg)}}
 .spark{position:absolute;width:7px;height:7px;pointer-events:none;background:#ffd84a;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);opacity:0;animation:twinkle 2.4s ease-in-out infinite;filter:drop-shadow(0 0 3px #ffe27a)}
 @keyframes twinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1.3) rotate(90deg)}}
 .spark.s1{left:18%;top:30%;animation-delay:0.0s}.spark.s2{left:30%;top:70%;animation-delay:0.4s}.spark.s3{left:42%;top:22%;animation-delay:0.7s}.spark.s4{left:55%;top:62%;animation-delay:1.1s}.spark.s5{left:66%;top:30%;animation-delay:1.5s}.spark.s6{left:78%;top:72%;animation-delay:1.9s}.spark.s7{left:88%;top:26%;animation-delay:2.2s}.spark.s8{left:24%;top:50%;animation-delay:0.2s}.spark.s9{left:48%;top:45%;animation-delay:0.6s}.spark.s10{left:72%;top:50%;animation-delay:0.9s}.spark.s11{left:36%;top:82%;animation-delay:1.3s}.spark.s12{left:84%;top:48%;animation-delay:1.7s}
@@ -103,8 +123,8 @@ button{cursor:pointer}
 :root{ color-scheme:light;
   --bg:#fff8eb; --surface:#fffdf8; --fg:#3f2414; --muted:#80664f; --line:#ead7b5;
   --accent:#b85b16; --soft:#f7e8ca; --now:#247447;
-  --c-parayan:#b85b16; --c-katha:#9b3568; --c-patotsav:#9a6a12; --c-pothiyatra:#7950a5;
-  --c-padramani:#167b83; --c-vastu:#3b7c43; --c-sabha:#315da8; --c-flight:#586579;
+  --c-parayan:#C62828; --c-katha:#9b3568; --c-patotsav:#9a6a12; --c-pothiyatra:#E8780E;
+  --c-padramani:#167b83; --c-vastu:#3b7c43; --c-sabha:#315da8; --c-flight:#2BA3DF;
   --c-car:#85533a; --c-other:#6d5b4c; --c-pravachan:#66771c;
 }
 body{
@@ -215,7 +235,7 @@ var FONT_LINK='<link rel="stylesheet" href="https://fonts.googleapis.com/css2?fa
 var SKEL_A='<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>\n';
 var SKEL_B='</body></html>';
 var state=JSON.parse(document.getElementById('seed').textContent);
-var TYPES={parayan:'Parayan',katha:'Katha',patotsav:'Patotsav',pothiyatra:'Pothiyatra',padramani:'Padramani',vastu:'Vastu',sabha:'Utsav',pravachan:'Pravachan',flight:'Flight',car:'Mandir shift',other:'Other'};
+var TYPES={parayan:'Parayan',katha:'Katha',patotsav:'Patotsav',pothiyatra:'Aarti Niyam',padramani:'Padramani',vastu:'Vastu',sabha:'Utsav',pravachan:'Pravachan',flight:'Flight',car:'Mandir shift',other:'Other'};
 var RIDE=['car','padramani','vastu','flight','sabha','pravachan'];
 var YAJ=['parayan','vastu','padramani'];
 var CARS={c1:'Car 1',c2:'Car 2',both:'Both cars'};
@@ -225,7 +245,7 @@ var lang='en';try{lang=localStorage.getItem('lang')==='gu'?'gu':'en'}catch(x){}
 var GU={'Sunny':'તડકો','Mostly sunny':'મોટે ભાગે તડકો','Partly cloudy':'આંશિક વાદળછાયું','Mostly cloudy':'મોટે ભાગે વાદળછાયું','Overcast':'ઘેરાયેલું આકાશ','Clear night':'સ્વચ્છ રાત્રિ','Mostly clear':'મોટે ભાગે સ્વચ્છ','Cloud cover':'વાદળ આવરણ','Finding your location…':'તમારું સ્થાન શોધી રહ્યા છીએ…','Location is blocked. Allow location for this site to see the weather where you are.':'સ્થાન બંધ છે. તમે જ્યાં છો ત્યાંનું હવામાન જોવા આ સાઇટ માટે સ્થાનની પરવાનગી આપો.','This device cannot share its location.':'આ ઉપકરણ સ્થાન આપી શકતું નથી.','Could not find your location.':'તમારું સ્થાન મળ્યું નથી.','Show weather here':'અહીંનું હવામાન બતાવો','Nothing planned for this day. Use Add event below.':'આ દિવસ માટે કંઈ આયોજન નથી. નીચે "કાર્યક્રમ ઉમેરો" વાપરો.','Add event':'કાર્યક્રમ ઉમેરો','Edit event':'કાર્યક્રમ સુધારો','No changes':'કોઈ ફેરફાર નથી','Saving':'સાચવી રહ્યા છીએ','Save and publish':'સાચવો અને પ્રકાશિત કરો','Type':'પ્રકાર','Title':'શીર્ષક','Date':'તારીખ','Last day (multi-day only)':'છેલ્લો દિવસ (ઘણા દિવસ માટે જ)','Start time':'શરૂ સમય','End time':'પૂર્ણ સમય','Place':'સ્થળ','Session':'સત્ર','Not set':'નક્કી નથી','Morning':'સવાર','Evening':'સાંજ','Vakta leading':'વક્તા','Shastra':'શાસ્ત્ર','Part of the Shastra':'શાસ્ત્રનો ભાગ','Yajman':'યજમાન','Shifting from':'ક્યાંથી','Shifting to':'ક્યાં સુધી','Car':'ગાડી','Both cars':'બંને ગાડી','Car 1':'ગાડી ૧','Car 2':'ગાડી ૨','Driver':'ડ્રાઇવર','Driver contact number':'ડ્રાઇવરનો નંબર','Flight number':'ફ્લાઇટ નંબર','From':'ક્યાંથી','To':'ક્યાં','Saints':'સંતો','Notes':'નોંધ','Done':'પૂર્ણ','Cancel':'રદ કરો','Delete':'કાઢી નાખો','Tours':'યાત્રાઓ','London Tour':'લંડન યાત્રા','London Yatra':'લંડન યાત્રા','Other days':'અન્ય દિવસો','Events':'કાર્યક્રમો','Days with events':'કાર્યક્રમવાળા દિવસો','Places':'સ્થળો','Outside London Yatra':'લંડન યાત્રા સિવાય','Day':'દિવસ','Whole tour':'સંપૂર્ણ યાત્રા','Saints and cars':'સંતો અને કાર','Summary':'સારાંશ','sessions':'સત્રો','days':'દિવસ','Days on tour':'યાત્રાના દિવસો','Stops':'સ્થળો','Different mandirs':'જુદા જુદા મંદિરો','Still to fill in':'હજી ભરવાનું બાકી','Vakta not chosen':'વક્તા નક્કી નથી','Shastra not chosen':'શાસ્ત્ર નક્કી નથી','Driver not added':'ડ્રાઇવર ઉમેર્યા નથી','Pictures added':'ઉમેરેલા ચિત્રો','Tap a box to see the list.':'યાદી જોવા બોક્સ પર ટેપ કરો.','Nothing noted yet.':'હજી કંઈ નોંધ્યું નથી.','of':'માંથી','Today':'આજે','Where we are':'અત્યારે ક્યાં છીએ','Happening now':'અત્યારે ચાલુ','Up next':'હવે પછી','Everyone':'બધા','Place':'સ્થળ','Session':'સત્ર','Vakta':'વક્તા','Shastra':'શાસ્ત્ર','Portion':'ભાગ','Route':'માર્ગ','Car':'કાર','Driver':'ડ્રાઇવર','Contact':'સંપર્ક','Flight':'ફ્લાઇટ','Yajman':'યજમાન','Notes':'નોંધ','To be chosen':'નક્કી કરવાનું બાકી','To be added':'ઉમેરવાનું બાકી','Number to be added':'નંબર ઉમેરવાનો બાકી','Morning':'સવાર','Evening':'સાંજ','time TBC':'સમય નક્કી નથી','All day':'આખો દિવસ','All six saints':'બધા છ સંતો','Copy':'નકલ કરો','Copied':'નકલ થઈ','Travel':'પ્રવાસ','The six saints':'છ સંતો','Colour key':'રંગ સૂચિ','Guru and leader':'ગુરુ અને નેતા','Elder saint':'વડીલ સંત','Mandir Tour Program':'મંદિર યાત્રા કાર્યક્રમ','Nothing planned for this day yet.':'આ દિવસ માટે હજી કંઈ આયોજન નથી.','Times are local to where the saints are. Refresh the page to see the latest changes.':'સમય સંતો જ્યાં હોય ત્યાંના સ્થાનિક સમય મુજબ છે. નવા ફેરફાર જોવા પેજ રિફ્રેશ કરો.','This date is outside the tour (22 Dec 2026 to 19 Jun 2027).':'આ તારીખ યાત્રાની બહાર છે (૨૨ ડિસેમ્બર ૨૦૨૬ થી ૧૯ જૂન ૨૦૨૭).'};
 var GN={g:'જ્ઞાનપ્રકાશ દાસ સ્વામી',hs:'હરિસેવક દાસજી',mm:'મુરલીમનોહર દાસ',hp:'હરિપ્રસાદ દાસ',np:'નિત્યપ્રકાશ દાસ',ap:'આનંદપ્રકાશ દાસ'};
 var GS={g:'જ્ઞાનપ્રકાશ',hs:'હરિસેવક',mm:'મુરલીમનોહર',hp:'હરિપ્રસાદ',np:'નિત્યપ્રકાશ',ap:'આનંદપ્રકાશ'};
-var TG={parayan:'પારાયણ',katha:'કથા',patotsav:'પાટોત્સવ',pothiyatra:'પોથીયાત્રા',padramani:'પધરામણી',vastu:'વાસ્તુ',sabha:'ઉત્સવ',pravachan:'પ્રવચન',flight:'ફ્લાઇટ',car:'મંદિર સ્થળાંતર',other:'અન્ય'};
+var TG={parayan:'પારાયણ',katha:'કથા',patotsav:'પાટોત્સવ',pothiyatra:'આરતી નિયમ',padramani:'પધરામણી',vastu:'વાસ્તુ',sabha:'ઉત્સવ',pravachan:'પ્રવચન',flight:'ફ્લાઇટ',car:'મંદિર સ્થળાંતર',other:'અન્ય'};
 var CG={c1:'કાર 1',c2:'કાર 2',both:'બંને કાર'};
 var PL={'Harrow Mandir':'હેરો મંદિર','Wilsden Mandir':'વિલ્સડન મંદિર','Stanmore Mandir':'સ્ટેનમોર મંદિર','Woolwich Mandir':'વૂલવિચ મંદિર','East London Mandir':'ઈસ્ટ લંડન મંદિર','Cardiff Mandir':'કાર્ડિફ મંદિર','Bolton Mandir':'બોલ્ટન મંદિર','Oldham Mandir':'ઓલ્ડહામ મંદિર','ISSO Mandir':'ISSO મંદિર','Mariestad Temple':'મારિયેસ્ટાદ મંદિર','Jönköping Temple':'યોન્શોપિંગ મંદિર','Harrow':'હેરો','Wilsden':'વિલ્સડન','Stanmore':'સ્ટેનમોર','Woolwich':'વૂલવિચ','East London':'ઈસ્ટ લંડન','Cardiff':'કાર્ડિફ','Bolton':'બોલ્ટન','Oldham':'ઓલ્ડહામ','ISSO':'ISSO','Heathrow':'હીથ્રો','London Heathrow':'લંડન હીથ્રો','London':'લંડન','India':'ભારત','Gambia':'ગામ્બિયા','Senegal':'સેનેગલ','Sweden':'સ્વીડન','Dubai':'દુબઈ','London, UK':'લંડન, યુકે','Bradford, UK':'બ્રેડફોર્ડ, યુકે','Wales, UK':'વેલ્સ, યુકે','UK':'યુકે','UAE':'યુએઈ','Departure from India':'ભારતથી પ્રસ્થાન','Parayan':'પારાયણ','Patotsav':'પાટોત્સવ','Katha':'કથા','Pothiyatra':'પોથીયાત્રા','Depart India for London':'ભારતથી લંડન પ્રસ્થાન','Trip ends: return from Dubai':'યાત્રા પૂર્ણ: દુબઈથી પરત','Add ticket details':'ટિકિટની વિગતો ઉમેરવી'};
 function T(k){return lang==='gu'&&GU[k]!=null?GU[k]:k}
@@ -265,6 +285,9 @@ var CAL_MIN='2010-01-01',CAL_MAX='2027-12-31';
 function calClamp(d){return d<CAL_MIN?CAL_MIN:d>CAL_MAX?CAL_MAX:d}
 function clamp(d){return d<state.tripStart?state.tripStart:d>state.tripEnd?state.tripEnd:d}
 
+var FX={pothiyatra:['🔥',3],pravachan:['🎤',2],flight:['✈️',2],sabha:['🌼',9],katha:['📖',2]};
+function fxEls(t){var f=FX[t],o=[],i;if(!f){for(i=1;i<=12;i++)o.push(h('i',{class:'spark s'+i,'aria-hidden':'true'}));return o}
+ for(i=1;i<=f[1];i++)o.push(h('i',{class:'fx fx-'+t+' f'+i,'aria-hidden':'true',text:f[0]}));return o}
 function nowPct(e){var n=new Date(),nm=n.getHours()*60+n.getMinutes()+n.getSeconds()/60,st=toMin(e.start),en=e.end?toMin(e.end):st+90;if(st==null||en<=st)return 0;return Math.max(0,Math.min(100,(nm-st)/(en-st)*100)).toFixed(1)}
 function evCard(e,isNow,isNext){
  var tl=timeLabel(e),kv=[];
@@ -280,7 +303,7 @@ function evCard(e,isNow,isNext){
  var allIds=state.saints.map(function(s){return s.id});
  var everyone=allIds.every(function(i){return e.saints.indexOf(i)>-1});
  return h('article',{class:'ev t-'+e.type+(isNow?' now':'')},
-  isNow?[1,2,3,4,5,6,7,8,9,10,11,12].map(function(i){return h('i',{class:'spark s'+i,'aria-hidden':'true'})}):null,
+  isNow?fxEls(e.type):null,
   h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'height:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null),
   h('div',{class:'body'},
    h('div',{class:'top'},h('span',{class:'tag',text:typeLabel(e.type)}),isNow?h('span',{class:'pill now',text:T('Happening now')}):null,isNext?h('span',{class:'pill next',text:T('Up next')}):null),
