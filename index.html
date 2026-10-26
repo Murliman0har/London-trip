@@ -666,6 +666,7 @@ function openForm(ev){
  var saintOpts=[['','Not chosen']].concat(state.saints.map(function(s){return[s.id,s.name]}));
  var typeSel=sel(Object.keys(TYPES).map(function(k){return[k,TYPES[k]]}),e.type);
  var groups={};
+ var pkindSel=sel([['one','Single session'],['panchah','Panchah Parayan (5 days)'],['saptah','Saptah Parayan (7 days)']],'one');
  function grp(name,kids){var g=h('div',{style:'display:flex;flex-direction:column;gap:12px'},kids);groups[name]=g;return g}
  var checks=h('div',{class:'checks'},state.saints.map(function(s){var c=h('input',{type:'checkbox',value:s.id});c.checked=e.saints.indexOf(s.id)>-1;return h('label',{},c,av(s.id),short(s))}));
  e.photos=e.photos||[];
@@ -686,6 +687,10 @@ function openForm(ev){
   h('div',{class:'two'},field('date',T('Date'),inp('date','date',e.date)),field('endDate',T('Last day (multi-day only)'),inp('endDate','date',e.endDate))),
   h('div',{class:'two'},field('start',T('Start time'),inp('start','time',e.start)),field('end',T('End time'),inp('end','time',e.end))),
   field('place',T('Place'),inp('place','text',e.place)),
+  grp('pk',[field('pkind','Parayan type',pkindSel)]),
+  grp('ser',[h('p',{class:'note',style:'margin:0',text:'Every day has Morning and Evening sessions. The last day has only the Morning session. Choose the Vakta and part of the Shastra for each session afterwards.'}),
+   h('div',{class:'two'},field('mS','Morning start',inp('mS','time','')),field('mE','Morning end',inp('mE','time',''))),
+   h('div',{class:'two'},field('eS','Evening start',inp('eS','time','')),field('eE','Evening end',inp('eE','time','')))]),
   grp('parayan',[field('session',T('Session'),sel([['',T('Not set')],['morning',T('Morning')],['evening',T('Evening')]],e.session)),field('vakta',T('Vakta leading'),sel(saintOpts,e.vakta)),field('shastra',T('Shastra'),inp('shastra','text',e.shastra)),field('portion',T('Part of the Shastra'),inp('portion','text',e.portion))]),
   grp('yajman',[field('yajman',T('Yajman'),inp('yajman','text',e.yajman))]),
   grp('shift',[h('div',{class:'two'},field('from',T('Shifting from'),inp('from','text',e.from)),field('to',T('Shifting to'),inp('to','text',e.to)))]),
@@ -697,7 +702,13 @@ function openForm(ev){
   h('div',{class:'row',style:'justify-content:space-between'},
    h('div',{class:'row'},h('button',{class:'btn pri',type:'submit'},T('Done')),h('button',{class:'btn',type:'button',onclick:function(){modal.remove()}},T('Cancel')))));
  function sync(){var t=typeSel.value;groups.parayan.hidden=t!=='parayan'&&t!=='pravachan';groups.yajman.hidden=YAJ.indexOf(t)<0;groups.shift.hidden=t!=='car';groups.ride.hidden=RIDE.indexOf(t)<0;groups.flight.hidden=t!=='flight'}
- typeSel.addEventListener('change',sync);sync();
+ function wrap(el){return el.parentNode}
+ function isSer(){return isNew&&typeSel.value==='parayan'&&pkindSel.value!=='one'}
+ function sync2(){sync();var t=typeSel.value,ser=isSer();
+  groups.pk.hidden=!(isNew&&t==='parayan');groups.ser.hidden=!ser;
+  wrap(F.endDate).hidden=ser;wrap(F.start).parentNode.hidden=ser;wrap(F.session).hidden=ser;wrap(F.vakta).hidden=ser;wrap(F.portion).hidden=ser;
+  var dl=wrap(F.date).querySelector('label');if(dl)dl.textContent=ser?'Start date':T('Date')}
+ typeSel.addEventListener('change',sync2);pkindSel.addEventListener('change',sync2);sync2();
  function commit(){
   var t=typeSel.value;
   e.type=t;e.title=F.title.value.trim();e.date=F.date.value;e.endDate=F.endDate.value&&F.endDate.value>F.date.value?F.endDate.value:'';
@@ -707,6 +718,15 @@ function openForm(ev){
   e.yajman=F.yajman.value.trim();e.car=F.car.value;e.driver=F.driver.value.trim();e.phone=F.phone.value.trim();e.flight=F.flight.value.trim();
   if(t==='car'){e.from=F.from.value.trim();e.to=F.to.value.trim()}else if(t==='flight'){e.from=F.from2.value.trim();e.to=F.to2.value.trim()}
   if(!e.date){F.date.focus();return}
+  if(isSer()){
+   var kind=pkindSel.value,N=kind==='saptah'?7:5,base=Date.now(),k=0,ttl=e.title||((e.place?e.place+' ':'')+(kind==='saptah'?'Saptah':'Panchah')+' Parayan'),first=e.date;
+   for(var di=0;di<N;di++){
+    [['morning',F.mS.value,F.mE.value],['evening',F.eS.value,F.eE.value]].forEach(function(ss){
+     if(ss[0]==='evening'&&di===N-1)return;
+     var x=JSON.parse(JSON.stringify(e));x.id='e'+base+'s'+(k++);x.type='parayan';x.title=ttl;x.date=addDays(first,di);x.endDate='';x.session=ss[0];x.start=ss[1];x.end=ss[2];x.vakta='';x.portion='';x.pk=kind;
+     state.events.push(x)})}
+   state.events.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0});
+   ui.dirty++;ui.date=first;modal.remove();render();return}
   if(isNew)state.events.push(e);else state.events=state.events.map(function(x){return x.id===e.id?e:x});
   state.events.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0});
   ui.dirty++;ui.date=e.date;modal.remove();render()}
