@@ -224,6 +224,8 @@ body{
 .tab[aria-selected="true"]{color:#8b3c12;background:#fffdf8;box-shadow:0 2px 5px rgba(112,65,16,.13)}
 .place{border-color:#e5c68b;background:linear-gradient(120deg,#fffdf8,#fff3d8)}
 .place .where{color:#8b3c12}
+.place.pat{border-color:#e8a5a0;background:linear-gradient(120deg,#fff5f4,#fde0dd)}
+.place .patl{font-weight:700;color:#b3261e}
 .ev,.card,.stay,.empty{box-shadow:0 2px 8px rgba(91,56,20,.035)}
 .ev{border-color:#ead7b5}
 .rail{background:linear-gradient(160deg,var(--c),color-mix(in srgb,var(--c) 78%,#6b330d))}
@@ -260,6 +262,8 @@ body{
 :root[data-theme=dark] .tabs{border-color:#4b3725;background:#2b1e13}
 :root[data-theme=dark] .tab[aria-selected="true"]{color:#ffd9a3;background:#3d2b19}
 :root[data-theme=dark] .place{border-color:#5a4026;background:linear-gradient(120deg,#241911,#31220f)}
+:root[data-theme=dark] .place.pat{border-color:#7a3430;background:linear-gradient(120deg,#2a1513,#3a1b18)}
+:root[data-theme=dark] .place .patl{color:#ff9a92}
 :root[data-theme=dark] .ev{border-color:#4b3725}
 :root[data-theme=dark] .ev,:root[data-theme=dark] .card,:root[data-theme=dark] .stay,:root[data-theme=dark] .empty{box-shadow:0 2px 10px rgba(0,0,0,.35)}
 :root[data-theme=dark] .bar{background:rgba(36,25,17,.96);border-color:#4b3725}
@@ -381,12 +385,13 @@ function dayView(){
   var meta=[tr(st.region)];if(st.start!==st.end)meta.push(gu?'અહીં '+dayOf(k,n):'Day '+k+' of '+n+' here');
   if(d===st.start&&prev&&prev.place!==st.place)meta.push(gu?tr(prev.place)+' થી આગમન':'Arriving from '+prev.place);
   var nx=state.stays[idx+1];if(d===st.end&&nx)meta.push(gu?'આજે '+tr(nx.place)+' તરફ પ્રસ્થાન':'Moving to '+nx.place+' today');
-  root.append(h('div',{class:'place'},h('div',{class:'meta',text:T('Where we are')}),h('div',{class:'where',text:tr(st.place)}),h('div',{class:'meta',text:meta.join(' · ')})));}
+  var pts=patOn(d);
+  root.append(h('div',{class:'place'+(pts.length?' pat':'')},h('div',{class:'meta',text:T('Where we are')}),h('div',{class:'where',text:tr(st.place)}),h('div',{class:'meta',text:meta.join(' · ')}),
+   pts.map(function(p){var pn=diff(p.start,p.end)+1,pk=diff(p.start,d)+1;
+    return h('div',{class:'row',style:'align-items:center;justify-content:space-between;gap:8px;margin-top:6px'},
+     h('span',{class:'patl',text:'\u{1FA94} '+(tr(p.title)||typeLabel('patotsav'))+' \u00b7 '+(lang==='gu'?dayOf(pk,pn):'Day '+pk+' of '+pn)}),
+     ui.canEdit?h('button',{class:'btn sm',type:'button',onclick:function(){openPat(p)}},'Edit'):null)})));}
 
- patOn(d).forEach(function(p){var n=diff(p.start,p.end)+1,k=diff(p.start,d)+1;
-  root.append(h('div',{class:'place t-patotsav',style:'border-left:5px solid var(--c-patotsav)'},h('div',{class:'meta',text:typeLabel('patotsav')}),h('div',{class:'where',text:tr(p.title)||typeLabel('patotsav')}),
-   h('div',{class:'meta',text:(p.place?tr(p.place)+' · ':'')+(lang==='gu'?dayOf(k,n):'Day '+k+' of '+n)}),
-   ui.canEdit?h('div',{class:'row'},h('button',{class:'btn sm',type:'button',onclick:function(){openPat(p)}},'Edit')):null))});
  var evs=evsOn(d).slice().sort(function(a,b){return sortKey(a)-sortKey(b)});
  var now=new Date(),nm=now.getHours()*60+now.getMinutes(),isToday=d===today(),nowId=null,nextId=null;
  if(isToday){evs.forEach(function(e){var s=toMin(e.start);if(s==null)return;var en=e.end?toMin(e.end):s+90;if(s<=nm&&nm<en&&!nowId)nowId=e.id;else if(s>nm&&!nextId)nextId=e.id});}
