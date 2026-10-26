@@ -664,8 +664,10 @@ function openForm(ev){
     var files=[].slice.call(ev.target.files);ev.target.value='';var n=0;pstat.textContent='Uploading...';
     files.reduce(function(p,f){return p.then(function(){return shrink(f).then(function(b){return ui.assets.upload(b)}).then(function(r){e.photos.push({id:r.id});n++;drawThumbs()}).catch(function(){pstat.textContent='One picture could not be uploaded.'})})},Promise.resolve()).then(function(){if(n)pstat.textContent=n+' added. Press Done, then Save and publish.'})}}):h('span',{class:'note',text:'Picture upload needs editor access.'}),pstat);
  var modal=h('div',{class:'modal',role:'dialog','aria-modal':'true','aria-label':isNew?T('Add event'):T('Edit event')});
+ var delBtn=h('button',{class:'btn danger',type:'button',title:T('Delete'),'aria-label':T('Delete'),style:'padding:6px 9px;line-height:0',onclick:function(){if(!confirm(lang==='gu'?'આ કાર્યક્રમ કાઢી નાખવો છે?':'Delete this event?'))return;state.events=state.events.filter(function(x){return x.id!==e.id});ui.dirty++;modal.remove();render()}});
+ delBtn.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>';
  var form=h('form',{class:'form',onsubmit:function(x){x.preventDefault();commit()}},
-  h('h2',{text:isNew?T('Add event'):T('Edit event')}),
+  h('div',{class:'row',style:'align-items:center;gap:10px'},isNew?null:delBtn,h('h2',{style:'margin:0',text:isNew?T('Add event'):T('Edit event')})),
   field('type',T('Type'),typeSel),
   field('title',T('Title'),inp('title','text',e.title)),
   h('div',{class:'two'},field('date',T('Date'),inp('date','date',e.date)),field('endDate',T('Last day (multi-day only)'),inp('endDate','date',e.endDate))),
@@ -680,8 +682,7 @@ function openForm(ev){
   field('notes',T('Notes'),h('textarea',{rows:'2',text:e.notes||''})),
   pics,
   h('div',{class:'row',style:'justify-content:space-between'},
-   h('div',{class:'row'},h('button',{class:'btn pri',type:'submit'},T('Done')),h('button',{class:'btn',type:'button',onclick:function(){modal.remove()}},T('Cancel'))),
-   isNew?null:h('button',{class:'btn danger',type:'button',onclick:function(){state.events=state.events.filter(function(x){return x.id!==e.id});ui.dirty++;modal.remove();render()}},T('Delete'))));
+   h('div',{class:'row'},h('button',{class:'btn pri',type:'submit'},T('Done')),h('button',{class:'btn',type:'button',onclick:function(){modal.remove()}},T('Cancel')))));
  function sync(){var t=typeSel.value;groups.parayan.hidden=t!=='parayan'&&t!=='pravachan';groups.yajman.hidden=YAJ.indexOf(t)<0;groups.shift.hidden=t!=='car';groups.ride.hidden=RIDE.indexOf(t)<0;groups.flight.hidden=t!=='flight'}
  typeSel.addEventListener('change',sync);sync();
  function commit(){
