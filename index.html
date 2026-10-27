@@ -320,7 +320,9 @@ body{
 @keyframes aoy{from{transform:translateY(-48px) scale(.72)}to{transform:translateY(48px) scale(.72)}}
 @media (prefers-reduced-motion:reduce){.aarti .orbit,.aarti .lamp,.aarti .idol img{animation:none!important}.aarti .lamp{transform:translateY(-48px) scale(.72)}}
 
-.ev.t-katha,.ev.t-vastu{position:relative}
+.ev.t-katha,.ev.t-vastu,.ev.t-padramani{position:relative}
+.ev.t-padramani .body{padding-right:150px;min-height:96px}
+.ksticker.k-padramani{width:138px;bottom:8px}
 .ev.t-katha .body{padding-right:128px;min-height:112px}
 .ev.t-vastu .body{padding-right:146px;min-height:92px}
 .ksticker.k-vastu{width:134px;bottom:6px}
@@ -404,7 +406,7 @@ function fxEls(t){var f=FX[t],o=[],i;
  if(t==='pothiyatra')return h('div',{class:'aarti','aria-hidden':'true'},KRISHNA(),h('div',{class:'orbit'},h('div',{class:'lamp'},h('div',{class:'glow'}),h('div',{class:'flame'},h('div',{class:'core'})),h('div',{class:'wick'}),h('div',{class:'bowl'}))));if(!f){for(i=1;i<=12;i++)o.push(h('i',{class:'spark s'+i,'aria-hidden':'true'}));return o}
  for(i=1;i<=f[1];i++)o.push(h('i',{class:'fx fx-'+t+' f'+i,'aria-hidden':'true',text:f[0]}));return o}
 function nowPct(e){var n=new Date(),nm=n.getHours()*60+n.getMinutes()+n.getSeconds()/60,st=toMin(e.start),en=e.end?toMin(e.end):st+90;if(st==null||en<=st)return 0;return Math.max(0,Math.min(100,(nm-st)/(en-st)*100)).toFixed(1)}
-var STK={katha:'katha-sticker.webp',vastu:'vastu-sticker.webp'};
+var STK={katha:'katha-sticker.webp',vastu:'vastu-sticker.webp',padramani:'padramani-sticker.webp'};
 function evCard(e,isNow,isNext){
  var tl=timeLabel(e),kv=[];
  function add(k,v){if(v)kv.push(h('dt',{text:T(k)}),h('dd',{text:v}))}
