@@ -1,6 +1,6 @@
 // Offline shell for the Mandir Tour Program. Program data is never cached here
 // (it comes from the database and is kept on the device by the page after sign-in).
-const CACHE = 'mandir-tour-v24';
+const CACHE = 'mandir-tour-v25';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './tithi-l.json', './tithi-i-2026.json', './tithi-i-2027.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
