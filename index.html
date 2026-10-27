@@ -1,4 +1,27 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><meta name="color-scheme" content="only light"><meta name="theme-color" content="#a94712"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="કાર્યક્રમ"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><meta name="color-scheme" content="only light"><meta name="theme-color" content="#a94712"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="કાર્યક્રમ"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+.carfx{position:absolute;left:0;right:0;bottom:0;height:30px;pointer-events:none;overflow:hidden}
+.carfx .road{position:absolute;left:0;right:0;bottom:5px;height:2px;opacity:.55;background-image:repeating-linear-gradient(90deg,var(--c,#777) 0 14px,transparent 14px 28px);animation:roadmv .45s linear infinite}
+.carfx .car{position:absolute;bottom:6px;left:-12%;font-size:22px;line-height:1;animation:carrun 5.5s linear infinite;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
+.carfx .cbob{display:inline-block;transform:scaleX(-1);animation:carbob .35s ease-in-out infinite}
+@keyframes roadmv{to{background-position:-28px 0}}
+@keyframes carrun{0%{left:-12%}100%{left:106%}}
+@keyframes carbob{0%,100%{translate:0 0}50%{translate:0 -1.5px}}
+.ev.now.t-car .body,.ev.now.t-padramani .body{padding-bottom:32px}
+.stovefx{position:absolute;right:8px;top:6px;width:84px;height:88px;pointer-events:none}
+.ev.now.t-vastu .body{padding-right:92px;min-height:84px}
+.stovefx .sm circle{fill:#9aa3ad;opacity:0;transform-box:fill-box;transform-origin:center;animation:steam 2.4s ease-out infinite}
+.stovefx .sm .p2{animation-delay:.6s}.stovefx .sm .p3{animation-delay:1.2s}.stovefx .sm .p4{animation-delay:1.8s}
+@keyframes steam{0%{opacity:0;transform:translate(0,6px) scale(.5)}25%{opacity:.75}100%{opacity:0;transform:translate(6px,-26px) scale(1.9)}}
+.stovefx .lid{transform-box:fill-box;transform-origin:left bottom;animation:lidwig 1.1s ease-in-out infinite}
+@keyframes lidwig{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-1.5px) rotate(-2deg)}}
+.stovefx .bub circle{fill:#fff;opacity:.0;transform-box:fill-box;transform-origin:center;animation:bubb 1s ease-in-out infinite}
+.stovefx .bub circle:nth-child(2){animation-delay:.35s}.stovefx .bub circle:nth-child(3){animation-delay:.7s}
+@keyframes bubb{0%{opacity:0;transform:translateY(6px) scale(.5)}50%{opacity:.85}100%{opacity:0;transform:translateY(-4px) scale(1.2)}}
+.stovefx .fl path{transform-box:fill-box;transform-origin:center bottom;animation:flick .5s ease-in-out infinite alternate}
+.stovefx .fl .f2{animation-delay:.12s}.stovefx .fl .f3{animation-delay:.24s}.stovefx .fl .f4{animation-delay:.06s}
+@keyframes flick{from{transform:scale(.9,.8)}to{transform:scale(1.1,1.2)}}
+@media (prefers-reduced-motion:reduce){.carfx .car,.carfx .road,.carfx .cbob,.stovefx *{animation:none!important}}
+</style></head><body>
 <title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover"><style id="css">
 /* Layout: one narrow column, day-at-a-time program with a colour-block time rail on each event. */
 :root{
@@ -344,7 +367,10 @@ function calClamp(d){return d<CAL_MIN?CAL_MIN:d>CAL_MAX?CAL_MAX:d}
 function clamp(d){return d<state.tripStart?state.tripStart:d>state.tripEnd?state.tripEnd:d}
 
 var FX={pravachan:['🎤',2],flight:['✈️',2],sabha:['🌼',9],katha:['📖',2]};
+var STOVE='<svg viewBox="0 0 80 84" width="84" height="88" aria-hidden="true"><g class="sm"><circle class="p1" cx="34" cy="30" r="5"/><circle class="p2" cx="44" cy="30" r="6"/><circle class="p3" cx="39" cy="30" r="4"/><circle class="p4" cx="48" cy="30" r="3.5"/></g><g class="lid"><rect x="20" y="33" width="40" height="5" rx="2.5" fill="#9aa3ad"/><rect x="36" y="29" width="8" height="5" rx="2" fill="#6b7480"/></g><rect x="22" y="38" width="36" height="20" rx="4" fill="#c9ced6"/><rect x="16" y="43" width="7" height="4" rx="2" fill="#8d96a1"/><rect x="57" y="43" width="7" height="4" rx="2" fill="#8d96a1"/><g class="bub"><circle cx="30" cy="38" r="2"/><circle cx="40" cy="37" r="2.4"/><circle cx="50" cy="38" r="1.8"/></g><rect x="14" y="66" width="52" height="10" rx="3" fill="#4a4f57"/><rect x="18" y="60" width="44" height="3" rx="1.5" fill="#2f3339"/><g class="fl"><path class="f1" d="M26 60c-4-4-1-8 1-10 0 4 3 4 3 7 0 2-2 3-4 3z" fill="#ff9d2e"/><path class="f2" d="M36 60c-5-5-1-10 2-13 0 5 4 5 4 9 0 2-3 4-6 4z" fill="#ff6a1a"/><path class="f3" d="M46 60c-4-4-1-8 1-10 0 4 3 4 3 7 0 2-2 3-4 3z" fill="#ffb347"/><path class="f4" d="M55 60c-3-3-1-6 1-8 0 3 2 3 2 5 0 2-1 3-3 3z" fill="#ff8a24"/></g></svg>';
 function fxEls(t){var f=FX[t],o=[],i;
+ if(t==='car'||t==='padramani')return h('div',{class:'carfx','aria-hidden':'true'},h('i',{class:'road'}),h('span',{class:'car'},h('span',{class:'cbob',text:'\u{1F697}'})));
+ if(t==='vastu'){var sv=h('div',{class:'stovefx','aria-hidden':'true'});sv.innerHTML=STOVE;return sv}
  if(t==='pothiyatra')return h('div',{class:'aarti','aria-hidden':'true'},h('div',{class:'orbit'},h('div',{class:'lamp'},h('div',{class:'glow'}),h('div',{class:'flame'},h('div',{class:'core'})),h('div',{class:'wick'}),h('div',{class:'bowl'}))));if(!f){for(i=1;i<=12;i++)o.push(h('i',{class:'spark s'+i,'aria-hidden':'true'}));return o}
  for(i=1;i<=f[1];i++)o.push(h('i',{class:'fx fx-'+t+' f'+i,'aria-hidden':'true',text:f[0]}));return o}
 function nowPct(e){var n=new Date(),nm=n.getHours()*60+n.getMinutes()+n.getSeconds()/60,st=toMin(e.start),en=e.end?toMin(e.end):st+90;if(st==null||en<=st)return 0;return Math.max(0,Math.min(100,(nm-st)/(en-st)*100)).toFixed(1)}
