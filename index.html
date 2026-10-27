@@ -361,7 +361,7 @@ function evCard(e,isNow,isNext){
    kv.length?h('dl',{class:'kv'},kv):null,
    e.photos&&e.photos.length?picsEl(e):null,
    (!everyone&&e.saints.length)?h('div',{class:'row'},e.saints.map(function(i){return h('span',{class:'row'},av(i),h('span',{class:'faint',text:sName(i)}))})):null,
-   ui.canEdit?h('div',{class:'row'},h('button',{class:'btn sm',type:'button',onclick:function(){openForm(e)}},'Edit')):null));
+   ui.canEdit?h('div',{class:'row'},h('button',{class:'btn sm',type:'button',onclick:function(){openForm(e)}},'Edit'),(e.type==='parayan'&&seriesOf(e).length>1)?h('button',{class:'btn sm',type:'button',onclick:function(){openSeries(e.title,e.place)}},'Vakta & part for all sessions'):null):null));
 }
 function backable(m){var _rm=m.remove.bind(m),done=false;function onpop(){window.removeEventListener('popstate',onpop);if(!done){done=true;_rm()}}
  try{history.pushState({mf:1},'')}catch(x){return}
@@ -726,7 +726,7 @@ function openForm(ev){
      var x=JSON.parse(JSON.stringify(e));x.id='e'+base+'s'+(k++);x.type='parayan';x.title=ttl;x.date=addDays(first,di);x.endDate='';x.session=ss[0];x.start=ss[1];x.end=ss[2];x.vakta='';x.portion='';x.pk=kind;
      state.events.push(x)})}
    state.events.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0});
-   ui.dirty++;ui.date=first;modal.remove();render();return}
+   ui.dirty++;ui.date=first;modal.remove();render();openSeries(ttl,e.place);return}
   if(isNew)state.events.push(e);else state.events=state.events.map(function(x){return x.id===e.id?e:x});
   state.events.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0});
   ui.dirty++;ui.date=e.date;modal.remove();render()}
@@ -752,6 +752,26 @@ function openPat(p){
   h('div',{class:'two'},field('start','First day','date',q.start),field('end','Last day','date',q.end)),
   h('div',{class:'row'},h('button',{class:'btn pri',type:'submit'},T('Done')),h('button',{class:'btn',type:'button',onclick:function(){modal.remove()}},T('Cancel'))));
  modal.append(form);document.body.append(modal);backable(modal);F.title.focus()}
+
+function seriesOf(e){return state.events.filter(function(x){return x.type==='parayan'&&x.title===e.title&&x.place===e.place}).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.session==='morning'?-1:1)})}
+function openSeries(title,place){
+ var list=seriesOf({title:title,place:place});if(!list.length)return;
+ var modal=h('div',{class:'modal',role:'dialog','aria-modal':'true','aria-label':'Vakta and part of Shastra'}),rows=[];
+ var opts=[['','Not chosen']].concat(state.saints.map(function(s){return[s.id,s.name]}));
+ function vsel(val){var s=h('select',{});opts.forEach(function(o){var op=h('option',{value:o[0],text:o[1]});if(o[0]===val)op.selected=true;s.append(op)});return s}
+ var all=vsel('');
+ var allBtn=h('button',{class:'btn sm',type:'button',onclick:function(){if(!all.value)return;rows.forEach(function(r){r.v.value=all.value})}},'Apply to all');
+ var form=h('form',{class:'form',onsubmit:function(x){x.preventDefault();
+  rows.forEach(function(r){var ev=state.events.find(function(y){return y.id===r.id});if(ev){ev.vakta=r.v.value;ev.portion=r.p.value.trim()}});
+  ui.dirty++;modal.remove();render()}},
+  h('h2',{text:tr(title)||'Parayan'}),
+  h('p',{class:'note',style:'margin:0',text:(list[0].shastra?list[0].shastra+' \u00b7 ':'')+'Choose the Vakta and the part of the Shastra for each session.'}),
+  h('div',{class:'f'},h('label',{text:'Same Vakta for every session'}),h('div',{class:'row'},all,allBtn)),
+  list.map(function(ev){
+   var v=vsel(ev.vakta||''),p=h('input',{type:'text',value:ev.portion||'',placeholder:'Part of the Shastra'});rows.push({id:ev.id,v:v,p:p});
+   return h('div',{class:'f',style:'border-top:1px solid var(--line);padding-top:10px'},h('label',{text:fmt(ev.date)+' \u00b7 '+(ev.session==='morning'?T('Morning'):ev.session==='evening'?T('Evening'):'')+(ev.start?' \u00b7 '+fmtTime(ev.start):'')}),v,p)}),
+  h('div',{class:'row'},h('button',{class:'btn pri',type:'submit'},T('Done')),h('button',{class:'btn',type:'button',onclick:function(){modal.remove()}},T('Cancel'))));
+ modal.append(form);document.body.append(modal);backable(modal)}
 
 function buildDoc(){
  var css=document.getElementById('css').textContent,code=document.getElementById('app').textContent;
