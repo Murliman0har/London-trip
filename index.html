@@ -320,7 +320,9 @@ body{
 @keyframes aoy{from{transform:translateY(-48px) scale(.72)}to{transform:translateY(48px) scale(.72)}}
 @media (prefers-reduced-motion:reduce){.aarti .orbit,.aarti .lamp,.aarti .idol img{animation:none!important}.aarti .lamp{transform:translateY(-48px) scale(.72)}}
 
-.ev.t-katha,.ev.t-vastu,.ev.t-padramani{position:relative}
+.ev.t-katha,.ev.t-vastu,.ev.t-padramani,.ev.t-pravachan{position:relative}
+.ev.t-pravachan .body{padding-right:104px;min-height:92px}
+.ksticker.k-pravachan{width:92px}
 .ev.t-padramani .body{padding-right:150px;min-height:96px}
 .ksticker.k-padramani{width:138px;bottom:8px}
 .ev.t-katha .body{padding-right:128px;min-height:112px}
@@ -397,7 +399,7 @@ var CAL_MIN='2010-01-01',CAL_MAX='2027-12-31';
 function calClamp(d){return d<CAL_MIN?CAL_MIN:d>CAL_MAX?CAL_MAX:d}
 function clamp(d){return d<state.tripStart?state.tripStart:d>state.tripEnd?state.tripEnd:d}
 
-var FX={pravachan:['🎤',2],flight:['✈️',2],sabha:['🌼',9]};
+var FX={flight:['✈️',2],sabha:['🌼',9]};
 var STOVE='<svg viewBox="0 0 80 84" width="84" height="88" aria-hidden="true"><g class="sm"><circle class="p1" cx="34" cy="30" r="5"/><circle class="p2" cx="44" cy="30" r="6"/><circle class="p3" cx="39" cy="30" r="4"/><circle class="p4" cx="48" cy="30" r="3.5"/></g><g class="lid"><rect x="20" y="33" width="40" height="5" rx="2.5" fill="#9aa3ad"/><rect x="36" y="29" width="8" height="5" rx="2" fill="#6b7480"/></g><rect x="22" y="38" width="36" height="20" rx="4" fill="#c9ced6"/><rect x="16" y="43" width="7" height="4" rx="2" fill="#8d96a1"/><rect x="57" y="43" width="7" height="4" rx="2" fill="#8d96a1"/><g class="bub"><circle cx="30" cy="38" r="2"/><circle cx="40" cy="37" r="2.4"/><circle cx="50" cy="38" r="1.8"/></g><rect x="14" y="66" width="52" height="10" rx="3" fill="#4a4f57"/><rect x="18" y="60" width="44" height="3" rx="1.5" fill="#2f3339"/><g class="fl"><path class="f1" d="M26 60c-4-4-1-8 1-10 0 4 3 4 3 7 0 2-2 3-4 3z" fill="#ff9d2e"/><path class="f2" d="M36 60c-5-5-1-10 2-13 0 5 4 5 4 9 0 2-3 4-6 4z" fill="#ff6a1a"/><path class="f3" d="M46 60c-4-4-1-8 1-10 0 4 3 4 3 7 0 2-2 3-4 3z" fill="#ffb347"/><path class="f4" d="M55 60c-3-3-1-6 1-8 0 3 2 3 2 5 0 2-1 3-3 3z" fill="#ff8a24"/></g></svg>';
 var READER='<svg viewBox="0 0 104 92" width="104" height="92" aria-hidden="true"><ellipse cx="52" cy="85" rx="44" ry="4" fill="#000" opacity=".12"/><rect x="60" y="74" width="34" height="9" rx="2" fill="#8a5a2b"/><rect x="66" y="70" width="4" height="6" fill="#6e4520"/><rect x="84" y="70" width="4" height="6" fill="#6e4520"/><ellipse cx="38" cy="76" rx="27" ry="9" fill="#efe3c3"/><path d="M26 74c0-20 3-34 12-36 9 2 13 16 13 36z" fill="#f08c2e"/><g class="hd"><circle cx="39" cy="27" r="9" fill="#d9a577"/><path d="M30 24c1-9 17-10 19 0-5-3-14-3-19 0z" fill="#3b2a1e"/><rect x="37.5" y="19.5" width="3" height="4" rx="1.4" fill="#c62828"/><circle cx="35.5" cy="29" r="1" fill="#3b2a1e"/><circle cx="42.5" cy="29" r="1" fill="#3b2a1e"/></g><path d="M44 46c8 3 13 6 20 8" stroke="#f08c2e" stroke-width="7" stroke-linecap="round" fill="none"/><circle cx="66" cy="56" r="3.6" fill="#d9a577"/><g><polygon points="58,50 76,54 76,70 58,66" fill="#fffaf0" stroke="#b88a4a" stroke-width="1"/><polygon points="76,54 94,50 94,66 76,70" fill="#fffaf0" stroke="#b88a4a" stroke-width="1"/><path d="M61 56l12 2.6M61 60l12 2.6M61 64l12 2.6M79 58.6l12-2.6M79 62.6l12-2.6M79 66l12-2.6" stroke="#b8a37a" stroke-width="1" stroke-linecap="round"/><line x1="76" y1="54" x2="76" y2="70" stroke="#b88a4a" stroke-width="1.5"/></g><g class="pg"><polygon points="76,54 94,50 94,66 76,70" fill="#fffaf0" stroke="#b88a4a" stroke-width="1"/><path d="M79 58.6l12-2.6M79 62.6l12-2.6M79 66l12-2.6" stroke="#b8a37a" stroke-width="1" stroke-linecap="round"/></g><g class="pg pg2"><polygon points="76,54 94,50 94,66 76,70" fill="#fff4dc" stroke="#b88a4a" stroke-width="1"/></g></svg>';
 function KRISHNA(){var d=h('div',{class:'idol'});d.append(h('img',{src:'aarti-sticker.webp',alt:'',loading:'lazy'}));return d}
@@ -406,7 +408,7 @@ function fxEls(t){var f=FX[t],o=[],i;
  if(t==='pothiyatra')return h('div',{class:'aarti','aria-hidden':'true'},KRISHNA(),h('div',{class:'orbit'},h('div',{class:'lamp'},h('div',{class:'glow'}),h('div',{class:'flame'},h('div',{class:'core'})),h('div',{class:'wick'}),h('div',{class:'bowl'}))));if(!f){for(i=1;i<=12;i++)o.push(h('i',{class:'spark s'+i,'aria-hidden':'true'}));return o}
  for(i=1;i<=f[1];i++)o.push(h('i',{class:'fx fx-'+t+' f'+i,'aria-hidden':'true',text:f[0]}));return o}
 function nowPct(e){var n=new Date(),nm=n.getHours()*60+n.getMinutes()+n.getSeconds()/60,st=toMin(e.start),en=e.end?toMin(e.end):st+90;if(st==null||en<=st)return 0;return Math.max(0,Math.min(100,(nm-st)/(en-st)*100)).toFixed(1)}
-var STK={katha:'katha-sticker.webp',vastu:'vastu-sticker.webp',padramani:'padramani-sticker.webp'};
+var STK={katha:'katha-sticker.webp',vastu:'vastu-sticker.webp',padramani:'padramani-sticker.webp',pravachan:'pravachan-sticker.webp'};
 function evCard(e,isNow,isNext){
  var tl=timeLabel(e),kv=[];
  function add(k,v){if(v)kv.push(h('dt',{text:T(k)}),h('dd',{text:v}))}

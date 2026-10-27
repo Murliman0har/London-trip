@@ -1,7 +1,7 @@
 // Offline shell for the Mandir Tour Program. Program data is never cached here
 // (it comes from the database and is kept on the device by the page after sign-in).
-const CACHE = 'mandir-tour-v38';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './tithi-l.json', './tithi-i-2026.json', './tithi-i-2027.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './katha-sticker.webp', './vastu-sticker.webp', './aarti-sticker.webp', './padramani-sticker.webp'];
+const CACHE = 'mandir-tour-v39';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './tithi-l.json', './tithi-i-2026.json', './tithi-i-2027.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './katha-sticker.webp', './vastu-sticker.webp', './aarti-sticker.webp', './padramani-sticker.webp', './pravachan-sticker.webp'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
