@@ -405,10 +405,11 @@ function dayView(){
      ui.canEdit?h('div',{class:'row'},h('button',{class:'btn sm',type:'button',onclick:function(){openWhole(r.title,r.place)}},lang==='gu'?'આખું પારાયણ સુધારો':(r.n>1?'Edit Parayan (Day 1 to '+r.n+')':'Edit Parayan'))):null)})));}
 
  var evs=evsOn(d).slice().sort(function(a,b){return sortKey(a)-sortKey(b)});
- var now=new Date(),nm=now.getHours()*60+now.getMinutes(),isToday=d===today(),nowId=null,nextId=null;
- if(isToday){evs.forEach(function(e){var s=toMin(e.start);if(s==null)return;var en=e.end?toMin(e.end):s+90;if(s<=nm&&nm<en&&!nowId)nowId=e.id;else if(s>nm&&!nextId)nextId=e.id});}
+ var now=new Date(),nm=now.getHours()*60+now.getMinutes(),isToday=d===today(),nowIds={},nextId=null;
+ if(isToday){evs.forEach(function(e){var s=toMin(e.start);if(s==null)return;var en=e.end?toMin(e.end):s+90;if(s<=nm&&nm<en)nowIds[e.id]=1;else if(s>nm&&!nextId)nextId=e.id});}
  if(!evs.length)root.append(h('div',{class:'empty',text:ui.canEdit?T('Nothing planned for this day. Use Add event below.'):T('Nothing planned for this day yet.')}));
- evs.forEach(function(e){root.append(evCard(e,e.id===nowId,e.id===nextId))});
+ var nn0=Object.keys(nowIds).length;if(nn0>1)root.append(h('div',{class:'row'},h('span',{class:'pill now',text:(lang==='gu'?dg(nn0)+' કાર્યક્રમ ચાલુ છે':nn0+' happening now')})));
+ evs.forEach(function(e){root.append(evCard(e,!!nowIds[e.id],e.id===nextId))});
  root.append(h('p',{class:'note',text:T('Times are local to where the saints are. Refresh the page to see the latest changes.')}));
  return root}
 
