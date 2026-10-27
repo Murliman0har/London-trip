@@ -843,7 +843,7 @@ function openForm(ev){
  function isSer(){return isNew&&typeSel.value==='parayan'&&pkindSel.value!=='one'}
  function sync2(){sync();var t=typeSel.value,ser=isSer();
   var pv=t==='pravachan';groups.prv.hidden=!pv;groups.pk.hidden=!(isNew&&t==='parayan');groups.ser.hidden=!ser;
-  wrap(F.end).hidden=pv;wrap(F.place).hidden=pv;wrap(F.notes).hidden=pv;saintsBox.hidden=pv;pics.hidden=pv;
+  wrap(F.end).hidden=pv;wrap(F.place).hidden=pv;wrap(F.notes).hidden=pv;pics.hidden=pv;
   wrap(F.endDate).hidden=ser||pv;wrap(F.start).parentNode.hidden=ser;wrap(F.session).hidden=ser;wrap(F.vakta).hidden=ser;wrap(F.portion).hidden=ser;
   var dl=wrap(F.date).querySelector('label');if(dl)dl.textContent=ser?'Start date':T('Date')}
  typeSel.addEventListener('change',sync2);pkindSel.addEventListener('change',sync2);sync2();
