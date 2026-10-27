@@ -396,7 +396,8 @@ function dayView(){
    prs.map(function(r){var bits=[];if(r.place)bits.push(tr(r.place));if(r.yajman)bits.push(T('Yajman')+': '+r.yajman);if(r.shastra)bits.push(r.shastra);
     return h('div',{style:'margin-top:6px;display:flex;flex-direction:column;gap:2px'},
      h('span',{class:'patl',text:'\u{1FA94} '+(tr(r.title)||typeLabel('parayan'))+(r.n>1?' \u00b7 '+(lang==='gu'?dayOf(r.k,r.n):'Day '+r.k+' of '+r.n):'')}),
-     bits.length?h('span',{class:'meta',text:bits.join(' \u00b7 ')}):null)})));}
+     bits.length?h('span',{class:'meta',text:bits.join(' \u00b7 ')}):null,
+     ui.canEdit?h('div',{class:'row'},h('button',{class:'btn sm',type:'button',onclick:function(){openWhole(r.title,r.place)}},lang==='gu'?'આખું પારાયણ સુધારો':(r.n>1?'Edit Parayan (Day 1 to '+r.n+')':'Edit Parayan'))):null)})));}
 
  var evs=evsOn(d).slice().sort(function(a,b){return sortKey(a)-sortKey(b)});
  var now=new Date(),nm=now.getHours()*60+now.getMinutes(),isToday=d===today(),nowId=null,nextId=null;
@@ -737,6 +738,29 @@ function openForm(ev){
 }
 
 function seriesOf(e){return state.events.filter(function(x){return x.type==='parayan'&&x.title===e.title&&x.place===e.place}).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.session==='morning'?-1:1)})}
+function openWhole(title,place){
+ var list=seriesOf({title:title,place:place});if(!list.length)return;
+ var f=list[0],first=f.date,last=list[list.length-1].date,mo=list.find(function(x){return x.session==='morning'})||f,ev=list.find(function(x){return x.session==='evening'})||{start:'',end:''};
+ var F={};
+ function field(id,label,type,val){var el=h('input',{type:type,value:val||''});F[id]=el;el.id='wf_'+id;return h('div',{class:'f'},h('label',{for:'wf_'+id,text:label}),el)}
+ var modal=h('div',{class:'modal',role:'dialog','aria-modal':'true','aria-label':'Edit Parayan'});
+ var delBtn=h('button',{class:'btn danger',type:'button',title:T('Delete'),'aria-label':T('Delete'),style:'padding:6px 9px;line-height:0',onclick:function(){if(!confirm(lang==='gu'?'આખું પારાયણ કાઢી નાખવું છે?':'Delete the whole Parayan ('+list.length+' sessions)?'))return;var ids={};list.forEach(function(x){ids[x.id]=1});state.events=state.events.filter(function(x){return !ids[x.id]});ui.dirty++;modal.remove();render()}});
+ delBtn.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>';
+ var form=h('form',{class:'form',onsubmit:function(x){x.preventDefault();
+  var nd=F.date.value||first,delta=diff(first,nd),t=F.title.value.trim()||title;
+  list.forEach(function(e){e.title=t;e.place=F.place.value.trim();e.shastra=F.shastra.value.trim();e.yajman=F.yajman.value.trim();e.date=addDays(e.date,delta);
+   if(e.session==='morning'){e.start=F.mS.value;e.end=F.mE.value}else if(e.session==='evening'){e.start=F.eS.value;e.end=F.eE.value}});
+  state.events.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0});
+  ui.dirty++;ui.date=nd;modal.remove();render()}},
+  h('div',{class:'row',style:'align-items:center;gap:10px'},delBtn,h('h2',{style:'margin:0',text:'Edit Parayan'})),
+  h('p',{class:'note',style:'margin:0',text:dg(list.length)+' sessions \u00b7 '+fmt(first)+' \u2013 '+fmt(last)+'. Changes apply to every session.'}),
+  field('title','Title','text',f.title),field('place','Place','text',f.place),field('shastra','Shastra','text',f.shastra),field('yajman',T('Yajman'),'text',f.yajman),
+  field('date','Start date (moves all days)','date',first),
+  h('div',{class:'two'},field('mS','Morning start','time',mo.start),field('mE','Morning end','time',mo.end)),
+  h('div',{class:'two'},field('eS','Evening start','time',ev.start),field('eE','Evening end','time',ev.end)),
+  h('div',{class:'row'},h('button',{class:'btn pri',type:'submit'},T('Done')),h('button',{class:'btn',type:'button',onclick:function(){modal.remove()}},T('Cancel')),
+   h('button',{class:'btn',type:'button',onclick:function(){modal.remove();openSeries(title,place)}},'Vakta & part')));
+ modal.append(form);document.body.append(modal);backable(modal);F.title.focus()}
 function openSeries(title,place){
  var list=seriesOf({title:title,place:place});if(!list.length)return;
  var modal=h('div',{class:'modal',role:'dialog','aria-modal':'true','aria-label':'Vakta and part of Shastra'}),rows=[];
