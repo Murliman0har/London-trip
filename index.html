@@ -324,7 +324,6 @@ function av(id,extra){var s=state.saints.find(function(x){return x.id===id});ret
 function stayFor(d){var m=null;state.stays.forEach(function(s){if(s.start<=d&&d<=s.end)m=s});return m}
 function dayAll(d){return state.events.filter(function(e){return e.date<=d&&d<=(e.endDate||e.date)})}
 function hasSel(e){return !ui.sel.length||ui.sel.some(function(id){return e.saints.indexOf(id)>-1})}
-function patOn(d){return (state.patotsav||[]).filter(function(p){return p.start<=d&&d<=p.end})}
 function parOn(d){var seen={},out=[];
  dayAll(d).forEach(function(e){if(e.type!=='parayan')return;var k=e.title+'|'+e.place;if(seen[k])return;seen[k]=1;
   var all=seriesOf(e),f=all[0].date,l=all[all.length-1].date;out.push({title:e.title,place:e.place,yajman:e.yajman||'',shastra:e.shastra||'',k:diff(f,d)+1,n:diff(f,l)+1})});
@@ -386,17 +385,13 @@ function dayView(){
   h('button',{class:'btn',type:'button',onclick:function(){ui.date=calClamp(addDays(d,1));render()},'aria-label':'Next day'},'›')));
  root.append(h('div',{class:'nav',style:'justify-content:center'},h('button',{class:'btn',type:'button',onclick:function(){ui.date=calClamp(today());render();setTimeout(function(){var n=document.querySelector('.ev.now');if(n)n.scrollIntoView({behavior:'smooth',block:'center'});else window.scrollTo({top:0,behavior:'smooth'})},120)}},T('Today')),
   h('span',{class:'sub',text:st?dayOf(diff(state.tripStart,d)+1,diff(state.tripStart,state.tripEnd)+1):''})));
- var pts=patOn(d),prs=parOn(d);
- if(st||pts.length||prs.length){var meta=[];
+ var prs=parOn(d);
+ if(st||prs.length){var meta=[];
   if(st){var n=diff(st.start,st.end)+1,k=diff(st.start,d)+1,idx=state.stays.indexOf(st),prev=state.stays[idx-1],gu=lang==='gu';
    meta=[tr(st.region)];if(st.start!==st.end)meta.push(gu?'અહીં '+dayOf(k,n):'Day '+k+' of '+n+' here');
    if(d===st.start&&prev&&prev.place!==st.place)meta.push(gu?tr(prev.place)+' થી આગમન':'Arriving from '+prev.place);
    var nx=state.stays[idx+1];if(d===st.end&&nx)meta.push(gu?'આજે '+tr(nx.place)+' તરફ પ્રસ્થાન':'Moving to '+nx.place+' today')}
   root.append(h('div',{class:'place pat'},st?h('div',{class:'meta',text:T('Where we are')}):null,st?h('div',{class:'where',text:tr(st.place)}):null,meta.length?h('div',{class:'meta',text:meta.join(' · ')}):null,
-   pts.map(function(p){var pn=diff(p.start,p.end)+1,pk=diff(p.start,d)+1;
-    return h('div',{class:'row',style:'align-items:center;justify-content:space-between;gap:8px;margin-top:6px'},
-     h('span',{class:'patl',text:'\u{1FA94} '+(tr(p.title)||typeLabel('patotsav'))+' \u00b7 '+(lang==='gu'?dayOf(pk,pn):'Day '+pk+' of '+pn)}),
-     ui.canEdit?h('button',{class:'btn sm',type:'button',onclick:function(){openPat(p)}},'Edit'):null)}),
    prs.map(function(r){var bits=[];if(r.place)bits.push(tr(r.place));if(r.yajman)bits.push(T('Yajman')+': '+r.yajman);if(r.shastra)bits.push(r.shastra);
     return h('div',{style:'margin-top:6px;display:flex;flex-direction:column;gap:2px'},
      h('span',{class:'patl',text:'\u{1FA94} '+(tr(r.title)||typeLabel('parayan'))+(r.n>1?' \u00b7 '+(lang==='gu'?dayOf(r.k,r.n):'Day '+r.k+' of '+r.n):'')}),
@@ -430,14 +425,13 @@ function planDetail(){
  state.stays.forEach(function(s){
   var n=diff(s.start,s.end)+1,seen={},tags=[];
   state.events.forEach(function(e){if(['parayan','katha','patotsav','pothiyatra','padramani','vastu','sabha','pravachan'].indexOf(e.type)>-1&&e.date<=s.end&&(e.endDate||e.date)>=s.start&&e.place===s.place&&!seen[e.type]){seen[e.type]=1;tags.push(h('span',{class:'tag t-'+e.type,text:typeLabel(e.type)}))}});
-  (state.patotsav||[]).forEach(function(p){if(p.start<=s.end&&p.end>=s.start&&p.place===s.place&&!seen.patotsav){seen.patotsav=1;tags.push(h('span',{class:'tag t-patotsav',text:typeLabel('patotsav')}))}});
   root.append(h('button',{class:'stay'+(cur&&cur.id===s.id?' cur':''),type:'button',onclick:function(){ui.date=s.start;ui.view='day';render();window.scrollTo(0,0)}},
    h('div',{class:'n',text:tr(s.place)}),h('div',{class:'days',text:s.start===s.end?T('Travel'):(lang==='gu'?dg(n)+' દિવસ':n+' days')}),
    h('div',{class:'d',text:(s.start===s.end?fmt(s.start,yo):fmt(s.start)+(lang==='gu'?' થી ':' to ')+fmt(s.end,yo))+' · '+tr(s.region)}),h('span'),
    tags.length?h('div',{class:'tags'},tags):null))});
  return root}
 
-var SUMORDER=['parayan','katha','patotsav','pothiyatra','padramani','vastu','sabha','pravachan','flight','car','other'];
+var SUMORDER=['parayan','katha','pothiyatra','padramani','vastu','sabha','pravachan','flight','car','other'];
 function rangeLabel(e){return e.endDate&&e.endDate!==e.date?fmt(e.date)+' – '+fmt(e.endDate):fmt(e.date)}
 function goDay(d){ui.date=d;ui.view='day';render();window.scrollTo(0,0)}
 function inYatra(e){return e.date>=state.tripStart&&e.date<=state.tripEnd}
@@ -450,10 +444,9 @@ function sumView(){
  else root.append(h('p',{class:'note',style:'margin:0',text:lang==='gu'?'લંડન યાત્રાના સમયગાળા સિવાયના કાર્યક્રમો':'Events on days outside the London Yatra period.'}));
  if(ui.sel.length)root.append(h('p',{class:'note',style:'margin:0',text:(lang==='gu'?'સંત પસંદ કરેલા: ':'Showing only: ')+ui.sel.map(sName).filter(Boolean).join(', ')}));
  SUMORDER.forEach(function(k){by[k]=[]});evs.forEach(function(e){(by[e.type]||by.other).push(e)});
- by.patotsav=(state.patotsav||[]).filter(function(p){return (p.start>=state.tripStart&&p.start<=state.tripEnd)===isY}).map(function(p){return{id:p.id,title:p.title,date:p.start,endDate:p.end,place:p.place,photos:[]}});
  var sers=[],map={};by.parayan.forEach(function(e){var key=e.title+'|'+e.place,o=map[key];if(!o){o=map[key]={title:e.title,place:e.place,date:e.date,end:e.date,n:0};sers.push(o)}o.n++;if(e.date>o.end)o.end=e.date;if(e.date<o.date)o.date=e.date});
  function count(k){return k==='parayan'?sers.length:by[k].length}
- function sub(k){if(k==='parayan')return by.parayan.length?dg(by.parayan.length)+' '+T('sessions'):'';if(k==='katha'||k==='patotsav'){var d=0;by[k].forEach(function(e){d+=e.endDate?diff(e.date,e.endDate)+1:1});return d?dg(d)+' '+T('days'):''}return ''}
+ function sub(k){if(k==='parayan')return by.parayan.length?dg(by.parayan.length)+' '+T('sessions'):'';if(k==='katha'){var d=0;by[k].forEach(function(e){d+=e.endDate?diff(e.date,e.endDate)+1:1});return d?dg(d)+' '+T('days'):''}return ''}
  var places={},stops=0,statList;
  if(isY){state.stays.forEach(function(s){if(s.place!=='India'){stops++;places[s.place]=1}});statList=[[diff(state.tripStart,state.tripEnd)+1,'Days on tour'],[stops,'Stops'],[Object.keys(places).length,'Different mandirs']]}
  else{var dset={},pset={};evs.forEach(function(e){var n=e.endDate?diff(e.date,e.endDate)+1:1;for(var i=0;i<n;i++)dset[addDays(e.date,i)]=1;if(e.place)pset[e.place]=1});statList=[[evs.length,'Events'],[Object.keys(dset).length,'Days with events'],[Object.keys(pset).length,'Places']]}
@@ -661,7 +654,6 @@ function render(){
  if(ui.autoNow&&ui.authed&&ui.view==='day'){ui.autoNow=false;var nn=document.querySelector('.ev.now');if(nn)setTimeout(function(){var m=document.querySelector('.ev.now');if(m)m.scrollIntoView({behavior:'smooth',block:'center'})},900)}
  if(ui.canEdit){root.append(h('div',{class:'bar'},
   h('button',{class:'btn',type:'button',onclick:function(){openForm(null)}},T('Add event')),
-  h('button',{class:'btn',type:'button',onclick:function(){openPat(null)}},lang==='gu'?'પાટોત્સવ ઉમેરો':'Add Patotsav'),
   (ui.dirty||ui.saving)?h('button',{class:'btn pri',type:'button',disabled:!ui.dirty||ui.saving,onclick:save},ui.saving?T('Saving'):(ui.dirty?T('Save and publish')+' ('+dg(ui.dirty)+')':T('No changes'))):null,
   ui.msg?h('span',{class:'note',style:'align-self:center',text:ui.msg}):null))}
 }
@@ -743,26 +735,6 @@ function openForm(ev){
  modal.append(form);document.body.append(modal);backable(modal);F.title.focus();
 }
 
-function openPat(p){
- var isNew=!p,d=ui.date;
- var q=p?JSON.parse(JSON.stringify(p)):{id:'pt'+Date.now(),title:'',place:(stayFor(d)||{}).place||'',start:d,end:d};
- var F={};
- function field(id,label,type,val){var el=h('input',{type:type,value:val||''});F[id]=el;el.id='pf_'+id;return h('div',{class:'f'},h('label',{for:'pf_'+id,text:label}),el)}
- var modal=h('div',{class:'modal',role:'dialog','aria-modal':'true','aria-label':isNew?'Add Patotsav':'Edit Patotsav'});
- var delBtn=h('button',{class:'btn danger',type:'button',title:T('Delete'),'aria-label':T('Delete'),style:'padding:6px 9px;line-height:0',onclick:function(){if(!confirm(lang==='gu'?'આ પાટોત્સવ કાઢી નાખવો છે?':'Delete this Patotsav?'))return;state.patotsav=state.patotsav.filter(function(x){return x.id!==q.id});ui.dirty++;modal.remove();render()}});
- delBtn.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>';
- var form=h('form',{class:'form',onsubmit:function(x){x.preventDefault();
-  q.title=F.title.value.trim();q.place=F.place.value.trim();q.start=F.start.value||d;q.end=F.end.value&&F.end.value>q.start?F.end.value:q.start;
-  state.patotsav=state.patotsav||[];var i=state.patotsav.findIndex(function(y){return y.id===q.id});if(i>-1)state.patotsav[i]=q;else state.patotsav.push(q);
-  state.patotsav.sort(function(a,b){return a.start<b.start?-1:a.start>b.start?1:0});
-  ui.dirty++;ui.date=q.start;modal.remove();render()}},
-  h('div',{class:'row',style:'align-items:center;gap:10px'},isNew?null:delBtn,h('h2',{style:'margin:0',text:isNew?'Add Patotsav':'Edit Patotsav'})),
-  h('p',{class:'note',style:'margin:0',text:'Patotsav is the Mandir\u2019s annual ceremony. It is shown as a heading on its days. Add the Parayan and other sessions as events.'}),
-  field('title','Title','text',q.title),field('place','Place','text',q.place),
-  h('div',{class:'two'},field('start','First day','date',q.start),field('end','Last day','date',q.end)),
-  h('div',{class:'row'},h('button',{class:'btn pri',type:'submit'},T('Done')),h('button',{class:'btn',type:'button',onclick:function(){modal.remove()}},T('Cancel'))));
- modal.append(form);document.body.append(modal);backable(modal);F.title.focus()}
-
 function seriesOf(e){return state.events.filter(function(x){return x.type==='parayan'&&x.title===e.title&&x.place===e.place}).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.session==='morning'?-1:1)})}
 function openSeries(title,place){
  var list=seriesOf({title:title,place:place});if(!list.length)return;
@@ -801,7 +773,7 @@ function uploadPic(b){
  return blobToUrl(b).then(function(url){return rpc('save_tour_pic',{p_passcode:pass,p_id:id,p_data:url}).then(function(){picCache[id]=url;return {id:id}})})}
 ui.assets={upload:uploadPic};
 ui.authed=false;ui.busy=false;ui.gateMsg='';
-function normState(){if(!state.patotsav)state.patotsav=[];var st=state.stays;if(st&&st.length){state.tripStart=st[0].start;state.tripEnd=st[st.length-1].end}}
+function normState(){var st=state.stays;if(st&&st.length){state.tripStart=st[0].start;state.tripEnd=st[st.length-1].end}}
 function enter(pass){
  ui.gateMsg='';ui.busy=true;render();
  return rpc('get_tour_state',{p_passcode:pass}).then(function(res){
