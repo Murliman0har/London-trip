@@ -416,7 +416,7 @@ function evCard(e,isNow,isNext){
  function add(k,v){if(v)kv.push(h('dt',{text:T(k)}),h('dd',{text:v}))}
  add('Place',tr(e.place));
  if(e.type==='parayan'){add('Vakta',sName(e.vakta));add('Portion',e.portion)}
- if(e.type==='pravachan'){add('Session',e.session?T(e.session==='morning'?'Morning':'Evening'):'');add('Vakta',sName(e.vakta));add('Shastra',e.shastra);add('Portion',e.portion)}
+ if(e.type==='pravachan')add('Length',durOf(e)+' min');
  if(e.type==='car')add('Route',route(e));
  if(RIDE.indexOf(e.type)>-1){if(e.driver||e.phone||(e.car&&e.car!=='both'))add('Car',carLabel(e.car)||'');add('Driver',e.driver);
    if(e.phone)kv.push(h('dt',{text:T('Contact')}),h('dd',{},e.phone+' ',h('button',{class:'btn sm',type:'button',onclick:function(ev){copy(e.phone,ev.target)}},T('Copy'))))}
@@ -790,6 +790,7 @@ function render(){
   ui.msg?h('span',{class:'note',style:'align-self:center',text:ui.msg}):null))}
 }
 
+function durOf(e){if(e.dur)return e.dur;if(e.start&&e.end){var d=toMin(e.end)-toMin(e.start);if(d===5||d===10||d===15)return d}return 10}
 function openForm(ev){
  var isNew=!ev,st=stayFor(ui.date);
  var e=ev?JSON.parse(JSON.stringify(ev)):{id:'e'+Date.now(),type:'sabha',title:'',date:ui.date,endDate:'',start:'',end:'',place:st?st.place:'',saints:saintsOn(ui.date).map(function(s){return s.id}),vakta:'',shastra:'',portion:'',session:'',car:'both',from:'',to:'',driver:'',phone:'',flight:'',yajman:'',notes:'',photos:[]};
@@ -811,6 +812,7 @@ function openForm(ev){
   ui.assets?h('input',{type:'file',id:'f_photos',accept:'image/*',multiple:true,onchange:function(ev){
     var files=[].slice.call(ev.target.files);ev.target.value='';var n=0;pstat.textContent='Uploading...';
     files.reduce(function(p,f){return p.then(function(){return shrink(f).then(function(b){return ui.assets.upload(b)}).then(function(r){e.photos.push({id:r.id});n++;drawThumbs()}).catch(function(){pstat.textContent='One picture could not be uploaded.'})})},Promise.resolve()).then(function(){if(n)pstat.textContent=n+' added. Press Done, then Save and publish.'})}}):h('span',{class:'note',text:'Picture upload needs editor access.'}),pstat);
+ var saintsBox=h('div',{class:'f'},h('span',{class:'lab',text:T('Saints')}),checks);
  var modal=h('div',{class:'modal',role:'dialog','aria-modal':'true','aria-label':isNew?T('Add event'):T('Edit event')});
  var delBtn=h('button',{class:'btn danger',type:'button',title:T('Delete'),'aria-label':T('Delete'),style:'padding:6px 9px;line-height:0',onclick:function(){if(!confirm(lang==='gu'?'આ કાર્યક્રમ કાઢી નાખવો છે?':'Delete this event?'))return;state.events=state.events.filter(function(x){return x.id!==e.id});ui.dirty++;modal.remove();render()}});
  delBtn.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>';
@@ -821,6 +823,7 @@ function openForm(ev){
   h('div',{class:'two'},field('date',T('Date'),inp('date','date',e.date)),field('endDate',T('Last day (multi-day only)'),inp('endDate','date',e.endDate))),
   h('div',{class:'two'},field('start',T('Start time'),inp('start','time',e.start)),field('end',T('End time'),inp('end','time',e.end))),
   field('place',T('Place'),inp('place','text',e.place)),
+  grp('prv',[field('dur','Length of Pravachan',sel([['5','5 minutes'],['10','10 minutes'],['15','15 minutes']],String(durOf(e))))]),
   grp('pk',[field('pkind','Parayan type',pkindSel)]),
   grp('ser',[h('p',{class:'note',style:'margin:0',text:'Every day has Morning and Evening sessions. The last day has only the Morning session. Choose the Vakta and part of the Shastra for each session afterwards.'}),
    h('div',{class:'two'},field('mS','Morning start',inp('mS','time','')),field('mE','Morning end',inp('mE','time',''))),
@@ -830,17 +833,18 @@ function openForm(ev){
   grp('shift',[h('div',{class:'two'},field('from',T('Shifting from'),inp('from','text',e.from)),field('to',T('Shifting to'),inp('to','text',e.to)))]),
   grp('ride',[field('car',T('Car'),sel([['both',T('Both cars')],['c1',T('Car 1')],['c2',T('Car 2')]],e.car)),h('div',{class:'two'},field('driver',T('Driver'),inp('driver','text',e.driver)),field('phone',T('Driver contact number'),inp('phone','tel',e.phone)))]),
   grp('flight',[field('flight',T('Flight number'),inp('flight','text',e.flight)),h('div',{class:'two'},field('from2',T('From'),inp('from2','text',e.from)),field('to2',T('To'),inp('to2','text',e.to)))]),
-  h('div',{class:'f'},h('span',{class:'lab',text:T('Saints')}),checks),
+  saintsBox,
   field('notes',T('Notes'),h('textarea',{rows:'2',text:e.notes||''})),
   pics,
   h('div',{class:'row',style:'justify-content:space-between'},
    h('div',{class:'row'},h('button',{class:'btn pri',type:'submit'},T('Done')),h('button',{class:'btn',type:'button',onclick:function(){modal.remove()}},T('Cancel')))));
- function sync(){var t=typeSel.value;groups.parayan.hidden=t!=='parayan'&&t!=='pravachan';groups.yajman.hidden=YAJ.indexOf(t)<0;groups.shift.hidden=t!=='car';groups.ride.hidden=RIDE.indexOf(t)<0;groups.flight.hidden=t!=='flight'}
+ function sync(){var t=typeSel.value;groups.parayan.hidden=t!=='parayan';groups.yajman.hidden=YAJ.indexOf(t)<0;groups.shift.hidden=t!=='car';groups.ride.hidden=RIDE.indexOf(t)<0||t==='pravachan';groups.flight.hidden=t!=='flight'}
  function wrap(el){return el.parentNode}
  function isSer(){return isNew&&typeSel.value==='parayan'&&pkindSel.value!=='one'}
  function sync2(){sync();var t=typeSel.value,ser=isSer();
-  groups.pk.hidden=!(isNew&&t==='parayan');groups.ser.hidden=!ser;
-  wrap(F.endDate).hidden=ser;wrap(F.start).parentNode.hidden=ser;wrap(F.session).hidden=ser;wrap(F.vakta).hidden=ser;wrap(F.portion).hidden=ser;
+  var pv=t==='pravachan';groups.prv.hidden=!pv;groups.pk.hidden=!(isNew&&t==='parayan');groups.ser.hidden=!ser;
+  wrap(F.end).hidden=pv;wrap(F.place).hidden=pv;wrap(F.notes).hidden=pv;saintsBox.hidden=pv;pics.hidden=pv;
+  wrap(F.endDate).hidden=ser||pv;wrap(F.start).parentNode.hidden=ser;wrap(F.session).hidden=ser;wrap(F.vakta).hidden=ser;wrap(F.portion).hidden=ser;
   var dl=wrap(F.date).querySelector('label');if(dl)dl.textContent=ser?'Start date':T('Date')}
  typeSel.addEventListener('change',sync2);pkindSel.addEventListener('change',sync2);sync2();
  function commit(){
@@ -852,6 +856,7 @@ function openForm(ev){
   e.yajman=F.yajman.value.trim();e.car=F.car.value;e.driver=F.driver.value.trim();e.phone=F.phone.value.trim();e.flight=F.flight.value.trim();
   if(t==='car'){e.from=F.from.value.trim();e.to=F.to.value.trim()}else if(t==='flight'){e.from=F.from2.value.trim();e.to=F.to2.value.trim()}
   if(!e.date){F.date.focus();return}
+  if(t==='pravachan'){e.endDate='';e.dur=+F.dur.value||10;if(e.start){var sm=toMin(e.start),em=Math.min(sm+e.dur,1439);e.end=String(Math.floor(em/60)).padStart(2,'0')+':'+String(em%60).padStart(2,'0')}else e.end=''}
   if(isSer()){
    var kind=pkindSel.value,N=kind==='saptah'?7:5,base=Date.now(),k=0,ttl=e.title||((e.place?e.place+' ':'')+(kind==='saptah'?'Saptah':'Panchah')+' Parayan'),first=e.date;
    for(var di=0;di<N;di++){
