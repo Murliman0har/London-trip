@@ -320,13 +320,17 @@ body{
 @keyframes aoy{from{transform:translateY(-50px) scale(.72)}to{transform:translateY(50px) scale(.72)}}
 @media (prefers-reduced-motion:reduce){.aarti .orbit,.aarti .lamp,.aarti .kglow{animation:none!important}.aarti .lamp{transform:translateY(-50px) scale(.72)}}
 
-.kimg{position:relative;height:150px;border-radius:10px;overflow:hidden;margin:0 0 10px;background:#f3e2c4}
-.kimg img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 38%}
-.kimg.now img{animation:kenb 14s ease-in-out infinite alternate}
-.kimg.now::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 60% 66%,rgba(255,244,214,.55),rgba(255,244,214,0) 48%);mix-blend-mode:soft-light;animation:kpulse 2.2s ease-in-out infinite alternate}
-@keyframes kenb{from{transform:scale(1) translate(0,0)}to{transform:scale(1.15) translate(-2%,-1.5%)}}
+.ev.t-katha{position:relative;overflow:hidden}
+.ev.t-katha>.rail,.ev.t-katha>.body{position:relative;z-index:1}
+.kbg{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.kbg img{display:block;width:100%;height:100%;object-fit:cover;object-position:80% 42%}
+.kbg .scrim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,251,242,.94) 0%,rgba(255,251,242,.78) 42%,rgba(255,251,242,.3) 100%)}
+:root[data-theme=dark] .kbg .scrim{background:linear-gradient(90deg,rgba(28,19,13,.95) 0%,rgba(28,19,13,.82) 42%,rgba(28,19,13,.4) 100%)}
+.kbg.now img{animation:kenb 14s ease-in-out infinite alternate}
+.kbg.now::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 78% 62%,rgba(255,244,214,.6),rgba(255,244,214,0) 45%);mix-blend-mode:soft-light;animation:kpulse 2.2s ease-in-out infinite alternate}
+@keyframes kenb{from{transform:scale(1)}to{transform:scale(1.12)}}
 @keyframes kpulse{from{opacity:.25}to{opacity:1}}
-@media (prefers-reduced-motion:reduce){.kimg.now img,.kimg.now::after{animation:none}}
+@media (prefers-reduced-motion:reduce){.kbg.now img,.kbg.now::after{animation:none}}
 </style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap"><div id="root"></div><script id="seed" type="application/json">{"tripStart":"2026-12-22","tripEnd":"2027-06-19","stays":[],"events":[],"saints":[]}</script><script id="app">
 (function(){
 var TITLE_META='<title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover">';
@@ -419,10 +423,10 @@ function evCard(e,isNow,isNext){
  var allIds=saintsOn(e.date).map(function(s){return s.id});
  var everyone=allIds.every(function(i){return e.saints.indexOf(i)>-1});
  return h('article',{class:'ev t-'+e.type+(isNow?' now':'')},
+  e.type==='katha'?h('div',{class:'kbg'+(isNow?' now':''),'aria-hidden':'true'},h('img',{src:'katha.webp',alt:'',loading:'lazy'}),h('i',{class:'scrim'})):null,
   isNow?fxEls(e.type):null,
   h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'height:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null),
   h('div',{class:'body'},
-   e.type==='katha'?h('div',{class:'kimg'+(isNow?' now':'')},h('img',{src:'katha.webp',alt:'Katha',loading:'lazy'})):null,
    h('div',{class:'top'},h('span',{class:'tag',text:typeLabel(e.type)}),isNow?h('span',{class:'pill now',text:T('Happening now')}):null,isNext?h('span',{class:'pill next',text:T('Up next')}):null),
    e.type==='parayan'?null:h('div',{class:'title',text:tr(e.title)||typeLabel(e.type)}),
    kv.length?h('dl',{class:'kv'},kv):null,
