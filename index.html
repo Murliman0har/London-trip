@@ -328,6 +328,7 @@ function parOn(d){var seen={},out=[];
  dayAll(d).forEach(function(e){if(e.type!=='parayan')return;var k=e.title+'|'+e.place;if(seen[k])return;seen[k]=1;
   var all=seriesOf(e),f=all[0].date,l=all[all.length-1].date;out.push({title:e.title,place:e.place,yajman:e.yajman||'',shastra:e.shastra||'',k:diff(f,d)+1,n:diff(f,l)+1})});
  return out}
+function vaktaList(cur){return state.saints.filter(function(s){return s.role==='Vakta'||s.id===cur})}
 function evsOn(d){return dayAll(d).filter(hasSel)}
 function toMin(t){if(!t)return null;var p=t.split(':');return +p[0]*60+ +p[1]}
 function sortKey(e){var m=toMin(e.start);if(m!=null)return m;if(e.session==='morning')return 540;if(e.session==='evening')return 1080;return -1}
@@ -665,7 +666,7 @@ function openForm(ev){
  function field(id,label,el){F[id]=el;el.id='f_'+id;return h('div',{class:'f'},h('label',{for:'f_'+id,text:label}),el)}
  function inp(id,type,val){return h('input',{type:type||'text',value:val||''})}
  function sel(opts,val){var s=h('select',{});opts.forEach(function(o){var op=h('option',{value:o[0],text:o[1]});if(o[0]===val)op.selected=true;s.append(op)});return s}
- var saintOpts=[['','Not chosen']].concat(state.saints.map(function(s){return[s.id,s.name]}));
+ var saintOpts=[['','Not chosen']].concat(vaktaList(e.vakta).map(function(s){return[s.id,s.name]}));
  var typeSel=sel(Object.keys(TYPES).map(function(k){return[k,TYPES[k]]}),e.type);
  var groups={};
  var pkindSel=sel([['one','Single session'],['panchah','Panchah Parayan (5 days)'],['saptah','Saptah Parayan (7 days)']],'one');
@@ -739,8 +740,7 @@ function seriesOf(e){return state.events.filter(function(x){return x.type==='par
 function openSeries(title,place){
  var list=seriesOf({title:title,place:place});if(!list.length)return;
  var modal=h('div',{class:'modal',role:'dialog','aria-modal':'true','aria-label':'Vakta and part of Shastra'}),rows=[];
- var opts=[['','Not chosen']].concat(state.saints.map(function(s){return[s.id,s.name]}));
- function vsel(val){var s=h('select',{});opts.forEach(function(o){var op=h('option',{value:o[0],text:o[1]});if(o[0]===val)op.selected=true;s.append(op)});return s}
+ function vsel(val){var opts=[['','Not chosen']].concat(vaktaList(val).map(function(s){return[s.id,s.name]}));var s=h('select',{});opts.forEach(function(o){var op=h('option',{value:o[0],text:o[1]});if(o[0]===val)op.selected=true;s.append(op)});return s}
  var all=vsel('');
  var allBtn=h('button',{class:'btn sm',type:'button',onclick:function(){if(!all.value)return;rows.forEach(function(r){r.v.value=all.value})}},'Apply to all');
  var form=h('form',{class:'form',onsubmit:function(x){x.preventDefault();
