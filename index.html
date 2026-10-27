@@ -322,6 +322,7 @@ function diff(a,b){return Math.round((parse(b)-parse(a))/864e5)}
 function fmt(s,o){return parse(s).toLocaleDateString(lang==='gu'?'gu-IN-u-nu-gujr':'en-GB',o||{weekday:'short',day:'numeric',month:'short'})}
 function short(s){if(lang==='gu'&&GS[s.id])return GS[s.id];return s.name.replace(' Das Swami','').replace(' Dasji','').replace(' Das','')}
 function sName(id){var s=state.saints.find(function(x){return x.id===id});return s?(lang==='gu'&&GN[id]?GN[id]:s.name):''}
+var GCOL=['#7a4fa3','#2f7d6b','#b0603a','#3a6ea5','#8a7a1e','#a23b72','#4c8c2b','#c05a5a','#4b5d8a'];
 function gcol(id){var n=0;for(var i=0;i<id.length;i++)n=(n*31+id.charCodeAt(i))%9973;return GCOL[n%GCOL.length]}
 function av(id,extra){var s=state.saints.find(function(x){return x.id===id});return h('span',{class:'av '+id+(extra||''),style:s&&s.guest?'background:'+gcol(id):null,title:s?s.name:'',text:s?s.short:'?'})}
 function stayFor(d){var m=null;state.stays.forEach(function(s){if(s.start<=d&&d<=s.end)m=s});return m}
