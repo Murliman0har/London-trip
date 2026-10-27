@@ -386,12 +386,13 @@ function dayView(){
   h('button',{class:'btn',type:'button',onclick:function(){ui.date=calClamp(addDays(d,1));render()},'aria-label':'Next day'},'›')));
  root.append(h('div',{class:'nav',style:'justify-content:center'},h('button',{class:'btn',type:'button',onclick:function(){ui.date=calClamp(today());render();setTimeout(function(){var n=document.querySelector('.ev.now');if(n)n.scrollIntoView({behavior:'smooth',block:'center'});else window.scrollTo({top:0,behavior:'smooth'})},120)}},T('Today')),
   h('span',{class:'sub',text:st?dayOf(diff(state.tripStart,d)+1,diff(state.tripStart,state.tripEnd)+1):''})));
- if(st){var n=diff(st.start,st.end)+1,k=diff(st.start,d)+1,idx=state.stays.indexOf(st),prev=state.stays[idx-1],gu=lang==='gu';
-  var meta=[tr(st.region)];if(st.start!==st.end)meta.push(gu?'અહીં '+dayOf(k,n):'Day '+k+' of '+n+' here');
-  if(d===st.start&&prev&&prev.place!==st.place)meta.push(gu?tr(prev.place)+' થી આગમન':'Arriving from '+prev.place);
-  var nx=state.stays[idx+1];if(d===st.end&&nx)meta.push(gu?'આજે '+tr(nx.place)+' તરફ પ્રસ્થાન':'Moving to '+nx.place+' today');
-  var pts=patOn(d),prs=parOn(d);
-  root.append(h('div',{class:'place'+(pts.length||prs.length?' pat':'')},h('div',{class:'meta',text:T('Where we are')}),h('div',{class:'where',text:tr(st.place)}),h('div',{class:'meta',text:meta.join(' · ')}),
+ var pts=patOn(d),prs=parOn(d);
+ if(st||pts.length||prs.length){var meta=[];
+  if(st){var n=diff(st.start,st.end)+1,k=diff(st.start,d)+1,idx=state.stays.indexOf(st),prev=state.stays[idx-1],gu=lang==='gu';
+   meta=[tr(st.region)];if(st.start!==st.end)meta.push(gu?'અહીં '+dayOf(k,n):'Day '+k+' of '+n+' here');
+   if(d===st.start&&prev&&prev.place!==st.place)meta.push(gu?tr(prev.place)+' થી આગમન':'Arriving from '+prev.place);
+   var nx=state.stays[idx+1];if(d===st.end&&nx)meta.push(gu?'આજે '+tr(nx.place)+' તરફ પ્રસ્થાન':'Moving to '+nx.place+' today')}
+  root.append(h('div',{class:'place'+(pts.length||prs.length?' pat':'')},st?h('div',{class:'meta',text:T('Where we are')}):null,st?h('div',{class:'where',text:tr(st.place)}):null,meta.length?h('div',{class:'meta',text:meta.join(' · ')}):null,
    pts.map(function(p){var pn=diff(p.start,p.end)+1,pk=diff(p.start,d)+1;
     return h('div',{class:'row',style:'align-items:center;justify-content:space-between;gap:8px;margin-top:6px'},
      h('span',{class:'patl',text:'\u{1FA94} '+(tr(p.title)||typeLabel('patotsav'))+' \u00b7 '+(lang==='gu'?dayOf(pk,pn):'Day '+pk+' of '+pn)}),
