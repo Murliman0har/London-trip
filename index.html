@@ -311,7 +311,7 @@ body{
 @media (prefers-reduced-motion:reduce){.readfx *{animation:none!important}}
 
 .aarti{right:3px;width:152px;height:128px;margin-top:-64px}
-.ev.now.t-pothiyatra .body{padding-right:156px;min-height:128px}
+.ev.now.t-pothiyatra .body{padding-right:60px;min-height:128px}
 .ev.now.t-pothiyatra .pill{white-space:nowrap}
 .aarti .idol{position:absolute;left:50%;top:50%;width:88px;margin:-28px 0 0 -44px}
 .aarti .idol img{display:block;width:100%;height:auto;animation:aglowimg 1.4s ease-in-out infinite alternate}
@@ -381,6 +381,9 @@ body{
 .ksticker.k-katha,.ksticker.k-vastu,.ksticker.k-pravachan,.ksticker.k-pothiyatra,.ksticker.k-katha.now,.ksticker.k-vastu.now,.ksticker.k-pravachan.now,.ksticker.k-pothiyatra.now{object-fit:contain!important;object-position:right center;height:calc(100% - 30px)!important;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%)!important;mask-image:linear-gradient(90deg,transparent 0,#000 30%)!important;top:30px!important;opacity:.62!important}
 .ev.t-katha .body,.ev.t-vastu .body,.ev.t-pravachan .body,.ev.t-pothiyatra .body{min-height:112px!important}
 .ksticker.k-katha.now,.ksticker.k-vastu.now,.ksticker.k-pravachan.now,.ksticker.k-pothiyatra.now{opacity:.72}
+.ksticker.k-pothiyatra,.ksticker.k-pothiyatra.now{object-fit:cover!important;object-position:center 40%!important;opacity:.6!important;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 38%)!important;mask-image:linear-gradient(90deg,transparent 0,#000 38%)!important;height:calc(100% - 30px)!important}
+.ksticker.k-pothiyatra.now{opacity:.78!important}
+.ev.now.t-pothiyatra .body{min-height:112px!important}
 </style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap"><div id="root"></div><script id="seed" type="application/json">{"tripStart":"2026-12-22","tripEnd":"2027-06-19","stays":[],"events":[],"saints":[]}</script><script id="app">
 (function(){
 var TITLE_META='<title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover">';
@@ -455,7 +458,7 @@ function KRISHNA(){var d=h('div',{class:'idol'});d.append(h('img',{src:'aarti-st
 function fxEls(t){var f=FX[t],o=[],i;
  if(t==='flight')return [];
  if(t==='car'||t==='padramani')return h('div',{class:'carfx','aria-hidden':'true'},h('i',{class:'road'}),h('span',{class:'car'},h('span',{class:'cbob',text:'\u{1F697}'})));
- if(t==='pothiyatra')return h('div',{class:'aarti','aria-hidden':'true'},KRISHNA(),h('div',{class:'orbit'},h('div',{class:'lamp'},h('div',{class:'glow'}),h('div',{class:'flame'},h('div',{class:'core'})),h('div',{class:'wick'}),h('div',{class:'bowl'}))));if(!f){for(i=1;i<=12;i++)o.push(h('i',{class:'spark s'+i,'aria-hidden':'true'}));return o}
+ if(t==='pothiyatra')return h('div',{class:'aarti','aria-hidden':'true'},h('div',{class:'orbit'},h('div',{class:'lamp'},h('div',{class:'glow'}),h('div',{class:'flame'},h('div',{class:'core'})),h('div',{class:'wick'}),h('div',{class:'bowl'}))));if(!f){for(i=1;i<=12;i++)o.push(h('i',{class:'spark s'+i,'aria-hidden':'true'}));return o}
  for(i=1;i<=f[1];i++)o.push(h('i',{class:'fx fx-'+t+' f'+i,'aria-hidden':'true',text:f[0]}));return o}
 function flightLine(e,isNow){var p=isNow?+nowPct(e):0;if(!e.from&&!e.to)return null;
  return h('div',{class:'fline'},h('span',{class:'fp',text:tr(e.from)||'—'}),h('div',{class:'ftrack'},h('i',{class:'fdone',style:'width:'+p+'%'}),h('span',{class:'fplane'+(isNow?' on':''),style:'left:'+p+'%',text:'✈️'})),h('span',{class:'fp',text:tr(e.to)||'—'}))}
@@ -477,7 +480,7 @@ function evCard(e,isNow,isNext){
  var allIds=saintsOn(e.date).map(function(s){return s.id});
  var everyone=allIds.every(function(i){return e.saints.indexOf(i)>-1});
  return h('article',{class:'ev t-'+e.type+(isNow?' now':'')},
-  (STK[e.type]&&!(isNow&&e.type==='pothiyatra'))?h('img',{class:'ksticker k-'+e.type+(isNow?' now':''),src:STK[e.type],alt:'','aria-hidden':'true',loading:'lazy'}):null,
+  STK[e.type]?h('img',{class:'ksticker k-'+e.type+(isNow?' now':''),src:STK[e.type],alt:'','aria-hidden':'true',loading:'lazy'}):null,
   e.type==='pravachan'?h('span',{class:'mtag',text:'⏱ '+dg(durOf(e))+(lang==='gu'?' મિનિટ':' min')}):null,
   isNow?fxEls(e.type):null,
   h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'width:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null),
