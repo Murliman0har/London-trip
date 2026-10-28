@@ -388,6 +388,8 @@ body{
 .ev .rail .pill.now{margin-left:auto;background:#fff;color:#1b7a45;animation:none;box-shadow:0 0 8px rgba(255,255,255,.8);align-self:center;padding:2px 10px}
 .ev .rail .mtag{position:static!important;margin-left:auto;align-self:center}
 .ev .rail .mtag+.pill.now{margin-left:6px}
+:root{--c-lunch:#B7791F;--c-rest:#6D5BD0}
+.t-lunch{--c:var(--c-lunch)}.t-rest{--c:var(--c-rest)}
 </style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap"><div id="root"></div><script id="seed" type="application/json">{"tripStart":"2026-12-22","tripEnd":"2027-06-19","stays":[],"events":[],"saints":[]}</script><script id="app">
 (function(){
 var TITLE_META='<title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover">';
@@ -395,7 +397,7 @@ var FONT_LINK='<link rel="stylesheet" href="https://fonts.googleapis.com/css2?fa
 var SKEL_A='<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>\n';
 var SKEL_B='</body></html>';
 var state=JSON.parse(document.getElementById('seed').textContent);
-var TYPES={parayan:'Parayan',katha:'Katha',pothiyatra:'Aarti Niyam',padramani:'Padramani',vastu:'Vastu',sabha:'Utsav',pravachan:'Pravachan',flight:'Flight',car:'Mandir shift',other:'Other'};
+var TYPES={parayan:'Parayan',katha:'Katha',pothiyatra:'Aarti Niyam',padramani:'Padramani',vastu:'Vastu',sabha:'Utsav',pravachan:'Pravachan',lunch:'Lunch',rest:'Rest',flight:'Flight',car:'Mandir shift',other:'Other'};
 var RIDE=['car','padramani','vastu','flight','sabha','pravachan'];
 var YAJ=['parayan','vastu','padramani'];
 var CARS={c1:'Car 1',c2:'Car 2'};
@@ -407,7 +409,7 @@ var GN={g:'જ્ઞાનપ્રકાશ દાસ સ્વામી',hs:'�
 var GS={g:'જ્ઞાનપ્રકાશ',hs:'હરિસેવક',mm:'મુરલીમનોહર',hp:'હરિપ્રસાદ',np:'નિત્યપ્રકાશ',ap:'આનંદપ્રકાશ'};
 (function(){var n={x_devprakash:['દેવપ્રકાશ'],x_axarvallabh:['અક્ષરવલ્લભ'],x_prabhuswarup:['પ્રભુસ્વરૂપ'],x_narayanvallabh:['નારાયણવલ્લભ'],x_nandkishor:['નંદકિશોર'],x_ghansyamkeshave:['ઘનશ્યામકેશવ'],x_dharmacharan:['ધર્મચરણ'],x_divyaprakash:['દિવ્યપ્રકાશ'],x_nilkanthmuni:['નીલકંઠમુનિ'],x_ghansyamprakash:['ઘનશ્યામપ્રકાશ'],x_krushnaprakash:['કૃષ્ણપ્રકાશ'],x_harikrushna:['હરિકૃષ્ણ'],x_ghansyam:['ઘનશ્યામ'],x_nautamprakash:['નૌતમપ્રકાશ'],x_bhaktiprasad:['ભક્તિપ્રસાદ']};
  for(var k in n){GS[k]=n[k][0];GN[k]=n[k][0]+' દાસજી'}})();
-var TG={parayan:'પારાયણ',katha:'કથા',patotsav:'પાટોત્સવ',pothiyatra:'આરતી નિયમ',padramani:'પધરામણી',vastu:'વાસ્તુ',sabha:'ઉત્સવ',pravachan:'પ્રવચન',flight:'ફ્લાઇટ',car:'મંદિર સ્થળાંતર',other:'અન્ય'};
+var TG={parayan:'પારાયણ',katha:'કથા',patotsav:'પાટોત્સવ',pothiyatra:'આરતી નિયમ',padramani:'પધરામણી',vastu:'વાસ્તુ',sabha:'ઉત્સવ',pravachan:'પ્રવચન',lunch:'ભોજન',rest:'આરામ',flight:'ફ્લાઇટ',car:'મંદિર સ્થળાંતર',other:'અન્ય'};
 var CG={c1:'કાર 1',c2:'કાર 2'};
 var PL={'Harrow Mandir':'હેરો મંદિર','Wilsden Mandir':'વિલ્સડન મંદિર','Stanmore Mandir':'સ્ટેનમોર મંદિર','Woolwich Mandir':'વૂલવિચ મંદિર','East London Mandir':'ઈસ્ટ લંડન મંદિર','Cardiff Mandir':'કાર્ડિફ મંદિર','Bolton Mandir':'બોલ્ટન મંદિર','Oldham Mandir':'ઓલ્ડહામ મંદિર','ISSO Mandir':'ISSO મંદિર','Mariestad Temple':'મારિયેસ્ટાદ મંદિર','Jönköping Temple':'યોન્શોપિંગ મંદિર','Harrow':'હેરો','Wilsden':'વિલ્સડન','Stanmore':'સ્ટેનમોર','Woolwich':'વૂલવિચ','East London':'ઈસ્ટ લંડન','Cardiff':'કાર્ડિફ','Bolton':'બોલ્ટન','Oldham':'ઓલ્ડહામ','ISSO':'ISSO','Heathrow':'હીથ્રો','London Heathrow':'લંડન હીથ્રો','London':'લંડન','India':'ભારત','Gambia':'ગામ્બિયા','Senegal':'સેનેગલ','Sweden':'સ્વીડન','Dubai':'દુબઈ','London, UK':'લંડન, યુકે','Bradford, UK':'બ્રેડફોર્ડ, યુકે','Wales, UK':'વેલ્સ, યુકે','UK':'યુકે','UAE':'યુએઈ','Departure from India':'ભારતથી પ્રસ્થાન','Parayan':'પારાયણ','Patotsav':'પાટોત્સવ','Katha':'કથા','Pothiyatra':'પોથીયાત્રા','Depart India for London':'ભારતથી લંડન પ્રસ્થાન','Trip ends: return from Dubai':'યાત્રા પૂર્ણ: દુબઈથી પરત','Add ticket details':'ટિકિટની વિગતો ઉમેરવી'};
 function T(k){return lang==='gu'&&GU[k]!=null?GU[k]:k}
@@ -622,7 +624,7 @@ function openStay(t,s){
   h('div',{class:'row'},h('button',{class:'btn pri',type:'submit'},T('Done')),h('button',{class:'btn',type:'button',onclick:function(){modal.remove()}},T('Cancel'))));
  modal.append(form);document.body.append(modal);backable(modal);F.place.focus()}
 
-var SUMORDER=['parayan','katha','pothiyatra','padramani','vastu','sabha','pravachan','flight','car','other'];
+var SUMORDER=['parayan','katha','pothiyatra','padramani','vastu','sabha','pravachan','lunch','rest','flight','car','other'];
 function rangeLabel(e){return e.endDate&&e.endDate!==e.date?fmt(e.date)+' – '+fmt(e.endDate):fmt(e.date)}
 function goDay(d){ui.date=d;ui.view='day';render();window.scrollTo(0,0)}
 function inYatra(e){return e.date>=state.tripStart&&e.date<=state.tripEnd}
