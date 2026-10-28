@@ -420,6 +420,8 @@ function fxEls(t){var f=FX[t],o=[],i;
  for(i=1;i<=f[1];i++)o.push(h('i',{class:'fx fx-'+t+' f'+i,'aria-hidden':'true',text:f[0]}));return o}
 function nowPct(e){var n=new Date(),nm=n.getHours()*60+n.getMinutes()+n.getSeconds()/60,st=toMin(e.start),en=e.end?toMin(e.end):st+90;if(st==null||en<=st)return 0;return Math.max(0,Math.min(100,(nm-st)/(en-st)*100)).toFixed(1)}
 var STK={pothiyatra:'aarti-sticker.webp',katha:'katha-sticker.webp',vastu:'vastu-sticker.webp',padramani:'padramani-sticker.webp',pravachan:'pravachan-sticker.webp'};
+function showTitle(e){var t=tr(e.title||'').trim();if(!t)return false;var n=function(x){return String(x).toLowerCase().replace(/[^a-z0-9઀-૿]/g,'')},k=n(t);
+ return k!==n(typeLabel(e.type))&&k!==n(TYPES[e.type]||'')&&k!==n(e.type)&&k!==n(TG[e.type]||'')}
 function evCard(e,isNow,isNext){
  var tl=timeLabel(e),kv=[];
  function add(k,v){if(v)kv.push(h('dt',{text:T(k)}),h('dd',{text:v}))}
@@ -440,7 +442,7 @@ function evCard(e,isNow,isNext){
   h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'height:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null),
   h('div',{class:'body'},
    h('div',{class:'top'},h('span',{class:'tag',text:typeLabel(e.type)}),isNow?h('span',{class:'pill now',text:lang==='gu'?'ચાલુ':'ON'}):null,isNext?h('span',{class:'pill next',text:T('Up next')}):null),
-   e.type==='parayan'?null:h('div',{class:'title',text:tr(e.title)||typeLabel(e.type)}),
+   (e.type==='parayan'||!showTitle(e))?null:h('div',{class:'title',text:tr(e.title)}),
    kv.length?h('dl',{class:'kv'},kv):null,
    e.photos&&e.photos.length?picsEl(e):null,
    (!everyone&&e.saints.length)?h('div',{class:'row'},e.saints.map(function(i){return h('span',{class:'row'},av(i),h('span',{class:'faint',text:sName(i)}))})):null,
