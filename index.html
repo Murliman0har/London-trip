@@ -320,7 +320,9 @@ body{
 @keyframes aoy{from{transform:translateY(-48px) scale(.72)}to{transform:translateY(48px) scale(.72)}}
 @media (prefers-reduced-motion:reduce){.aarti .orbit,.aarti .lamp,.aarti .idol img{animation:none!important}.aarti .lamp{transform:translateY(-48px) scale(.72)}}
 
-.ev.t-katha,.ev.t-vastu,.ev.t-padramani,.ev.t-pravachan{position:relative}
+.ev.t-katha,.ev.t-vastu,.ev.t-padramani,.ev.t-pravachan,.ev.t-pothiyatra{position:relative}
+.ev.t-pothiyatra .body{padding-right:120px;min-height:104px}.ev.now.t-pothiyatra .body{padding-right:156px}
+.ksticker.k-pothiyatra{width:100px}
 .ev.t-pravachan .body{padding-right:104px;min-height:92px}
 .ksticker.k-pravachan{width:92px}
 .ev.t-padramani .body{padding-right:150px;min-height:104px}
@@ -334,6 +336,13 @@ body{
 .ksticker.now{animation:kfloat 2.8s ease-in-out infinite alternate;filter:drop-shadow(0 0 7px rgba(255,190,70,.9)) drop-shadow(0 3px 4px rgba(90,45,10,.3))}
 @keyframes kfloat{from{transform:rotate(-4deg) translateY(1px)}to{transform:rotate(2deg) translateY(-4px)}}
 @media (prefers-reduced-motion:reduce){.ksticker.now{animation:none}}
+.ksticker{opacity:.78;filter:brightness(1.12) saturate(.85) drop-shadow(0 3px 4px rgba(90,45,10,.2))}
+.ksticker.now{opacity:.88;filter:brightness(1.1) saturate(.9) drop-shadow(0 0 7px rgba(255,190,70,.8))}
+.aarti .idol img{opacity:.85;filter:brightness(1.1) saturate(.85)}
+.ksticker.k-padramani{transform:none;transform-origin:50% 50%}
+.ksticker.k-padramani.now{animation:kfloat2 2.8s ease-in-out infinite alternate}
+@keyframes kfloat2{from{transform:translateY(1px)}to{transform:translateY(-4px)}}
+:root[data-theme=dark] .ksticker{opacity:.9;filter:brightness(.95) drop-shadow(0 2px 4px rgba(0,0,0,.5))}
 </style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap"><div id="root"></div><script id="seed" type="application/json">{"tripStart":"2026-12-22","tripEnd":"2027-06-19","stays":[],"events":[],"saints":[]}</script><script id="app">
 (function(){
 var TITLE_META='<title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover">';
@@ -410,7 +419,7 @@ function fxEls(t){var f=FX[t],o=[],i;
  if(t==='pothiyatra')return h('div',{class:'aarti','aria-hidden':'true'},KRISHNA(),h('div',{class:'orbit'},h('div',{class:'lamp'},h('div',{class:'glow'}),h('div',{class:'flame'},h('div',{class:'core'})),h('div',{class:'wick'}),h('div',{class:'bowl'}))));if(!f){for(i=1;i<=12;i++)o.push(h('i',{class:'spark s'+i,'aria-hidden':'true'}));return o}
  for(i=1;i<=f[1];i++)o.push(h('i',{class:'fx fx-'+t+' f'+i,'aria-hidden':'true',text:f[0]}));return o}
 function nowPct(e){var n=new Date(),nm=n.getHours()*60+n.getMinutes()+n.getSeconds()/60,st=toMin(e.start),en=e.end?toMin(e.end):st+90;if(st==null||en<=st)return 0;return Math.max(0,Math.min(100,(nm-st)/(en-st)*100)).toFixed(1)}
-var STK={katha:'katha-sticker.webp',vastu:'vastu-sticker.webp',padramani:'padramani-sticker.webp',pravachan:'pravachan-sticker.webp'};
+var STK={pothiyatra:'aarti-sticker.webp',katha:'katha-sticker.webp',vastu:'vastu-sticker.webp',padramani:'padramani-sticker.webp',pravachan:'pravachan-sticker.webp'};
 function evCard(e,isNow,isNext){
  var tl=timeLabel(e),kv=[];
  function add(k,v){if(v)kv.push(h('dt',{text:T(k)}),h('dd',{text:v}))}
@@ -426,7 +435,7 @@ function evCard(e,isNow,isNext){
  var allIds=saintsOn(e.date).map(function(s){return s.id});
  var everyone=allIds.every(function(i){return e.saints.indexOf(i)>-1});
  return h('article',{class:'ev t-'+e.type+(isNow?' now':'')},
-  STK[e.type]?h('img',{class:'ksticker k-'+e.type+(isNow?' now':''),src:STK[e.type],alt:'','aria-hidden':'true',loading:'lazy'}):null,
+  (STK[e.type]&&!(isNow&&e.type==='pothiyatra'))?h('img',{class:'ksticker k-'+e.type+(isNow?' now':''),src:STK[e.type],alt:'','aria-hidden':'true',loading:'lazy'}):null,
   isNow?fxEls(e.type):null,
   h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'height:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null),
   h('div',{class:'body'},
