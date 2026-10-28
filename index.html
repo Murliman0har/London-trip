@@ -98,7 +98,9 @@ button{cursor:pointer}
 .pill.now{background:var(--now);color:#fff} .pill.next{background:var(--soft);color:var(--fg);border:1px solid var(--line)}
 .title{font-family:var(--display);font-size:18px;font-weight:600;line-height:1.2}
 .kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;font-size:14px}
-.kv dt{color:var(--muted)} .kv dd{margin:0;overflow-wrap:anywhere}
+.kv dt{color:var(--muted);white-space:nowrap} .kv dd{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .kv dd.wrapok{white-space:normal;overflow:visible}
+.kv a.tel{color:var(--accent);font-weight:700;text-decoration:none}
+.ev .title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .faint{color:var(--muted);font-size:13px}
 .t-parayan{--c:var(--c-parayan)}.t-katha{--c:var(--c-katha)}.t-patotsav{--c:var(--c-patotsav)}.t-pothiyatra{--c:var(--c-pothiyatra)}.t-padramani{--c:var(--c-padramani)}.t-vastu{--c:var(--c-vastu)}.t-sabha{--c:var(--c-sabha)}.t-flight{--c:var(--c-flight)}.t-car{--c:var(--c-car)}.t-other{--c:var(--c-other)}.t-pravachan{--c:var(--c-pravachan)}
@@ -344,6 +346,12 @@ body{
 @keyframes kfloat2{from{transform:translateY(1px)}to{transform:translateY(-4px)}}
 :root[data-theme=dark] .ksticker{opacity:.9;filter:brightness(.95) drop-shadow(0 2px 4px rgba(0,0,0,.5))}
 .mtag{position:absolute;top:8px;right:10px;z-index:3;font-size:11px;font-weight:700;line-height:1;padding:3px 8px;border-radius:999px;background:color-mix(in srgb,var(--c) 14%,var(--surface));color:color-mix(in srgb,var(--c) 70%,var(--fg));border:1px solid color-mix(in srgb,var(--c) 35%,transparent);white-space:nowrap}
+.ev.t-pravachan .body,.ev.t-padramani .body,.ev.t-katha .body,.ev.t-vastu .body,.ev.t-pothiyatra .body{padding-right:14px;min-height:92px}
+.ev.now.t-padramani .body{min-height:110px}
+.ev .body{position:relative;z-index:3}
+.ksticker{z-index:1;opacity:.5}
+.ksticker.now{opacity:.7}
+:root[data-theme=dark] .ksticker{opacity:.45}
 </style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap"><div id="root"></div><script id="seed" type="application/json">{"tripStart":"2026-12-22","tripEnd":"2027-06-19","stays":[],"events":[],"saints":[]}</script><script id="app">
 (function(){
 var TITLE_META='<title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover">';
@@ -430,10 +438,10 @@ function evCard(e,isNow,isNext){
  if(e.type==='parayan'){add('Vakta',sName(e.vakta));add('Portion',e.portion)}
  if(e.type==='car')add('Route',route(e));
  if(RIDE.indexOf(e.type)>-1){if(e.driver||e.phone||(e.car&&e.car!=='both'&&CARS[e.car]))add('Car',carLabel(e.car)||'');add('Driver',e.driver);
-   if(e.phone)kv.push(h('dt',{text:T('Contact')}),h('dd',{},e.phone+' ',h('button',{class:'btn sm',type:'button',onclick:function(ev){copy(e.phone,ev.target)}},T('Copy'))))}
+   if(e.phone)kv.push(h('dt',{text:T('Contact')}),h('dd',{},h('a',{class:'tel',href:'tel:'+String(e.phone).replace(/[^+\d]/g,'')},'📞 '+e.phone)))}
  if(e.type==='flight'){add('Flight',e.flight);add('Route',route(e))}
  if(YAJ.indexOf(e.type)>-1)add('Yajman',e.yajman);
- add('Notes',tr(e.notes));
+ if(e.notes)kv.push(h('dt',{text:T('Notes')}),h('dd',{class:'wrapok',text:tr(e.notes)}));
  var allIds=saintsOn(e.date).map(function(s){return s.id});
  var everyone=allIds.every(function(i){return e.saints.indexOf(i)>-1});
  return h('article',{class:'ev t-'+e.type+(isNow?' now':'')},
