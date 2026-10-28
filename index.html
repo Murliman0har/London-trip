@@ -343,6 +343,7 @@ body{
 .ksticker.k-padramani.now{animation:kfloat2 2.8s ease-in-out infinite alternate}
 @keyframes kfloat2{from{transform:translateY(1px)}to{transform:translateY(-4px)}}
 :root[data-theme=dark] .ksticker{opacity:.9;filter:brightness(.95) drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+.mtag{position:absolute;top:8px;right:10px;z-index:3;font-size:11px;font-weight:700;line-height:1;padding:3px 8px;border-radius:999px;background:color-mix(in srgb,var(--c) 14%,var(--surface));color:color-mix(in srgb,var(--c) 70%,var(--fg));border:1px solid color-mix(in srgb,var(--c) 35%,transparent);white-space:nowrap}
 </style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap"><div id="root"></div><script id="seed" type="application/json">{"tripStart":"2026-12-22","tripEnd":"2027-06-19","stays":[],"events":[],"saints":[]}</script><script id="app">
 (function(){
 var TITLE_META='<title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover">';
@@ -427,7 +428,6 @@ function evCard(e,isNow,isNext){
  function add(k,v){if(v)kv.push(h('dt',{text:T(k)}),h('dd',{text:v}))}
  add('Place',tr(e.place));
  if(e.type==='parayan'){add('Vakta',sName(e.vakta));add('Portion',e.portion)}
- if(e.type==='pravachan')add('Length',durOf(e)+' min');
  if(e.type==='car')add('Route',route(e));
  if(RIDE.indexOf(e.type)>-1){if(e.driver||e.phone||(e.car&&e.car!=='both'))add('Car',carLabel(e.car)||'');add('Driver',e.driver);
    if(e.phone)kv.push(h('dt',{text:T('Contact')}),h('dd',{},e.phone+' ',h('button',{class:'btn sm',type:'button',onclick:function(ev){copy(e.phone,ev.target)}},T('Copy'))))}
@@ -438,6 +438,7 @@ function evCard(e,isNow,isNext){
  var everyone=allIds.every(function(i){return e.saints.indexOf(i)>-1});
  return h('article',{class:'ev t-'+e.type+(isNow?' now':'')},
   (STK[e.type]&&!(isNow&&e.type==='pothiyatra'))?h('img',{class:'ksticker k-'+e.type+(isNow?' now':''),src:STK[e.type],alt:'','aria-hidden':'true',loading:'lazy'}):null,
+  e.type==='pravachan'?h('span',{class:'mtag',text:'⏱ '+dg(durOf(e))+(lang==='gu'?' મિનિટ':' min')}):null,
   isNow?fxEls(e.type):null,
   h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'height:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null),
   h('div',{class:'body'},
