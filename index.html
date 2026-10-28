@@ -376,6 +376,11 @@ body{
 .ftrack .fplane{position:absolute;top:50%;font-size:18px;line-height:1;transform:translate(-30%,-52%);filter:drop-shadow(0 1px 2px rgba(0,0,0,.25));transition:left 1s linear}
 .ftrack .fplane.on{animation:fbob 1.6s ease-in-out infinite alternate}
 @keyframes fbob{from{margin-top:-2px}to{margin-top:2px}}
+.ev.t-katha,.ev.t-vastu,.ev.t-pravachan,.ev.t-pothiyatra{overflow:hidden}
+.ksticker.k-katha,.ksticker.k-vastu,.ksticker.k-pravachan,.ksticker.k-pothiyatra,.ksticker.k-katha.now,.ksticker.k-vastu.now,.ksticker.k-pravachan.now,.ksticker.k-pothiyatra.now{left:0!important;right:0!important;width:100%!important;top:34px!important;bottom:0!important;height:auto!important;object-fit:cover;transform:none!important;animation:none!important;border-radius:0;opacity:.5;filter:brightness(1.08) saturate(.9);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 45%);mask-image:linear-gradient(90deg,transparent 0,#000 45%)}
+.ksticker.k-katha,.ksticker.k-vastu,.ksticker.k-pravachan,.ksticker.k-pothiyatra,.ksticker.k-katha.now,.ksticker.k-vastu.now,.ksticker.k-pravachan.now,.ksticker.k-pothiyatra.now{object-fit:contain!important;object-position:right center;height:calc(100% - 30px)!important;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%)!important;mask-image:linear-gradient(90deg,transparent 0,#000 30%)!important;top:30px!important;opacity:.62!important}
+.ev.t-katha .body,.ev.t-vastu .body,.ev.t-pravachan .body,.ev.t-pothiyatra .body{min-height:112px!important}
+.ksticker.k-katha.now,.ksticker.k-vastu.now,.ksticker.k-pravachan.now,.ksticker.k-pothiyatra.now{opacity:.72}
 </style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap"><div id="root"></div><script id="seed" type="application/json">{"tripStart":"2026-12-22","tripEnd":"2027-06-19","stays":[],"events":[],"saints":[]}</script><script id="app">
 (function(){
 var TITLE_META='<title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover">';
