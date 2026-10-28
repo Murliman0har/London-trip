@@ -354,7 +354,7 @@ var state=JSON.parse(document.getElementById('seed').textContent);
 var TYPES={parayan:'Parayan',katha:'Katha',pothiyatra:'Aarti Niyam',padramani:'Padramani',vastu:'Vastu',sabha:'Utsav',pravachan:'Pravachan',flight:'Flight',car:'Mandir shift',other:'Other'};
 var RIDE=['car','padramani','vastu','flight','sabha','pravachan'];
 var YAJ=['parayan','vastu','padramani'];
-var CARS={c1:'Car 1',c2:'Car 2',both:'Both cars'};
+var CARS={c1:'Car 1',c2:'Car 2'};
 var ui={sumOpen:'',assets:null,view:'day',date:null,filter:'',sel:[],canEdit:false,dirty:0,saving:false,msg:''};
 var $=function(s){return document.querySelector(s)};
 var lang='en';try{lang=localStorage.getItem('lang')==='gu'?'gu':'en'}catch(x){}
@@ -364,7 +364,7 @@ var GS={g:'જ્ઞાનપ્રકાશ',hs:'હરિસેવક',mm:'મ
 (function(){var n={x_devprakash:['દેવપ્રકાશ'],x_axarvallabh:['અક્ષરવલ્લભ'],x_prabhuswarup:['પ્રભુસ્વરૂપ'],x_narayanvallabh:['નારાયણવલ્લભ'],x_nandkishor:['નંદકિશોર'],x_ghansyamkeshave:['ઘનશ્યામકેશવ'],x_dharmacharan:['ધર્મચરણ'],x_divyaprakash:['દિવ્યપ્રકાશ'],x_nilkanthmuni:['નીલકંઠમુનિ'],x_ghansyamprakash:['ઘનશ્યામપ્રકાશ'],x_krushnaprakash:['કૃષ્ણપ્રકાશ'],x_harikrushna:['હરિકૃષ્ણ'],x_ghansyam:['ઘનશ્યામ'],x_nautamprakash:['નૌતમપ્રકાશ'],x_bhaktiprasad:['ભક્તિપ્રસાદ']};
  for(var k in n){GS[k]=n[k][0];GN[k]=n[k][0]+' દાસજી'}})();
 var TG={parayan:'પારાયણ',katha:'કથા',patotsav:'પાટોત્સવ',pothiyatra:'આરતી નિયમ',padramani:'પધરામણી',vastu:'વાસ્તુ',sabha:'ઉત્સવ',pravachan:'પ્રવચન',flight:'ફ્લાઇટ',car:'મંદિર સ્થળાંતર',other:'અન્ય'};
-var CG={c1:'કાર 1',c2:'કાર 2',both:'બંને કાર'};
+var CG={c1:'કાર 1',c2:'કાર 2'};
 var PL={'Harrow Mandir':'હેરો મંદિર','Wilsden Mandir':'વિલ્સડન મંદિર','Stanmore Mandir':'સ્ટેનમોર મંદિર','Woolwich Mandir':'વૂલવિચ મંદિર','East London Mandir':'ઈસ્ટ લંડન મંદિર','Cardiff Mandir':'કાર્ડિફ મંદિર','Bolton Mandir':'બોલ્ટન મંદિર','Oldham Mandir':'ઓલ્ડહામ મંદિર','ISSO Mandir':'ISSO મંદિર','Mariestad Temple':'મારિયેસ્ટાદ મંદિર','Jönköping Temple':'યોન્શોપિંગ મંદિર','Harrow':'હેરો','Wilsden':'વિલ્સડન','Stanmore':'સ્ટેનમોર','Woolwich':'વૂલવિચ','East London':'ઈસ્ટ લંડન','Cardiff':'કાર્ડિફ','Bolton':'બોલ્ટન','Oldham':'ઓલ્ડહામ','ISSO':'ISSO','Heathrow':'હીથ્રો','London Heathrow':'લંડન હીથ્રો','London':'લંડન','India':'ભારત','Gambia':'ગામ્બિયા','Senegal':'સેનેગલ','Sweden':'સ્વીડન','Dubai':'દુબઈ','London, UK':'લંડન, યુકે','Bradford, UK':'બ્રેડફોર્ડ, યુકે','Wales, UK':'વેલ્સ, યુકે','UK':'યુકે','UAE':'યુએઈ','Departure from India':'ભારતથી પ્રસ્થાન','Parayan':'પારાયણ','Patotsav':'પાટોત્સવ','Katha':'કથા','Pothiyatra':'પોથીયાત્રા','Depart India for London':'ભારતથી લંડન પ્રસ્થાન','Trip ends: return from Dubai':'યાત્રા પૂર્ણ: દુબઈથી પરત','Add ticket details':'ટિકિટની વિગતો ઉમેરવી'};
 function T(k){return lang==='gu'&&GU[k]!=null?GU[k]:k}
 function dg(x){return lang==='gu'?String(x).replace(/\d/g,function(c){return '૦૧૨૩૪૫૬૭૮૯'.charAt(+c)}):String(x)}
@@ -375,7 +375,7 @@ function tr(x){if(lang!=='gu'||!x)return x;if(PL[x])return PL[x];var m;
  if((m=/^(\S+) (Parayan|Patotsav)$/.exec(x)))return trp(m[1])+' '+PL[m[2]];
  return x}
 function typeLabel(k){if(k==='patotsav')return lang==='gu'?TG.patotsav:'Patotsav';return lang==='gu'&&TG[k]?TG[k]:TYPES[k]||k}
-function carLabel(c){return lang==='gu'?CG[c]:CARS[c]}
+function carLabel(c){return (lang==='gu'?CG[c]:CARS[c])||''}
 function dayOf(a,b){return lang==='gu'?'દિવસ '+dg(a)+' / '+dg(b):'Day '+a+' of '+b}
 function route(e){return tr(e.from||'')+(e.to?(lang==='gu'?' થી ':' to ')+tr(e.to):'')}
 function fmtTime(t){if(!t)return'';var p=t.split(':'),hh=+p[0],ap=hh>=12?'PM':'AM';hh=hh%12||12;return dg(hh+':'+p[1])+' '+ap}
@@ -429,7 +429,7 @@ function evCard(e,isNow,isNext){
  add('Place',tr(e.place));
  if(e.type==='parayan'){add('Vakta',sName(e.vakta));add('Portion',e.portion)}
  if(e.type==='car')add('Route',route(e));
- if(RIDE.indexOf(e.type)>-1){if(e.driver||e.phone||(e.car&&e.car!=='both'))add('Car',carLabel(e.car)||'');add('Driver',e.driver);
+ if(RIDE.indexOf(e.type)>-1){if(e.driver||e.phone||(e.car&&e.car!=='both'&&CARS[e.car]))add('Car',carLabel(e.car)||'');add('Driver',e.driver);
    if(e.phone)kv.push(h('dt',{text:T('Contact')}),h('dd',{},e.phone+' ',h('button',{class:'btn sm',type:'button',onclick:function(ev){copy(e.phone,ev.target)}},T('Copy'))))}
  if(e.type==='flight'){add('Flight',e.flight);add('Route',route(e))}
  if(YAJ.indexOf(e.type)>-1)add('Yajman',e.yajman);
@@ -805,7 +805,7 @@ function render(){
 function durOf(e){if(e.dur)return e.dur;if(e.start&&e.end){var d=toMin(e.end)-toMin(e.start);if(d===5||d===10||d===15)return d}return 10}
 function openForm(ev){
  var isNew=!ev,st=stayFor(ui.date);
- var e=ev?JSON.parse(JSON.stringify(ev)):{id:'e'+Date.now(),type:'sabha',title:'',date:ui.date,endDate:'',start:'',end:'',place:st?st.place:'',saints:saintsOn(ui.date).map(function(s){return s.id}),vakta:'',shastra:'',portion:'',session:'',car:'both',from:'',to:'',driver:'',phone:'',flight:'',yajman:'',notes:'',photos:[]};
+ var e=ev?JSON.parse(JSON.stringify(ev)):{id:'e'+Date.now(),type:'sabha',title:'',date:ui.date,endDate:'',start:'',end:'',place:st?st.place:'',saints:saintsOn(ui.date).map(function(s){return s.id}),vakta:'',shastra:'',portion:'',session:'',car:'',from:'',to:'',driver:'',phone:'',flight:'',yajman:'',notes:'',photos:[]};
  var F={};
  function field(id,label,el){F[id]=el;el.id='f_'+id;return h('div',{class:'f'},h('label',{for:'f_'+id,text:label}),el)}
  function inp(id,type,val){return h('input',{type:type||'text',value:val||''})}
@@ -843,7 +843,7 @@ function openForm(ev){
   grp('parayan',[field('session',T('Session'),sel([['',T('Not set')],['morning',T('Morning')],['evening',T('Evening')]],e.session)),field('vakta',T('Vakta leading'),sel(saintOpts,e.vakta)),field('shastra',T('Shastra'),inp('shastra','text',e.shastra)),field('portion',T('Part of the Shastra'),inp('portion','text',e.portion))]),
   grp('yajman',[field('yajman',T('Yajman'),inp('yajman','text',e.yajman))]),
   grp('shift',[h('div',{class:'two'},field('from',T('Shifting from'),inp('from','text',e.from)),field('to',T('Shifting to'),inp('to','text',e.to)))]),
-  grp('ride',[field('car',T('Car'),sel([['both',T('Both cars')],['c1',T('Car 1')],['c2',T('Car 2')]],e.car)),h('div',{class:'two'},field('driver',T('Driver'),inp('driver','text',e.driver)),field('phone',T('Driver contact number'),inp('phone','tel',e.phone)))]),
+  grp('ride',[field('car',T('Car'),sel([['',T('Not set')],['c1',T('Car 1')],['c2',T('Car 2')]],e.car)),h('div',{class:'two'},field('driver',T('Driver'),inp('driver','text',e.driver)),field('phone',T('Driver contact number'),inp('phone','tel',e.phone)))]),
   grp('flight',[field('flight',T('Flight number'),inp('flight','text',e.flight)),h('div',{class:'two'},field('from2',T('From'),inp('from2','text',e.from)),field('to2',T('To'),inp('to2','text',e.to)))]),
   saintsBox,
   field('notes',T('Notes'),h('textarea',{rows:'2',text:e.notes||''})),
