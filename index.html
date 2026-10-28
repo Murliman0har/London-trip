@@ -385,6 +385,9 @@ body{
 .ksticker.k-pothiyatra.now{opacity:.78!important}
 .ev.now.t-pothiyatra .body{min-height:112px!important}
 .ev .aarti{z-index:8!important}
+.ev .rail .pill.now{margin-left:auto;background:#fff;color:#1b7a45;animation:none;box-shadow:0 0 8px rgba(255,255,255,.8);align-self:center;padding:2px 10px}
+.ev .rail .mtag{position:static!important;margin-left:auto;align-self:center}
+.ev .rail .mtag+.pill.now{margin-left:6px}
 </style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap"><div id="root"></div><script id="seed" type="application/json">{"tripStart":"2026-12-22","tripEnd":"2027-06-19","stays":[],"events":[],"saints":[]}</script><script id="app">
 (function(){
 var TITLE_META='<title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover">';
@@ -482,11 +485,10 @@ function evCard(e,isNow,isNext){
  var everyone=allIds.every(function(i){return e.saints.indexOf(i)>-1});
  return h('article',{class:'ev t-'+e.type+(isNow?' now':'')},
   STK[e.type]?h('img',{class:'ksticker k-'+e.type+(isNow?' now':''),src:STK[e.type],alt:'','aria-hidden':'true',loading:'lazy'}):null,
-  e.type==='pravachan'?h('span',{class:'mtag',text:'⏱ '+dg(durOf(e))+(lang==='gu'?' મિનિટ':' min')}):null,
   isNow?fxEls(e.type):null,
-  h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'width:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null),
+  h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'width:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null,e.type==='pravachan'?h('span',{class:'mtag',text:'⏱ '+dg(durOf(e))+(lang==='gu'?' મિનિટ':' min')}):null,isNow?h('span',{class:'pill now',text:lang==='gu'?'ચાલુ':'ON'}):null),
   h('div',{class:'body'},
-   h('div',{class:'top'},h('span',{class:'tag',text:typeLabel(e.type)}),isNow?h('span',{class:'pill now',text:lang==='gu'?'ચાલુ':'ON'}):null,isNext?h('span',{class:'pill next',text:T('Up next')}):null),
+   h('div',{class:'top'},h('span',{class:'tag',text:typeLabel(e.type)}),isNext?h('span',{class:'pill next',text:T('Up next')}):null),
    (e.type==='parayan'||!showTitle(e))?null:h('div',{class:'title',text:tr(e.title)}),
    e.type==='flight'?flightLine(e,isNow):null,
    kv.length?h('dl',{class:'kv'},kv):null,
