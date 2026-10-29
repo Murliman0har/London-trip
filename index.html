@@ -650,7 +650,7 @@ function sumView(){
  if(ui.sumOpen){var k=ui.sumOpen,rows=[];
   if(k==='parayan')sers.forEach(function(o){rows.push(h('button',{class:'li',type:'button',onclick:function(){goDay(o.date)}},h('span',{class:'a',text:tr(o.title)+' · '+tr(o.place)}),h('span',{class:'b',text:dg(o.n)+' '+T('sessions')}),h('span',{class:'b',text:fmt(o.date)+' – '+fmt(o.end)}),h('span')))});
   else by[k].forEach(function(e){rows.push(h('button',{class:'li',type:'button',onclick:function(){goDay(e.date)}},h('span',{class:'a',text:(tr(e.title)||typeLabel(k))+((k==='katha'&&e.vakta)?' · '+sName(e.vakta):'')}),h('span',{class:'b',text:rangeLabel(e)}),h('span',{class:'b',text:tr(e.place)}),h('span')))});
-  if(k==='katha'){var kc={},kn=0;by.katha.forEach(function(e){kc[e.vakta||'']=(kc[e.vakta||'']||0)+1;kn++});
+  if(k==='katha'){var kc={},kn=0;by.katha.forEach(function(e){var n=e.endDate?diff(e.date,e.endDate)+1:1;kc[e.vakta||'']=(kc[e.vakta||'']||0)+n;kn+=n});
    var kr=Object.keys(kc).filter(Boolean).sort(function(x,y){return kc[y]-kc[x]}).map(function(id){return h('div',{class:'fill'},h('span',{text:sName(id)}),h('b',{text:dg(kc[id])+' '+T(kc[id]===1?'session':'sessions')}))});
    if(kc[''])kr.push(h('div',{class:'fill'},h('span',{text:T('Vakta not chosen')}),h('b',{text:dg(kc[''])+' '+T(kc['']===1?'session':'sessions')})));
    if(kr.length)rows.unshift(h('div',{style:'display:flex;flex-direction:column;gap:6px;margin-bottom:8px'},h('b',{text:T('Katha sessions by Vakta')}),kr))}
