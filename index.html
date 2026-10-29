@@ -640,7 +640,7 @@ function sumView(){
  SUMORDER.forEach(function(k){by[k]=[]});evs.forEach(function(e){(by[e.type]||by.other).push(e)});
  var sers=[],map={};by.parayan.forEach(function(e){var key=e.title+'|'+e.place,o=map[key];if(!o){o=map[key]={title:e.title,place:e.place,date:e.date,end:e.date,n:0};sers.push(o)}o.n++;if(e.date>o.end)o.end=e.date;if(e.date<o.date)o.date=e.date});
  function count(k){return k==='parayan'?sers.length:by[k].length}
- function sub(k){if(k==='parayan')return by.parayan.length?dg(by.parayan.length)+' '+T('sessions'):'';if(k==='katha'){var d=0;by[k].forEach(function(e){d+=e.endDate?diff(e.date,e.endDate)+1:1});return d?dg(d)+' '+T('days'):''}return ''}
+ function sub(k){if(k==='parayan')return by.parayan.length?dg(by.parayan.length)+' '+T('sessions'):'';if(k==='katha'){var d=0;by[k].forEach(function(e){d+=e.endDate?diff(e.date,e.endDate)+1:1});return d?dg(d)+' '+T(d===1?'session':'sessions'):''}return ''}
  var places={},stops=0,statList;
  if(isY){state.stays.forEach(function(s){if(s.place!=='India'){stops++;places[s.place]=1}});statList=[[diff(state.tripStart,state.tripEnd)+1,'Days on tour'],[stops,'Stops'],[Object.keys(places).length,'Different mandirs']]}
  else{var dset={},pset={};evs.forEach(function(e){var n=e.endDate?diff(e.date,e.endDate)+1:1;for(var i=0;i<n;i++)dset[addDays(e.date,i)]=1;if(e.place)pset[e.place]=1});statList=[[evs.length,'Events'],[Object.keys(dset).length,'Days with events'],[Object.keys(pset).length,'Places']]}
