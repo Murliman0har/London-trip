@@ -583,7 +583,8 @@ function planDetail(t){
  var root=h('div',{style:'display:flex;flex-direction:column;gap:10px'}),cur=stayFor(today()),yo={weekday:'short',day:'numeric',month:'short',year:'numeric'};
  t.stays.forEach(function(s){
   var n=diff(s.start,s.end)+1,seen={},tags=[];
-  state.events.forEach(function(e){if(['parayan','katha','pothiyatra','padramani','vastu','sabha','pravachan'].indexOf(e.type)>-1&&e.date<=s.end&&(e.endDate||e.date)>=s.start&&(nrm(e.place)===nrm(s.place)||(!state.stays.some(function(x){return nrm(x.place)===nrm(e.place)})&&(stayFor(e.date)||{}).id===s.id))&&!seen[e.type]){seen[e.type]=1;tags.push(h('span',{class:'tag t-'+e.type,text:typeLabel(e.type)}))}});
+  state.events.forEach(function(e){if(['parayan','katha','pothiyatra','padramani','vastu','sabha','pravachan'].indexOf(e.type)>-1&&e.date<=s.end&&(e.endDate||e.date)>=s.start&&(nrm(e.place)===nrm(s.place)||(!state.stays.some(function(x){return nrm(x.place)===nrm(e.place)})&&(stayFor(e.date)||{}).id===s.id))){var dd=e.date<s.start?s.start:e.date;if(!seen[e.type]||dd<seen[e.type])seen[e.type]=dd}});
+  Object.keys(seen).forEach(function(ty){tags.push(h('span',{class:'tag t-'+ty,role:'link',tabindex:'0',style:'cursor:pointer',text:typeLabel(ty),onclick:function(ev){ev.stopPropagation();ev.preventDefault();ui.date=seen[ty];ui.view='day';render();window.scrollTo(0,0);setTimeout(function(){var c=document.querySelector('.ev.t-'+ty);if(c)c.scrollIntoView({behavior:'smooth',block:'center'})},150)}}))});
   root.append(h('div',{style:'display:flex;flex-direction:column;gap:4px'},
    h('button',{class:'stay'+(cur&&cur.id===s.id?' cur':''),type:'button',onclick:function(){ui.date=s.start;ui.view='day';render();window.scrollTo(0,0)}},
     h('div',{class:'n',text:tr(s.place)}),h('div',{class:'days',text:s.start===s.end?T('Travel'):(lang==='gu'?dg(n)+' દિવસ':n+' days')}),
