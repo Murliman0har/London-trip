@@ -605,9 +605,13 @@ function openTour(t){
  function chk(s){var c=h('input',{type:'checkbox',value:s.id});c.checked=q.saints.indexOf(s.id)>-1;return h('label',{},c,av(s.id),short(s))}
  var checks=h('div',{class:'checks'},state.saints.map(chk));
  function vchk(s){var c=h('input',{type:'checkbox',value:s.id});c.checked=q.vaktas.indexOf(s.id)>-1;return h('label',{},c,av(s.id),short(s))}
- var vchecks=h('div',{class:'checks'},state.saints.map(vchk));
- var offSel={};
+ var vchecks=h('div',{class:'checks'});
  function ticked(){return [].slice.call(checks.querySelectorAll('input')).filter(function(c){return c.checked}).map(function(c){return c.value})}
+ function fillV(){var keep={};[].slice.call(vchecks.querySelectorAll('input')).forEach(function(c){if(c.checked)keep[c.value]=1});var first=!vchecks.firstChild;
+  vchecks.textContent='';var ids=ticked();
+  if(!ids.length)vchecks.append(h('span',{class:'note',text:'Tick saints above first.'}));
+  state.saints.filter(function(x){return ids.indexOf(x.id)>-1}).forEach(function(sa){var c=h('input',{type:'checkbox',value:sa.id});c.checked=first?q.vaktas.indexOf(sa.id)>-1:!!keep[sa.id];vchecks.append(h('label',{},c,av(sa.id),short(sa)))})}
+ var offSel={};
  function offField(id,label){var el=h('select',{id:'tf_'+id});offSel[id]=el;F[id]=el;return h('div',{class:'f'},h('label',{for:'tf_'+id,text:label}),el)}
  function fillOff(){var ids=ticked();['mahant','bhandari','kothari'].forEach(function(k){var el=offSel[k],cur=el.value||q[k]||'';el.textContent='';el.append(h('option',{value:'',text:'Not chosen'}));
   ids.forEach(function(i){var sa=state.saints.find(function(x){return x.id===i});if(sa){var op=h('option',{value:i,text:sa.name});if(i===cur)op.selected=true;el.append(op)}});
@@ -629,7 +633,7 @@ function openTour(t){
   h('div',{class:'f'},h('span',{class:'lab',text:'Vakta list'}),h('p',{class:'note',style:'margin:0',text:'Tick who can be chosen as Vakta during this tour. Only these saints appear in the Vakta selection on the tour dates.'}),vchecks),
   offField('mahant','Mahant'),offField('bhandari','Bhandari'),offField('kothari','Kothari'),
   h('div',{class:'row'},h('button',{class:'btn pri',type:'submit'},T('Done')),h('button',{class:'btn',type:'button',onclick:function(){modal.remove()}},T('Cancel'))));
- fillOff();checks.addEventListener('change',fillOff);
+ fillV();fillOff();checks.addEventListener('change',function(){fillV();fillOff()});
  modal.append(form);document.body.append(modal);backable(modal);F.name.focus()}
 function openStay(t,s){
  var isNew=!s,last=t.stays.length?t.stays[t.stays.length-1].end:'';
