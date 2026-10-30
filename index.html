@@ -518,7 +518,10 @@ function dayView(){
  root.append(h('div',{class:'nav',style:'justify-content:center'},h('button',{class:'btn',type:'button',onclick:function(){ui.date=calClamp(today());render();setTimeout(function(){var n=document.querySelector('.ev.now');if(n)n.scrollIntoView({behavior:'smooth',block:'center'});else window.scrollTo({top:0,behavior:'smooth'})},120)}},T('Today')),
   h('span',{class:'sub',text:st?dayOf(diff(state.tripStart,d)+1,diff(state.tripStart,state.tripEnd)+1):''})));
  var prs=parOn(d);
- if(st||prs.length){var meta=[];
+ var evs=evsOn(d).slice().sort(function(a,b){return sortKey(a)-sortKey(b)});
+ var adays=evs.filter(function(e){return e.type!=='parayan'&&!e.start&&!e.session});
+ evs=evs.filter(function(e){return adays.indexOf(e)<0});
+ if(st||prs.length||adays.length){var meta=[];
   if(st){var n=diff(st.start,st.end)+1,k=diff(st.start,d)+1,idx=state.stays.indexOf(st),prev=state.stays[idx-1],gu=lang==='gu';
    meta=[tr(st.region)];if(st.start!==st.end)meta.push(gu?'અહીં '+dayOf(k,n):'Day '+k+' of '+n+' here');
    if(d===st.start&&prev&&prev.place!==st.place)meta.push(gu?tr(prev.place)+' થી આગમન':'Arriving from '+prev.place);
@@ -528,12 +531,15 @@ function dayView(){
     return h('div',{style:'margin-top:6px;display:flex;flex-direction:column;gap:2px'},
      h('span',{class:'patl',text:'\u{1FA94} '+(tr(r.title)||typeLabel('parayan'))+(r.n>1?' \u00b7 '+(lang==='gu'?dayOf(r.k,r.n):'Day '+r.k+' of '+r.n):'')}),
      bits.length?h('span',{class:'meta',text:bits.join(' \u00b7 ')}):null,
-     ui.canEdit?h('div',{class:'row'},h('button',{class:'btn sm',type:'button',onclick:function(){openWhole(r.title,r.place)}},lang==='gu'?'આખું પારાયણ સુધારો':(r.n>1?'Edit Parayan (Day 1 to '+r.n+')':'Edit Parayan'))):null)})));}
+     ui.canEdit?h('div',{class:'row'},h('button',{class:'btn sm',type:'button',onclick:function(){openWhole(r.title,r.place)}},lang==='gu'?'આખું પારાયણ સુધારો':(r.n>1?'Edit Parayan (Day 1 to '+r.n+')':'Edit Parayan'))):null)}),
+   adays.map(function(e){var bits=[typeLabel(e.type)];if(showTitle(e))bits.push(tr(e.title));if(e.place&&(!st||e.place!==st.place))bits.push(tr(e.place));
+    return h('div',{style:'margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap'},
+     h('span',{class:'patl',text:'\u{1F4CC} '+bits.join(' \u00b7 ')+' \u00b7 '+T('All day')}),
+     ui.canEdit?h('button',{class:'btn sm',type:'button',onclick:function(){openForm(e)}},'Edit'):null)})));}
 
- var evs=evsOn(d).slice().sort(function(a,b){return sortKey(a)-sortKey(b)});
  var now=new Date(),nm=now.getHours()*60+now.getMinutes(),isToday=d===today(),nowIds={},nextId=null;
  if(isToday){evs.forEach(function(e){var s=toMin(e.start);if(s==null)return;var en=e.end?toMin(e.end):s+90;if(s<=nm&&nm<en)nowIds[e.id]=1;else if(s>nm&&!nextId)nextId=e.id});}
- if(!evs.length)root.append(h('div',{class:'empty',text:ui.canEdit?T('Nothing planned for this day. Use Add event below.'):T('Nothing planned for this day yet.')}));
+ if(!evs.length&&!adays.length)root.append(h('div',{class:'empty',text:ui.canEdit?T('Nothing planned for this day. Use Add event below.'):T('Nothing planned for this day yet.')}));
  var nn0=Object.keys(nowIds).length;if(nn0>1)root.append(h('div',{class:'row'},h('span',{class:'pill now',text:(lang==='gu'?dg(nn0)+' કાર્યક્રમ ચાલુ છે':nn0+' happening now')})));
  evs.forEach(function(e){root.append(evCard(e,!!nowIds[e.id],e.id===nextId))});
  root.append(h('p',{class:'note',text:T('Times are local to where the saints are. Refresh the page to see the latest changes.')}));
