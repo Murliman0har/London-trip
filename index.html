@@ -478,7 +478,7 @@ function evCard(e,isNow,isNext){
  add('Place',tr(e.place));
  if(e.type==='parayan'){add('Vakta',sName(e.vakta));add('Portion',e.portion)}
  if(e.type==='katha')add('Vakta',sName(e.vakta));
- if(e.type==='car')add('Route',route(e));
+ 
  if(RIDE.indexOf(e.type)>-1){add('Driver',e.driver);
    if(e.phone)kv.push(h('dt',{text:T('Contact')}),h('dd',{},h('a',{class:'tel',href:'tel:'+String(e.phone).replace(/[^+\d]/g,'')},'📞 '+e.phone)))}
  if(e.type==='flight'){add('Flight',e.flight)}
@@ -492,7 +492,7 @@ function evCard(e,isNow,isNext){
   h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'width:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null,e.type==='pravachan'?h('span',{class:'mtag',text:'⏱ '+dg(durOf(e))+(lang==='gu'?' મિનિટ':' min')}):null,isNow?h('span',{class:'pill now',text:lang==='gu'?'ચાલુ':'ON'}):null),
   h('div',{class:'body'},
    h('div',{class:'top'},h('span',{class:'tag',text:typeLabel(e.type)}),isNext?h('span',{class:'pill next',text:T('Up next')}):null),
-   (e.type==='parayan'||!showTitle(e))?null:h('div',{class:'title',text:tr(e.title)}),
+   e.type==='car'?(route(e).trim()?h('div',{class:'title',text:route(e)}):null):((e.type==='parayan'||!showTitle(e))?null:h('div',{class:'title',text:tr(e.title)})),
    e.type==='flight'?flightLine(e,isNow):null,
    kv.length?h('dl',{class:'kv'},kv):null,
    e.photos&&e.photos.length?picsEl(e):null,
@@ -923,7 +923,7 @@ function openForm(ev){
  function sync2(){sync();var t=typeSel.value,ser=isSer();
   var pv=t==='pravachan';groups.kat.hidden=t!=='katha';groups.prv.hidden=!pv;groups.pk.hidden=!(isNew&&t==='parayan');groups.ser.hidden=!ser;
   wrap(F.end).hidden=pv;wrap(F.place).hidden=pv;wrap(F.notes).hidden=pv;pics.hidden=pv;
-  wrap(F.endDate).hidden=ser||pv;wrap(F.start).parentNode.hidden=ser;wrap(F.session).hidden=ser;wrap(F.vakta).hidden=ser;wrap(F.portion).hidden=ser;
+  var car=t==='car';wrap(F.title).hidden=car;wrap(F.endDate).hidden=ser||pv||car;wrap(F.start).parentNode.hidden=ser;wrap(F.session).hidden=ser;wrap(F.vakta).hidden=ser;wrap(F.portion).hidden=ser;
   var dl=wrap(F.date).querySelector('label');if(dl)dl.textContent=ser?'Start date':T('Date')}
  typeSel.addEventListener('change',sync2);pkindSel.addEventListener('change',sync2);sync2();
  function commit(){
@@ -933,7 +933,7 @@ function openForm(ev){
   e.saints=[].slice.call(checks.querySelectorAll('input')).filter(function(c){return c.checked}).map(function(c){return c.value});
   e.session=F.session.value;e.vakta=F.vakta.value;if(t==='katha')e.vakta=F.kvakta.value;e.shastra=F.shastra.value.trim();e.portion=F.portion.value.trim();
   e.yajman=F.yajman.value.trim();e.driver=F.driver.value.trim();e.phone=F.phone.value.trim();e.flight=F.flight.value.trim();
-  if(t==='car'){e.from=F.from.value.trim();e.to=F.to.value.trim()}else if(t==='flight'){e.from=F.from2.value.trim();e.to=F.to2.value.trim()}
+  if(t==='car'){e.from=F.from.value.trim();e.to=F.to.value.trim();e.title=route(e);e.endDate=''}else if(t==='flight'){e.from=F.from2.value.trim();e.to=F.to2.value.trim()}
   if(!e.date){F.date.focus();return}
   if(t==='pravachan'){e.endDate='';e.dur=+F.dur.value||10;if(e.start){var sm=toMin(e.start),em=Math.min(sm+e.dur,1439);e.end=String(Math.floor(em/60)).padStart(2,'0')+':'+String(em%60).padStart(2,'0')}else e.end=''}
   if(isSer()){
