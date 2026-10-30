@@ -1,7 +1,7 @@
 // Offline shell for the Mandir Tour Program. Program data is never cached here
 // (it comes from the database and is kept on the device by the page after sign-in).
-const CACHE = 'mandir-tour-v42';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './tithi-l.json', './tithi-i-2026.json', './tithi-i-2027.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './katha-sticker.webp', './vastu-sticker.webp', './aarti-sticker.webp', './padramani-sticker.webp', './pravachan-sticker.webp'];
+const CACHE = 'mandir-tour-v43';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './tithi-l.json', './tithi-i-2010.json', './tithi-i-2011.json', './tithi-i-2012.json', './tithi-i-2013.json', './tithi-i-2014.json', './tithi-i-2015.json', './tithi-i-2016.json', './tithi-i-2017.json', './tithi-i-2018.json', './tithi-i-2019.json', './tithi-i-2020.json', './tithi-i-2021.json', './tithi-i-2022.json', './tithi-i-2023.json', './tithi-i-2024.json', './tithi-i-2025.json', './tithi-i-2026.json', './tithi-i-2027.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './katha-sticker.webp', './vastu-sticker.webp', './aarti-sticker.webp', './padramani-sticker.webp', './pravachan-sticker.webp'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -20,8 +20,8 @@ self.addEventListener('fetch', (e) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
 
-  // Fonts: show cached copy now, refresh in the background.
-  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
+  // Fonts and the default hero picture: show cached copy now, refresh in the background.
+  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com' || url.hostname === 'commons.wikimedia.org' || url.hostname === 'upload.wikimedia.org') {
     e.respondWith(caches.open(CACHE).then((c) => c.match(req).then((hit) => {
       const net = fetch(req).then((r) => { c.put(req, r.clone()); return r; }).catch(() => hit);
       return hit || net;

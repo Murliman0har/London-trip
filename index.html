@@ -1047,20 +1047,27 @@ function getPass(){try{return localStorage.getItem('tourPass')||''}catch(x){retu
 function setPass(v){try{if(v)localStorage.setItem('tourPass',v);else localStorage.removeItem('tourPass')}catch(x){}}
 function rpc(name,body){return fetch(SB_URL+'/rest/v1/rpc/'+name,{method:'POST',headers:SBH,body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return null}).then(function(j){if(!r.ok)throw (j||{});return j})})}
 var picCache={};
-function pimg(id,attrs){var im=h('img',attrs);if(picCache[id])im.src=picCache[id];else rpc('get_tour_pic',{p_passcode:getPass(),p_id:id}).then(function(d){if(d){picCache[id]=d;im.src=d}else im.dispatchEvent(new Event('error'))}).catch(function(){im.dispatchEvent(new Event('error'))});return im}
+var picDB=null;
+function idb(){if(picDB)return picDB;picDB=new Promise(function(res,rej){try{var r=indexedDB.open('tourPics',1);r.onupgradeneeded=function(){r.result.createObjectStore('p')};r.onsuccess=function(){res(r.result)};r.onerror=function(){rej()}}catch(x){rej()}});return picDB}
+function picGet(id){return idb().then(function(db){return new Promise(function(res){var q=db.transaction('p').objectStore('p').get(id);q.onsuccess=function(){res(q.result||null)};q.onerror=function(){res(null)}})}).catch(function(){return null})}
+function picPut(id,d){return idb().then(function(db){db.transaction('p','readwrite').objectStore('p').put(d,id)}).catch(function(){})}
+function picNet(id){return rpc('get_tour_pic',{p_passcode:getPass(),p_id:id}).then(function(d){if(d){picCache[id]=d;picPut(id,d)}return d})}
+function pimg(id,attrs){var im=h('img',attrs);if(picCache[id])im.src=picCache[id];else picGet(id).then(function(d){if(d){picCache[id]=d;im.src=d;return}return picNet(id).then(function(d2){if(d2)im.src=d2;else im.dispatchEvent(new Event('error'))})}).catch(function(){im.dispatchEvent(new Event('error'))});return im}
+function prefetchPics(){var ids={};(state.events||[]).forEach(function(e){(e.photos||[]).forEach(function(p){if(p&&p.id)ids[p.id]=1})});if(state.hero)ids[state.hero]=1;
+ var list=Object.keys(ids);(function next(){var id=list.shift();if(!id)return;picGet(id).then(function(d){if(d){picCache[id]=d;return}return picNet(id)}).catch(function(){}).then(next)})()}
 function blobToUrl(b){return new Promise(function(res,rej){var f=new FileReader();f.onload=function(){res(f.result)};f.onerror=rej;f.readAsDataURL(b)})}
 function uploadPic(b){
  var pass=getPass();if(!pass)return Promise.reject();
  var id='p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
- return blobToUrl(b).then(function(url){return rpc('save_tour_pic',{p_passcode:pass,p_id:id,p_data:url}).then(function(){picCache[id]=url;return {id:id}})})}
+ return blobToUrl(b).then(function(url){return rpc('save_tour_pic',{p_passcode:pass,p_id:id,p_data:url}).then(function(){picCache[id]=url;picPut(id,url);return {id:id}})})}
 ui.assets={upload:uploadPic};
 ui.authed=false;ui.busy=false;ui.gateMsg='';
 function normState(){if(!state.tours){var st0=state.stays||[];state.tours=st0.length?[{id:'london',name:'London Tour',start:st0[0].start,end:st0[st0.length-1].end,saints:state.saints.filter(function(x){return !x.guest}).map(function(x){return x.id}),stays:st0}]:[]}syncStays()}
 function enter(pass){
  ui.gateMsg='';ui.busy=true;render();
- return rpc('get_tour_state',{p_passcode:pass}).then(function(res){
+ return Promise.race([rpc('get_tour_state',{p_passcode:pass}),new Promise(function(_,rj){setTimeout(function(){rj({message:'timeout'})},10000)})]).then(function(res){
   if(!res||!res.data||!res.data.events)throw {message:'empty'};
-  setPass(pass);try{localStorage.setItem('tourCache',JSON.stringify({pass:pass,res:res}))}catch(x){}state=res.data;normState();ui.role=res.role;ui.canEdit=res.role==='editor';ui.authed=true;ui.autoNow=true;ui.busy=false;ui.date=calClamp(today());render();loadTithi();remRefresh().then(render)
+  setPass(pass);try{localStorage.setItem('tourCache',JSON.stringify({pass:pass,res:res}))}catch(x){}state=res.data;normState();ui.role=res.role;ui.canEdit=res.role==='editor';ui.authed=true;ui.autoNow=true;ui.busy=false;ui.date=calClamp(today());render();loadTithi();remRefresh().then(render);prefetchPics()
  }).catch(function(err){
   ui.busy=false;ui.authed=false;
   if(/bad_passcode/.test(JSON.stringify(err||{}))){setPass('');try{localStorage.removeItem('tourCache')}catch(x){}ui.gateMsg='Wrong password.'}
@@ -1081,7 +1088,7 @@ function drawGate(){
 function save(){
  var pass=getPass();if(!pass||!ui.canEdit)return;
  ui.saving=true;ui.msg='';render();
- rpc('save_tour_state',{p_passcode:pass,p_data:state}).then(function(){ui.dirty=0;ui.saving=false;ui.msg='Saved';render()}).catch(function(err){ui.saving=false;ui.msg=/bad_passcode/.test(JSON.stringify(err||{}))?'Wrong password.':'Could not save.';render()})}
+ rpc('save_tour_state',{p_passcode:pass,p_data:state}).then(function(){try{localStorage.setItem('tourCache',JSON.stringify({pass:pass,res:{data:state,role:ui.role}}));prefetchPics()}catch(x){}ui.dirty=0;ui.saving=false;ui.msg='Saved';render()}).catch(function(err){ui.saving=false;ui.msg=/bad_passcode/.test(JSON.stringify(err||{}))?'Wrong password.':'Could not save.';render()})}
 var _render=render;render=function(){if(!ui.authed){drawGate();return}_render()};
 ui.date=calClamp(today());
 if(getPass())enter(getPass());else render();
