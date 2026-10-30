@@ -948,6 +948,9 @@ function openWhole(title,place){
  var list=seriesOf({title:title,place:place});if(!list.length)return;
  var f=list[0],first=f.date,last=list[list.length-1].date,mo=list.find(function(x){return x.session==='morning'})||f,ev=list.find(function(x){return x.session==='evening'})||{start:'',end:''};
  var F={};
+ var nDays={};list.forEach(function(x){nDays[x.date]=1});
+ var curKind=f.pk||(Object.keys(nDays).length>=7?'saptah':'panchah');
+ var pkSel=h('select',{id:'wf_pk'});[['panchah','Panchah Parayan (5 days)'],['saptah','Saptah Parayan (7 days)']].forEach(function(o){var op=h('option',{value:o[0],text:o[1]});if(o[0]===curKind)op.selected=true;pkSel.append(op)});
  function field(id,label,type,val){var el=h('input',{type:type,value:val||''});F[id]=el;el.id='wf_'+id;return h('div',{class:'f'},h('label',{for:'wf_'+id,text:label}),el)}
  var modal=h('div',{class:'modal',role:'dialog','aria-modal':'true','aria-label':'Edit Parayan'});
  var delBtn=h('button',{class:'btn danger',type:'button',title:T('Delete'),'aria-label':T('Delete'),style:'padding:6px 9px;line-height:0',onclick:function(){if(!confirm(lang==='gu'?'આખું પારાયણ કાઢી નાખવું છે?':'Delete the whole Parayan ('+list.length+' sessions)?'))return;var ids={};list.forEach(function(x){ids[x.id]=1});state.events=state.events.filter(function(x){return !ids[x.id]});ui.dirty++;modal.remove();render()}});
@@ -956,11 +959,20 @@ function openWhole(title,place){
   var nd=F.date.value||first,delta=diff(first,nd),t=F.title.value.trim()||title;
   list.forEach(function(e){e.title=t;e.place=F.place.value.trim();e.shastra=F.shastra.value.trim();e.yajman=F.yajman.value.trim();e.date=addDays(e.date,delta);
    if(e.session==='morning'){e.start=F.mS.value;e.end=F.mE.value}else if(e.session==='evening'){e.start=F.eS.value;e.end=F.eE.value}});
+  var kind=pkSel.value,N=kind==='saptah'?7:5,drop={},have={};
+  list.forEach(function(e){var di=diff(nd,e.date);if(di>=N||(di===N-1&&e.session==='evening'))drop[e.id]=1;else{have[di+'|'+e.session]=1;e.pk=kind}});
+  state.events=state.events.filter(function(x){return !drop[x.id]});
+  var base=Date.now(),k=0;
+  for(var di=0;di<N;di++){['morning','evening'].forEach(function(ss){
+   if(ss==='evening'&&di===N-1)return;if(have[di+'|'+ss])return;
+   var x=JSON.parse(JSON.stringify(f));x.id='e'+base+'s'+(k++);x.type='parayan';x.title=t;x.place=F.place.value.trim();x.shastra=F.shastra.value.trim();x.yajman=F.yajman.value.trim();x.date=addDays(nd,di);x.endDate='';x.session=ss;x.vakta='';x.portion='';x.pk=kind;
+   x.start=ss==='morning'?F.mS.value:F.eS.value;x.end=ss==='morning'?F.mE.value:F.eE.value;state.events.push(x)})}
   state.events.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0});
   ui.dirty++;ui.date=nd;modal.remove();render()}},
   h('div',{class:'row',style:'align-items:center;gap:10px'},delBtn,h('h2',{style:'margin:0',text:'Edit Parayan'})),
   h('p',{class:'note',style:'margin:0',text:dg(list.length)+' sessions \u00b7 '+fmt(first)+' \u2013 '+fmt(last)+'. Changes apply to every session.'}),
   field('title','Title','text',f.title),field('place','Place','text',f.place),field('shastra','Shastra','text',f.shastra),field('yajman',T('Yajman'),'text',f.yajman),
+  h('div',{class:'f'},h('label',{for:'wf_pk',text:'Parayan type'}),pkSel),
   field('date','Start date (moves all days)','date',first),
   h('div',{class:'two'},field('mS','Morning start','time',mo.start),field('mE','Morning end','time',mo.end)),
   h('div',{class:'two'},field('eS','Evening start','time',ev.start),field('eE','Evening end','time',ev.end)),
