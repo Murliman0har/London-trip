@@ -586,8 +586,11 @@ function planDetail(t){
  function nm(i){return sName(i)||i}
  var ro=[[gu?'મહંત':'Mahant',t.mahant?[t.mahant]:[]],[gu?'ભંડારી':'Bhandari',t.bhandari?[t.bhandari]:[]],[gu?'કોઠારી':'Kothari',t.kothari?[t.kothari]:[]],[gu?'વક્તા':'Vakta',t.vaktas||[]]].filter(function(r){return r[1].length});
  if(ro.length)root.append(h('div',{class:'note',style:'margin:0;display:flex;flex-direction:column;gap:4px'},ro.map(function(r){return h('div',{},h('b',{text:r[0]+': '}),r[1].map(nm).join(', '))})));
- var kl=Object.keys(kr).filter(function(i){return kr[i]});
- if(kl.length)root.append(h('div',{class:'note',style:'margin:0;display:flex;flex-direction:column;gap:6px'},h('b',{text:'Kriya'}),kl.map(function(i){return h('div',{},h('b',{text:nm(i)+': '}),h('span',{style:'white-space:pre-wrap',text:kr[i]}))})));
+ var kl=state.saints.filter(function(x){return (t.saints||[]).indexOf(x.id)>-1});
+ if(kl.length&&Object.keys(kr).some(function(i){return kr[i]})){var gr='display:grid;grid-template-columns:minmax(80px,34%) 1fr;gap:6px 12px;align-items:start';
+  root.append(h('div',{class:'note',style:'margin:0;display:flex;flex-direction:column;gap:6px'},
+   h('div',{style:gr+';border-bottom:1px solid var(--line);padding-bottom:4px'},h('b',{text:gu?'સંત':'Saint'}),h('b',{text:gu?'ક્રિયા':'Kriya'})),
+   kl.map(function(sa){return h('div',{style:gr},h('span',{text:nm(sa.id)}),h('span',{style:'white-space:pre-wrap',text:kr[sa.id]||'\u2014'}))})))}
  t.stays.forEach(function(s){
   var n=diff(s.start,s.end)+1,seen={},tags=[];
   state.events.forEach(function(e){if(['parayan','katha','pothiyatra','padramani','vastu','sabha','pravachan'].indexOf(e.type)>-1&&e.date<=s.end&&(e.endDate||e.date)>=s.start&&(nrm(e.place)===nrm(s.place)||(!state.stays.some(function(x){return nrm(x.place)===nrm(e.place)})&&(stayFor(e.date)||{}).id===s.id))){var dd=e.date<s.start?s.start:e.date;if(!seen[e.type]||dd<seen[e.type])seen[e.type]=dd}});
@@ -618,7 +621,7 @@ function openTour(t){
  var offSel={},kBox=h('div',{style:'display:flex;flex-direction:column;gap:8px'}),kIn={};q.kriya=q.kriya||{};
  function fillK(){Object.keys(kIn).forEach(function(i){q.kriya[i]=kIn[i].value});kIn={};kBox.textContent='';var ids=ticked();
   if(!ids.length)kBox.append(h('span',{class:'note',text:'Tick saints above first.'}));
-  state.saints.filter(function(x){return ids.indexOf(x.id)>-1}).forEach(function(sa){var i=sa.id,inp=h('textarea',{rows:'2',placeholder:'Kriya: what they will do, to-do list...',style:'width:100%;box-sizing:border-box'});inp.value=q.kriya[i]||'';kIn[i]=inp;kBox.append(h('div',{class:'f'},h('label',{class:'row',style:'align-items:center;gap:8px'},av(i),h('span',{text:sName(i)})),inp))})}
+  state.saints.filter(function(x){return ids.indexOf(x.id)>-1}).forEach(function(sa){var i=sa.id,inp=h('textarea',{rows:'2',placeholder:'Kriya: what they will do, to-do list...',style:'width:100%;box-sizing:border-box;min-width:0'});inp.value=q.kriya[i]||'';kIn[i]=inp;kBox.append(h('div',{style:'display:grid;grid-template-columns:minmax(80px,34%) 1fr;gap:8px 12px;align-items:start'},h('span',{class:'row',style:'align-items:center;gap:8px'},av(i),h('span',{text:sName(i)})),inp))})}
  function offField(id,label){var el=h('select',{id:'tf_'+id});offSel[id]=el;F[id]=el;return h('div',{class:'f'},h('label',{for:'tf_'+id,text:label}),el)}
  function fillOff(){var ids=ticked();['mahant','bhandari','kothari'].forEach(function(k){var el=offSel[k],cur=el.value||q[k]||'';el.textContent='';el.append(h('option',{value:'',text:'Not chosen'}));
   ids.forEach(function(i){var sa=state.saints.find(function(x){return x.id===i});if(sa){var op=h('option',{value:i,text:sa.name});if(i===cur)op.selected=true;el.append(op)}});
