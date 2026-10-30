@@ -447,7 +447,8 @@ function parOn(d){var seen={},out=[];
   var all=seriesOf(e),f=all[0].date,l=all[all.length-1].date;out.push({title:e.title,place:e.place,yajman:e.yajman||'',shastra:e.shastra||'',k:diff(f,d)+1,n:diff(f,l)+1})});
  return out}
 function saintsOn(d){var ids={};(state.tours||[]).forEach(function(t){if(t.start<=d&&d<=t.end)(t.saints||[]).forEach(function(i){ids[i]=1})});return state.saints.filter(function(s){return !s.guest||ids[s.id]})}
-function vaktaList(cur,d){return saintsOn(d||ui.date).filter(function(s){return s.role==='Vakta'||s.id===cur})}
+function vaktaList(cur,d){d=d||ui.date;var ids={},set=false;(state.tours||[]).forEach(function(t){if(t.start<=d&&d<=t.end&&t.vaktas&&t.vaktas.length){set=true;t.vaktas.forEach(function(i){ids[i]=1})}});
+ return saintsOn(d).filter(function(s){return set?(ids[s.id]||s.id===cur):(s.role==='Vakta'||s.id===cur)})}
 function evsOn(d){return dayAll(d).filter(hasSel)}
 function toMin(t){if(!t)return null;var p=t.split(':');return +p[0]*60+ +p[1]}
 function sortKey(e){var m=toMin(e.start);if(m!=null)return m;if(e.session==='morning')return 540;if(e.session==='evening')return 1080;return -1}
@@ -581,6 +582,8 @@ function planView(){
 function nrm(x){return String(x||'').toLowerCase().replace(/[^a-z0-9઀-૿]/g,'')}
 function planDetail(t){
  var root=h('div',{style:'display:flex;flex-direction:column;gap:10px'}),cur=stayFor(today()),yo={weekday:'short',day:'numeric',month:'short',year:'numeric'};
+ var ro=[['Mahant',t.mahant],['Bhandari',t.bhandari],['Kothari',t.kothari]].filter(function(r){return r[1]});
+ if(ro.length)root.append(h('div',{class:'note',style:'margin:0;display:flex;flex-wrap:wrap;gap:4px 14px'},ro.map(function(r){return h('span',{},h('b',{text:r[0]+': '}),r[1])})));
  t.stays.forEach(function(s){
   var n=diff(s.start,s.end)+1,seen={},tags=[];
   state.events.forEach(function(e){if(['parayan','katha','pothiyatra','padramani','vastu','sabha','pravachan'].indexOf(e.type)>-1&&e.date<=s.end&&(e.endDate||e.date)>=s.start&&(nrm(e.place)===nrm(s.place)||(!state.stays.some(function(x){return nrm(x.place)===nrm(e.place)})&&(stayFor(e.date)||{}).id===s.id))){var dd=e.date<s.start?s.start:e.date;if(!seen[e.type]||dd<seen[e.type])seen[e.type]=dd}});
@@ -595,23 +598,30 @@ function planDetail(t){
 function delIcon(btn){btn.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>';return btn}
 function openTour(t){
  var isNew=!t,d=ui.date;
- var q=t?JSON.parse(JSON.stringify(t)):{id:'t'+Date.now(),name:'',start:d,end:addDays(d,6),saints:state.saints.filter(function(x){return !x.guest}).map(function(x){return x.id}),stays:[]};
+ var q=t?JSON.parse(JSON.stringify(t)):{id:'t'+Date.now(),name:'',start:d,end:addDays(d,6),saints:state.saints.filter(function(x){return !x.guest}).map(function(x){return x.id}),vaktas:state.saints.filter(function(x){return !x.guest&&x.role==='Vakta'}).map(function(x){return x.id}),mahant:'',bhandari:'',kothari:'',stays:[]};
+ if(!q.vaktas)q.vaktas=state.saints.filter(function(x){return x.role==='Vakta'&&q.saints.indexOf(x.id)>-1}).map(function(x){return x.id});
  var F={};
  function field(id,label,type,val){var el=h('input',{type:type,value:val||''});F[id]=el;el.id='tf_'+id;return h('div',{class:'f'},h('label',{for:'tf_'+id,text:label}),el)}
  function chk(s){var c=h('input',{type:'checkbox',value:s.id});c.checked=q.saints.indexOf(s.id)>-1;return h('label',{},c,av(s.id),short(s))}
  var checks=h('div',{class:'checks'},state.saints.map(chk));
+ function vchk(s){var c=h('input',{type:'checkbox',value:s.id});c.checked=q.vaktas.indexOf(s.id)>-1;return h('label',{},c,av(s.id),short(s))}
+ var vchecks=h('div',{class:'checks'},state.saints.map(vchk));
  var modal=h('div',{class:'modal',role:'dialog','aria-modal':'true','aria-label':isNew?'Add tour':'Edit tour'});
  var delBtn=delIcon(h('button',{class:'btn danger',type:'button',title:T('Delete'),'aria-label':T('Delete'),style:'padding:6px 9px;line-height:0',onclick:function(){if(!confirm('Delete this tour and its mandirs? Events are kept.'))return;state.tours=state.tours.filter(function(x){return x.id!==q.id});syncStays();ui.tourOpen='';ui.dirty++;modal.remove();render()}}));
  var form=h('form',{class:'form',onsubmit:function(x){x.preventDefault();
   q.name=F.name.value.trim();if(!q.name){F.name.focus();return}
   q.start=F.start.value||d;q.end=F.end.value&&F.end.value>=q.start?F.end.value:q.start;
   q.saints=[].slice.call(checks.querySelectorAll('input')).filter(function(c){return c.checked}).map(function(c){return c.value});
+  q.vaktas=[].slice.call(vchecks.querySelectorAll('input')).filter(function(c){return c.checked}).map(function(c){return c.value});
+  q.mahant=F.mahant.value.trim();q.bhandari=F.bhandari.value.trim();q.kothari=F.kothari.value.trim();
   state.tours=state.tours||[];var i=state.tours.findIndex(function(y){return y.id===q.id});if(i>-1)state.tours[i]=q;else state.tours.push(q);
   syncStays();ui.dirty++;ui.tourOpen=q.id;modal.remove();render()}},
   h('div',{class:'row',style:'align-items:center;gap:10px'},isNew?null:delBtn,h('h2',{style:'margin:0',text:isNew?'Add tour':'Edit tour'})),
   field('name','Tour name','text',q.name),
   h('div',{class:'two'},field('start','Start date','date',q.start),field('end','End date','date',q.end)),
   h('div',{class:'f'},h('span',{class:'lab',text:T('Saints')}),h('p',{class:'note',style:'margin:0',text:'Tick the saints on this tour. Saints marked as guests appear in the forms only on this tour\u2019s dates.'}),checks),
+  h('div',{class:'f'},h('span',{class:'lab',text:'Vakta list'}),h('p',{class:'note',style:'margin:0',text:'Tick who can be chosen as Vakta during this tour. Only these saints appear in the Vakta selection on the tour dates.'}),vchecks),
+  field('mahant','Mahant','text',q.mahant),field('bhandari','Bhandari','text',q.bhandari),field('kothari','Kothari','text',q.kothari),
   h('div',{class:'row'},h('button',{class:'btn pri',type:'submit'},T('Done')),h('button',{class:'btn',type:'button',onclick:function(){modal.remove()}},T('Cancel'))));
  modal.append(form);document.body.append(modal);backable(modal);F.name.focus()}
 function openStay(t,s){
