@@ -532,9 +532,9 @@ function dayView(){
      h('span',{class:'patl',text:'\u{1FA94} '+(tr(r.title)||typeLabel('parayan'))+(r.n>1?' \u00b7 '+(lang==='gu'?dayOf(r.k,r.n):'Day '+r.k+' of '+r.n):'')}),
      bits.length?h('span',{class:'meta',text:bits.join(' \u00b7 ')}):null,
      ui.canEdit?h('div',{class:'row'},h('button',{class:'btn sm',type:'button',onclick:function(){openWhole(r.title,r.place)}},lang==='gu'?'આખું પારાયણ સુધારો':(r.n>1?'Edit Parayan (Day 1 to '+r.n+')':'Edit Parayan'))):null)}),
-   adays.map(function(e){var bits=[typeLabel(e.type)];if(showTitle(e))bits.push(tr(e.title));if(e.place&&(!st||e.place!==st.place))bits.push(tr(e.place));
+   adays.map(function(e){
     return h('div',{style:'margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap'},
-     h('span',{class:'patl',text:'\u{1F4CC} '+bits.join(' \u00b7 ')+' \u00b7 '+T('All day')}),
+     h('span',{class:'patl',text:tr(e.title||'').trim()||typeLabel(e.type)}),
      ui.canEdit?h('button',{class:'btn sm',type:'button',onclick:function(){openForm(e)}},'Edit'):null)})));}
 
  var now=new Date(),nm=now.getHours()*60+now.getMinutes(),isToday=d===today(),nowIds={},nextId=null;
