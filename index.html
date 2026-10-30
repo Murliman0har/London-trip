@@ -578,11 +578,12 @@ function planView(){
    (!all&&(t.saints||[]).length)?h('span',{class:'row',style:'margin-top:4px'},t.saints.map(function(i){return av(i)})):null))});
  if(!tours.length)root.append(h('div',{class:'empty',text:ui.canEdit?'No tours yet. Use Add tour.':'No tours yet.'}));
  return root}
+function nrm(x){return String(x||'').toLowerCase().replace(/[^a-z0-9઀-૿]/g,'')}
 function planDetail(t){
  var root=h('div',{style:'display:flex;flex-direction:column;gap:10px'}),cur=stayFor(today()),yo={weekday:'short',day:'numeric',month:'short',year:'numeric'};
  t.stays.forEach(function(s){
   var n=diff(s.start,s.end)+1,seen={},tags=[];
-  state.events.forEach(function(e){if(['parayan','katha','pothiyatra','padramani','vastu','sabha','pravachan'].indexOf(e.type)>-1&&e.date<=s.end&&(e.endDate||e.date)>=s.start&&e.place===s.place&&!seen[e.type]){seen[e.type]=1;tags.push(h('span',{class:'tag t-'+e.type,text:typeLabel(e.type)}))}});
+  state.events.forEach(function(e){if(['parayan','katha','pothiyatra','padramani','vastu','sabha','pravachan'].indexOf(e.type)>-1&&e.date<=s.end&&(e.endDate||e.date)>=s.start&&(nrm(e.place)===nrm(s.place)||(!state.stays.some(function(x){return nrm(x.place)===nrm(e.place)})&&(stayFor(e.date)||{}).id===s.id))&&!seen[e.type]){seen[e.type]=1;tags.push(h('span',{class:'tag t-'+e.type,text:typeLabel(e.type)}))}});
   root.append(h('div',{style:'display:flex;flex-direction:column;gap:4px'},
    h('button',{class:'stay'+(cur&&cur.id===s.id?' cur':''),type:'button',onclick:function(){ui.date=s.start;ui.view='day';render();window.scrollTo(0,0)}},
     h('div',{class:'n',text:tr(s.place)}),h('div',{class:'days',text:s.start===s.end?T('Travel'):(lang==='gu'?dg(n)+' દિવસ':n+' days')}),
