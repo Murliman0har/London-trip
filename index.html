@@ -398,7 +398,7 @@ var SKEL_A='<!doctype html><html><head><meta charset=utf8><meta name=viewport co
 var SKEL_B='</body></html>';
 var state=JSON.parse(document.getElementById('seed').textContent);
 var TYPES={parayan:'Parayan',katha:'Katha',pothiyatra:'Aarti Niyam',padramani:'Padramani',vastu:'Vastu',sabha:'Utsav',pravachan:'Pravachan',lunch:'Lunch',rest:'Rest',flight:'Flight',car:'Mandir shift',other:'Other'};
-var RIDE=['car','padramani','vastu','flight','sabha','pravachan'];
+var RIDE=['car','padramani','vastu','flight','pravachan'];
 var YAJ=['parayan','vastu','padramani'];
 var CARS={c1:'Car 1',c2:'Car 2'};
 var ui={sumOpen:'',assets:null,view:'day',date:null,filter:'',sel:[],canEdit:false,dirty:0,saving:false,msg:''};
@@ -479,7 +479,7 @@ function evCard(e,isNow,isNext){
  if(e.type==='parayan'){add('Vakta',sName(e.vakta));add('Portion',e.portion)}
  if(e.type==='katha')add('Vakta',sName(e.vakta));
  if(e.type==='car')add('Route',route(e));
- if(RIDE.indexOf(e.type)>-1){if(e.driver||e.phone||(e.car&&e.car!=='both'&&CARS[e.car]))add('Car',carLabel(e.car)||'');add('Driver',e.driver);
+ if(RIDE.indexOf(e.type)>-1){add('Driver',e.driver);
    if(e.phone)kv.push(h('dt',{text:T('Contact')}),h('dd',{},h('a',{class:'tel',href:'tel:'+String(e.phone).replace(/[^+\d]/g,'')},'📞 '+e.phone)))}
  if(e.type==='flight'){add('Flight',e.flight)}
  if(YAJ.indexOf(e.type)>-1)add('Yajman',e.yajman);
@@ -902,7 +902,7 @@ function openForm(ev){
   grp('kat',[field('kvakta',T('Vakta'),sel(saintOpts,e.vakta))]),
   grp('yajman',[field('yajman',T('Yajman'),inp('yajman','text',e.yajman))]),
   grp('shift',[h('div',{class:'two'},field('from',T('Shifting from'),inp('from','text',e.from)),field('to',T('Shifting to'),inp('to','text',e.to)))]),
-  grp('ride',[field('car',T('Car'),sel([['',T('Not set')],['c1',T('Car 1')],['c2',T('Car 2')]],e.car)),h('div',{class:'two'},field('driver',T('Driver'),inp('driver','text',e.driver)),field('phone',T('Driver contact number'),inp('phone','tel',e.phone)))]),
+  grp('ride',[h('div',{class:'two'},field('driver',T('Driver'),inp('driver','text',e.driver)),field('phone',T('Driver contact number'),inp('phone','tel',e.phone)))]),
   grp('flight',[field('flight',T('Flight number'),inp('flight','text',e.flight)),h('div',{class:'two'},field('from2',T('From'),inp('from2','text',e.from)),field('to2',T('To'),inp('to2','text',e.to)))]),
   saintsBox,
   field('notes',T('Notes'),h('textarea',{rows:'2',text:e.notes||''})),
@@ -924,7 +924,7 @@ function openForm(ev){
   e.start=F.start.value;e.end=F.end.value;e.place=F.place.value.trim();e.notes=F.notes.value.trim();
   e.saints=[].slice.call(checks.querySelectorAll('input')).filter(function(c){return c.checked}).map(function(c){return c.value});
   e.session=F.session.value;e.vakta=F.vakta.value;if(t==='katha')e.vakta=F.kvakta.value;e.shastra=F.shastra.value.trim();e.portion=F.portion.value.trim();
-  e.yajman=F.yajman.value.trim();e.car=F.car.value;e.driver=F.driver.value.trim();e.phone=F.phone.value.trim();e.flight=F.flight.value.trim();
+  e.yajman=F.yajman.value.trim();e.driver=F.driver.value.trim();e.phone=F.phone.value.trim();e.flight=F.flight.value.trim();
   if(t==='car'){e.from=F.from.value.trim();e.to=F.to.value.trim()}else if(t==='flight'){e.from=F.from2.value.trim();e.to=F.to2.value.trim()}
   if(!e.date){F.date.focus();return}
   if(t==='pravachan'){e.endDate='';e.dur=+F.dur.value||10;if(e.start){var sm=toMin(e.start),em=Math.min(sm+e.dur,1439);e.end=String(Math.floor(em/60)).padStart(2,'0')+':'+String(em%60).padStart(2,'0')}else e.end=''}
