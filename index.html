@@ -43,6 +43,25 @@
 .ev.t-rest .rail .pill.now{background:#ffd76a;color:#1a1305;box-shadow:0 0 10px rgba(255,215,106,.9)}
 .ev.t-rest .tag{--cc:#ffd76a}
 @media (prefers-reduced-motion:reduce){.ev.t-rest .rail::before,.ev.t-rest .rail::after{animation:none}}
+/* softer, easier on the eyes */
+.ev.t-rest .body{background:radial-gradient(ellipse at 18% 120%,rgba(90,55,140,.4),transparent 55%),radial-gradient(ellipse at 85% -10%,rgba(30,65,150,.35),transparent 55%),radial-gradient(ellipse at 50% 50%,#130e30 0%,#080618 70%,#03020b 100%)}
+.ev.t-rest .body::before,.ev.t-rest .body::after,.ev.t-rest .rail::before,.ev.t-rest .rail::after{filter:drop-shadow(0 0 2px rgba(255,215,106,.6));animation-name:twk2}
+@keyframes twk2{from{opacity:.18}to{opacity:.6}}
+.ev.t-rest .moon{background:radial-gradient(circle at 36% 34%,#ece4c4 0%,#d8cd9f 50%,#b5a977 100%);box-shadow:0 0 8px 2px rgba(240,225,170,.35),0 0 22px 8px rgba(230,205,130,.2),0 0 46px 16px rgba(220,190,110,.1);animation:moonglow2 5s ease-in-out infinite alternate}
+@keyframes moonglow2{from{box-shadow:0 0 7px 2px rgba(240,225,170,.28),0 0 18px 6px rgba(230,205,130,.15),0 0 38px 12px rgba(220,190,110,.07)}to{box-shadow:0 0 10px 3px rgba(240,225,170,.42),0 0 26px 10px rgba(230,205,130,.25),0 0 54px 20px rgba(220,190,110,.12)}}
+.ev.t-rest .body .tag{color:#e8d596;background:rgba(255,215,106,.1);border-color:rgba(255,215,106,.3)}
+.ev.t-rest .body .title{color:#ece0b8}
+.ev.now.t-rest{border-color:#c9a94e;animation-name:restpulse2}
+@keyframes restpulse2{0%{box-shadow:0 0 0 2px #c9a94e,0 0 0 2px rgba(201,169,78,.4)}70%{box-shadow:0 0 0 2px #c9a94e,0 0 0 9px rgba(201,169,78,0)}100%{box-shadow:0 0 0 2px #c9a94e,0 0 0 2px rgba(201,169,78,0)}}
+.ev.now.t-rest .rail b{color:#e8d596;text-shadow:0 0 5px rgba(255,215,106,.5)}
+.ev.t-rest .rail .pill.now{background:#d9bc62;box-shadow:0 0 6px rgba(255,215,106,.5)}
+.ev.t-flight .body{background:linear-gradient(180deg,#6aa6d4 0%,#9cc6e4 55%,#cfe3f2 100%)}
+.ev.t-flight .body::before{opacity:.5}
+.ev.t-flight .body::after{opacity:.32}
+.ev.t-flight .ftrack::before{border-top-color:rgba(255,255,255,.75)}
+.ev.t-flight .ftrack .fdone{background:#eaf3fa;box-shadow:0 0 5px rgba(255,255,255,.6)}
+:root[data-theme=dark] .ev.t-flight .body{background:linear-gradient(180deg,#08162d 0%,#122b52 60%,#244570 100%)}
+:root[data-theme=dark] .ev.t-flight .body::before,:root[data-theme=dark] .ev.t-flight .body::after{opacity:.15}
 </style></head><body>
 <title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover"><style id="css">
 /* Layout: one narrow column, day-at-a-time program with a colour-block time rail on each event. */
