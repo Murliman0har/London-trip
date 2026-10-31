@@ -83,6 +83,11 @@
 .ev.t-pravachan .rail>span:not(.rtag):not(.mtag):not(.pill){font-size:11.5px}
 .ev.t-pravachan .rail .rtag,.ev.t-pravachan .rail .mtag{font-size:10.5px;padding:1px 5px}
 .ev.t-pravachan .rail .pill.now{font-size:9px!important;padding:1px 5px!important}
+.ev.t-pravachan .rail{flex-wrap:nowrap!important;font-size:13px;gap:.3em!important;padding-left:.7em!important;padding-right:.55em!important}
+.ev.t-pravachan .rail b{font-size:1em!important}
+.ev.t-pravachan .rail>span:not(.rtag):not(.mtag):not(.pill){font-size:.86em!important}
+.ev.t-pravachan .rail .rtag,.ev.t-pravachan .rail .mtag{font-size:.8em!important;padding:.1em .5em!important;margin-left:0!important}
+.ev.t-pravachan .rail .pill.now{font-size:.7em!important;padding:.1em .5em!important;margin-left:auto!important}
 </style></head><body>
 <title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover"><style id="css">
 /* Layout: one narrow column, day-at-a-time program with a colour-block time rail on each event. */
@@ -1174,7 +1179,11 @@ function save(){
  var pass=getPass();if(!pass||!ui.canEdit)return;
  ui.saving=true;ui.msg='';render();
  rpc('save_tour_state',{p_passcode:pass,p_data:state}).then(function(){try{localStorage.setItem('tourCache',JSON.stringify({pass:pass,res:{data:state,role:ui.role}}));prefetchPics()}catch(x){}ui.dirty=0;ui.saving=false;ui.msg='Saved';render()}).catch(function(err){ui.saving=false;ui.msg=/bad_passcode/.test(JSON.stringify(err||{}))?'Wrong password.':'Could not save.';render()})}
-var _render=render;render=function(){if(!ui.authed){drawGate();return}_render()};
+function fitRails(){[].slice.call(document.querySelectorAll('.ev.t-pravachan .rail')).forEach(function(r){var lo=9,hi=19,w=r.clientWidth;if(!w)return;
+  while(hi-lo>.25){var mid=(lo+hi)/2;r.style.fontSize=mid+'px';if(r.scrollWidth>r.clientWidth+.5)hi=mid;else lo=mid}
+  r.style.fontSize=lo+'px'})}
+window.addEventListener('resize',fitRails);
+var _render=render;render=function(){if(!ui.authed){drawGate();return}_render();fitRails();requestAnimationFrame(fitRails)};
 ui.date=calClamp(today());
 if(getPass())enter(getPass());else render();
 function speak(t){try{if(!('speechSynthesis' in window))return;var u=new SpeechSynthesisUtterance(t);u.lang='gu-IN';var vs=speechSynthesis.getVoices(),v=null;for(var i=0;i<vs.length;i++){if(/^gu/i.test(vs[i].lang)){v=vs[i];break}}if(v)u.voice=v;u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(x){}}
