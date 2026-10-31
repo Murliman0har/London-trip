@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>કથા સંગ્રહ</title>
+<title>કચ્છ સત્સંગ</title>
 <meta name="theme-color" content="#6e1f14">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -127,8 +127,8 @@ body.playing .overlay{top:calc(min(56.25vw,42vh,360px) + 50px + env(safe-area-in
 
   <main id="home">
     <header>
-      <div class="eyebrow" data-t="eyebrow">Swaminarayan Katha Archive</div>
-      <h1>કથા સંગ્રહ</h1>
+      <div class="eyebrow" data-t="eyebrow">Kutch Satsang · Katha Archive</div>
+      <h1>કચ્છ સત્સંગ</h1>
       <div class="sub" data-t="sub">— a searchable archive of the kathas —</div>
       <div class="orn">❖</div>
     </header>
@@ -194,11 +194,11 @@ const $ = (s) => document.querySelector(s);
 const store = { get(k, d) { try { return localStorage.getItem(k) ?? d } catch { return d } }, set(k, v) { try { localStorage.setItem(k, v) } catch {} } };
 
 const T = {
-  en: { eyebrow: "Swaminarayan Katha Archive", sub: "— a searchable archive of the kathas —", search: "Search", series: "Katha series", speaker: "Speaker",
+  en: { eyebrow: "Kutch Satsang · Katha Archive", sub: "— a searchable archive of the kathas —", search: "Search", series: "Katha series", speaker: "Speaker",
     allseries: "All series", allspeakers: "All speakers", see: "See what's in the archive", fe: "For example", hint: "Press enter to search the archive",
     ph: "Search the words that were spoken…", matches: (n) => `${n} matches`, none: "No passage contains this word yet.", play: "Play here", read: "Read full transcript →",
     stats: (k, p) => `${k.toLocaleString()} kathas · ${p.toLocaleString()} passages · jump straight to the moment`, loading: "Searching…", copied: "Link copied" },
-  gu: { eyebrow: "સ્વામિનારાયણ કથા સંગ્રહ", sub: "— બોલાયેલા શબ્દો શોધો —", search: "શોધો", series: "કથા સિરીઝ", speaker: "વક્તા",
+  gu: { eyebrow: "કચ્છ સત્સંગ · કથા સંગ્રહ", sub: "— બોલાયેલા શબ્દો શોધો —", search: "શોધો", series: "કથા સિરીઝ", speaker: "વક્તા",
     allseries: "બધી સિરીઝ", allspeakers: "બધા વક્તા", see: "સંગ્રહમાં શું છે તે જુઓ", fe: "ઉદાહરણ", hint: "શોધવા માટે Enter દબાવો",
     ph: "બોલાયેલો કોઈ પણ શબ્દ શોધો…", matches: (n) => `${n} પરિણામ`, none: "આ શબ્દ હજી કોઈ કથામાં મળ્યો નથી.", play: "અહીં સાંભળો", read: "આખું લખાણ વાંચો →",
     stats: (k, p) => `${k.toLocaleString()} કથા · ${p.toLocaleString()} ફકરા · સીધું એ ક્ષણ પર`, loading: "શોધી રહ્યા છીએ…", copied: "લિંક કોપી થઈ" },
