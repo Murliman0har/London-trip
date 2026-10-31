@@ -373,7 +373,7 @@ body{
 .fline .fp{white-space:nowrap;max-width:34%;overflow:hidden;text-overflow:ellipsis}
 .ftrack{position:relative;flex:1;height:22px;min-width:40px}
 .ftrack::before{content:'';position:absolute;left:0;right:0;top:50%;border-top:2px dashed color-mix(in srgb,var(--c) 55%,transparent)}
-.ftrack .fdone{position:absolute;left:0;top:50%;height:3px;margin-top:-1px;border-radius:2px;background:linear-gradient(90deg,#1f9d57,#33c26f);box-shadow:0 0 8px rgba(51,194,111,.8);transition:width 1s linear}
+.ftrack .fdone{position:absolute;left:0;top:50%;height:3px;margin-top:-1px;border-radius:2px;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 70%,#000),var(--c));box-shadow:0 0 8px color-mix(in srgb,var(--c) 80%,transparent);transition:width 1s linear}
 .ftrack .fplane{position:absolute;top:50%;font-size:18px;line-height:1;transform:translate(-30%,-52%);filter:drop-shadow(0 1px 2px rgba(0,0,0,.25));transition:left 1s linear}
 .ftrack .fplane.on{animation:fbob 1.6s ease-in-out infinite alternate}
 @keyframes fbob{from{margin-top:-2px}to{margin-top:2px}}
