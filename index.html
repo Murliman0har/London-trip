@@ -43,6 +43,19 @@
 .ev.t-rest .rail .pill.now{background:#ffd76a;color:#1a1305;box-shadow:0 0 10px rgba(255,215,106,.9)}
 .ev.t-rest .tag{--cc:#ffd76a}
 @media (prefers-reduced-motion:reduce){.ev.t-rest .rail::before,.ev.t-rest .rail::after{animation:none}}
+.nowstar{position:relative;display:inline-flex;align-items:center;gap:8px;padding:7px 16px 7px 12px;border-radius:999px;overflow:hidden;font-weight:800;font-size:14px;letter-spacing:.02em;color:#4a2c00;background:linear-gradient(110deg,#ffcf3a 0%,#ffe98a 35%,#ffcf3a 50%,#ffb800 100%);background-size:220% 100%;border:1px solid #fff2b0;box-shadow:0 0 0 2px rgba(255,200,40,.45),0 0 14px 3px rgba(255,200,40,.7),0 0 30px 8px rgba(255,190,30,.4);animation:nsglow 1.8s ease-in-out infinite alternate,nsmove 3s linear infinite}
+.nowstar::after{content:'';position:absolute;top:0;bottom:0;width:38%;left:-45%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.85),transparent);transform:skewX(-20deg);animation:nssweep 2.4s ease-in-out infinite}
+.nowstar .ns-t{position:relative;z-index:1}
+.nowstar .ns-star{position:relative;z-index:1;font-style:normal;font-size:20px;line-height:1;color:#fff8d6;text-shadow:0 0 4px #ff9d00,0 0 10px #ffb800,0 0 18px #ffd34d;animation:nsspin 3.2s linear infinite}
+.nowstar .ns-spark{position:absolute;z-index:1;font-style:normal;color:#fff;text-shadow:0 0 6px #fff,0 0 10px #ffd34d;pointer-events:none}
+.nowstar .ns-s1{font-size:11px;top:3px;right:14px;animation:nstw 1.4s ease-in-out infinite}
+.nowstar .ns-s2{font-size:9px;bottom:3px;right:40%;animation:nstw 1.9s ease-in-out -.7s infinite}
+@keyframes nsspin{0%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(1.25)}100%{transform:rotate(360deg) scale(1)}}
+@keyframes nstw{0%,100%{opacity:0;transform:scale(.4) rotate(0)}50%{opacity:1;transform:scale(1.3) rotate(45deg)}}
+@keyframes nssweep{0%{left:-45%}60%,100%{left:120%}}
+@keyframes nsmove{to{background-position:-220% 0}}
+@keyframes nsglow{from{box-shadow:0 0 0 2px rgba(255,200,40,.35),0 0 10px 2px rgba(255,200,40,.55),0 0 22px 5px rgba(255,190,30,.3)}to{box-shadow:0 0 0 3px rgba(255,200,40,.55),0 0 20px 6px rgba(255,200,40,.9),0 0 40px 12px rgba(255,190,30,.55)}}
+@media (prefers-reduced-motion:reduce){.nowstar,.nowstar::after,.nowstar .ns-star,.nowstar .ns-spark{animation:none}}
 </style></head><body>
 <title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover"><style id="css">
 /* Layout: one narrow column, day-at-a-time program with a colour-block time rail on each event. */
@@ -586,7 +599,7 @@ function dayView(){
  var now=new Date(),nm=now.getHours()*60+now.getMinutes(),isToday=d===today(),nowIds={},nextId=null;
  if(isToday){evs.forEach(function(e){var s=toMin(e.start);if(s==null)return;var en=e.end?toMin(e.end):s+90;if(s<=nm&&nm<en)nowIds[e.id]=1;else if(s>nm&&!nextId)nextId=e.id});}
  if(!evs.length&&!adays.length)root.append(h('div',{class:'empty',text:ui.canEdit?T('Nothing planned for this day. Use Add event below.'):T('Nothing planned for this day yet.')}));
- var nn0=Object.keys(nowIds).length;if(nn0>1)root.append(h('div',{class:'row'},h('span',{class:'pill now',text:(lang==='gu'?dg(nn0)+' કાર્યક્રમ ચાલુ છે':nn0+' happening now')})));
+ var nn0=Object.keys(nowIds).length;if(nn0>1)root.append(h('div',{class:'row'},h('span',{class:'nowstar'},h('i',{class:'ns-star','aria-hidden':'true',text:'\u2605'}),h('i',{class:'ns-spark ns-s1','aria-hidden':'true',text:'\u2726'}),h('i',{class:'ns-spark ns-s2','aria-hidden':'true',text:'\u2727'}),h('span',{class:'ns-t',text:(lang==='gu'?dg(nn0)+' કાર્યક્રમ ચાલુ છે':nn0+' happening now')}))));
  evs.forEach(function(e){root.append(evCard(e,!!nowIds[e.id],e.id===nextId))});
  root.append(h('p',{class:'note',text:T('Times are local to where the saints are. Refresh the page to see the latest changes.')}));
  return root}
