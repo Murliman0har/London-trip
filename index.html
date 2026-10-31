@@ -70,6 +70,8 @@
 .ev .rail{flex-wrap:wrap;row-gap:4px}
 .ev .rail b,.ev .rail>span{white-space:nowrap}
 .ev .rail .mtag+.pill.now{margin-left:auto}
+.ev.t-pravachan .rail{flex-wrap:nowrap}
+.ev.t-pravachan .rail .mtag{margin-left:2px}
 </style></head><body>
 <title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover"><style id="css">
 /* Layout: one narrow column, day-at-a-time program with a colour-block time rail on each event. */
@@ -561,7 +563,7 @@ function evCard(e,isNow,isNext){
  return h('article',{class:'ev t-'+e.type+(isNow?' now':'')},
   STK[e.type]?h('img',{class:'ksticker k-'+e.type+(isNow?' now':''),src:STK[e.type],alt:'','aria-hidden':'true',loading:'lazy'}):null,
   isNow?fxEls(e.type):null,
-  h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'width:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null,h('span',{class:'rtag',text:typeLabel(e.type)}),e.type==='pravachan'?h('span',{class:'mtag',text:'⏱ '+dg(durOf(e))+(lang==='gu'?' મિનિટ':' min')}):null,isNow?h('span',{class:'pill now',text:lang==='gu'?'ચાલુ':'ON'}):null),
+  h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'width:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),(tl[1]&&e.type!=='pravachan')?h('span',{text:tl[1]}):null,h('span',{class:'rtag',text:typeLabel(e.type)}),e.type==='pravachan'?h('span',{class:'mtag',text:'⏱ '+dg(durOf(e))+(lang==='gu'?' મિનિટ':' min')}):null,isNow?h('span',{class:'pill now',text:lang==='gu'?'ચાલુ':'ON'}):null),
   h('div',{class:'body'},
    e.type==='rest'?h('span',{class:'moon','aria-hidden':'true'}):null,
    isNext?h('div',{class:'top'},h('span',{class:'pill next',text:T('Up next')})):null,
