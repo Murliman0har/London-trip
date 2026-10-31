@@ -88,6 +88,15 @@
 .ev.t-pravachan .rail>span:not(.rtag):not(.mtag):not(.pill){font-size:.86em!important}
 .ev.t-pravachan .rail .rtag,.ev.t-pravachan .rail .mtag{font-size:.87em!important;padding:.1em .5em!important;margin-left:0!important}
 .ev.t-pravachan .rail .pill.now{font-size:.85em!important;padding:.1em .5em!important;margin-left:auto!important}
+.ev.t-rest .rail{background:linear-gradient(110deg,#0c0822 0%,#1b1344 55%,#0a0720 100%)}
+.ev.t-rest .body>*:not(.row){display:none!important}
+.ev.t-rest .body:not(:has(.row)){display:none!important}
+.ev.t-rest .body{min-height:0!important;background:#0a0720!important;padding:6px 12px!important}
+.ev.t-rest .body::before,.ev.t-rest .body::after{display:none!important}
+.ev.t-rest .rail .moon{position:relative!important;top:auto!important;right:auto!important;flex:none;width:22px!important;height:22px!important;margin-left:auto!important;z-index:1;align-self:center;background:radial-gradient(circle at 36% 34%,#f3ecd0 0%,#ddd2a4 55%,#b9ad7b 100%);box-shadow:0 0 6px 1px rgba(240,225,170,.5),0 0 14px 4px rgba(230,205,130,.25);animation:moonglow3 5s ease-in-out infinite alternate}
+.ev.t-rest .rail .moon::before,.ev.t-rest .rail .moon::after{display:none}
+.ev.t-rest .rail .moon+.pill.now{margin-left:8px!important}
+@keyframes moonglow3{from{box-shadow:0 0 5px 1px rgba(240,225,170,.35),0 0 11px 3px rgba(230,205,130,.18)}to{box-shadow:0 0 8px 2px rgba(240,225,170,.6),0 0 18px 6px rgba(230,205,130,.3)}}
 </style></head><body>
 <title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover"><style id="css">
 /* Layout: one narrow column, day-at-a-time program with a colour-block time rail on each event. */
@@ -579,9 +588,8 @@ function evCard(e,isNow,isNext){
  return h('article',{class:'ev t-'+e.type+(isNow?' now':'')},
   STK[e.type]?h('img',{class:'ksticker k-'+e.type+(isNow?' now':''),src:STK[e.type],alt:'','aria-hidden':'true',loading:'lazy'}):null,
   isNow?fxEls(e.type):null,
-  h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'width:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null,h('span',{class:'rtag',text:typeLabel(e.type)}),e.type==='pravachan'?h('span',{class:'mtag',text:'⏱ '+dg(durOf(e))+(lang==='gu'?' મિનિટ':' min')}):null,isNow?h('span',{class:'pill now',text:lang==='gu'?'ચાલુ':'ON'}):null),
+  h('div',{class:'rail'+(isNow?' prog':'')},isNow?h('i',{class:'fill',style:'width:'+nowPct(e)+'%'}):null,h('b',{text:tl[0]}),tl[1]?h('span',{text:tl[1]}):null,h('span',{class:'rtag',text:typeLabel(e.type)}),e.type==='rest'?h('span',{class:'moon','aria-hidden':'true'}):null,e.type==='pravachan'?h('span',{class:'mtag',text:'⏱ '+dg(durOf(e))+(lang==='gu'?' મિનિટ':' min')}):null,isNow?h('span',{class:'pill now',text:lang==='gu'?'ચાલુ':'ON'}):null),
   h('div',{class:'body'},
-   e.type==='rest'?h('span',{class:'moon','aria-hidden':'true'}):null,
    isNext?h('div',{class:'top'},h('span',{class:'pill next',text:T('Up next')})):null,
    e.type==='car'?(route(e).trim()?h('div',{class:'title',text:route(e)}):null):((e.type==='parayan'||!showTitle(e))?null:h('div',{class:'title',text:tr(e.title)})),
    e.type==='flight'?flightLine(e,isNow):null,
@@ -755,13 +763,13 @@ function openStay(t,s){
   h('div',{class:'row'},h('button',{class:'btn pri',type:'submit'},T('Done')),h('button',{class:'btn',type:'button',onclick:function(){modal.remove()}},T('Cancel'))));
  modal.append(form);document.body.append(modal);backable(modal);F.place.focus()}
 
-var SUMORDER=['parayan','katha','pothiyatra','padramani','vastu','sabha','pravachan','lunch','rest','flight','car','other'];
+var SUMORDER=['parayan','katha','pothiyatra','padramani','vastu','sabha','pravachan','lunch','flight','car','other'];
 function rangeLabel(e){return e.endDate&&e.endDate!==e.date?fmt(e.date)+' – '+fmt(e.endDate):fmt(e.date)}
 function goDay(d){ui.date=d;ui.view='day';render();window.scrollTo(0,0)}
 function inYatra(e){return e.date>=state.tripStart&&e.date<=state.tripEnd}
 function sumView(){
  var root=h('div',{style:'display:flex;flex-direction:column;gap:14px'}),by={};
- var scope=ui.sumScope||'yatra',isY=scope==='yatra',evs=state.events.filter(function(e){return inYatra(e)===isY&&hasSel(e)});
+ var scope=ui.sumScope||'yatra',isY=scope==='yatra',evs=state.events.filter(function(e){return e.type!=='rest'&&inYatra(e)===isY&&hasSel(e)});
  root.append(h('div',{class:'chips',role:'group','aria-label':'Summary of'},
   [['yatra',T('London Yatra')],['other',T('Other days')]].map(function(x){return h('button',{class:'chip',type:'button','aria-pressed':scope===x[0]?'true':'false',style:'padding:6px 14px',onclick:function(){ui.sumScope=x[0];ui.sumOpen='';render()}},x[1])})));
  if(isY)root.append(h('p',{class:'note',style:'margin:0',text:fmt(state.tripStart,{day:'numeric',month:'short',year:'numeric'})+' – '+fmt(state.tripEnd,{day:'numeric',month:'short',year:'numeric'})}));
