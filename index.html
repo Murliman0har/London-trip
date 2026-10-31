@@ -1,5 +1,19 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><meta name="color-scheme" content="only light"><meta name="theme-color" content="#a94712"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="કાર્યક્રમ"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
 .t-lunch .rail,.t-rest .rail,.t-vastu .rail{color:#3f2414}
+.ev.t-flight .body{position:relative;overflow:hidden;background:linear-gradient(180deg,#4fb0f2 0%,#8fd0fb 55%,#dff2ff 100%)}
+.ev.t-flight .body>*{position:relative;z-index:1}
+.ev.t-flight .body::before,.ev.t-flight .body::after{content:'';position:absolute;left:0;right:0;pointer-events:none;background-repeat:repeat-x;z-index:0}
+.ev.t-flight .body::before{top:4px;height:54px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 50'%3E%3Cg fill='%23fff'%3E%3Cellipse cx='34' cy='35' rx='28' ry='12'/%3E%3Cellipse cx='62' cy='27' rx='22' ry='16'/%3E%3Cellipse cx='88' cy='35' rx='26' ry='11'/%3E%3C/g%3E%3C/svg%3E");background-size:130px 54px;opacity:.85;animation:cloudA 60s linear infinite}
+.ev.t-flight .body::after{bottom:-6px;height:44px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 50'%3E%3Cg fill='%23fff'%3E%3Cellipse cx='34' cy='35' rx='28' ry='12'/%3E%3Cellipse cx='62' cy='27' rx='22' ry='16'/%3E%3Cellipse cx='88' cy='35' rx='26' ry='11'/%3E%3C/g%3E%3C/svg%3E");background-size:100px 42px;background-position:40px 0;opacity:.6;animation:cloudB 90s linear infinite}
+@keyframes cloudA{to{background-position:-1300px 0}}
+@keyframes cloudB{to{background-position:-1000px 0}}
+.ev.t-flight .ftrack::before{border-top-color:rgba(255,255,255,.95)}
+.ev.t-flight .ftrack .fdone{background:#fff;box-shadow:0 0 8px rgba(255,255,255,.95)}
+.ev.t-flight .body .kv dt,.ev.t-flight .body .faint{color:#1d4366}
+:root[data-theme=dark] .ev.t-flight .body{background:linear-gradient(180deg,#0a1b38 0%,#17386a 60%,#2f5a93 100%)}
+:root[data-theme=dark] .ev.t-flight .body::before,:root[data-theme=dark] .ev.t-flight .body::after{opacity:.22}
+:root[data-theme=dark] .ev.t-flight .body .kv dt,:root[data-theme=dark] .ev.t-flight .body .faint{color:#bcd3f0}
+@media (prefers-reduced-motion:reduce){.ev.t-flight .body::before,.ev.t-flight .body::after{animation:none}}
 </style></head><body>
 <title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover"><style id="css">
 /* Layout: one narrow column, day-at-a-time program with a colour-block time rail on each event. */
