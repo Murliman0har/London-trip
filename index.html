@@ -41,13 +41,13 @@ button{cursor:pointer}
 .av.g{background:var(--s-g)}.av.hs{background:var(--s-hs)}.av.mm{background:var(--s-mm)}.av.hp{background:var(--s-hp)}.av.np{background:var(--s-np)}.av.ap{background:var(--s-ap)}
 .av.all{background:var(--fg);color:var(--bg)}
 .ev{display:grid;grid-template-columns:92px minmax(0,1fr);background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.ev.now{border-color:var(--now);box-shadow:0 0 0 2px var(--now)}
-@keyframes nowpulse{0%{box-shadow:0 0 0 2px var(--now),0 0 0 2px rgba(36,160,90,.55)}70%{box-shadow:0 0 0 2px var(--now),0 0 0 12px rgba(36,160,90,0)}100%{box-shadow:0 0 0 2px var(--now),0 0 0 2px rgba(36,160,90,0)}}
+.ev.now{border-color:var(--c);box-shadow:0 0 0 2px var(--c)}
+@keyframes nowpulse{0%{box-shadow:0 0 0 2px var(--c),0 0 0 2px color-mix(in srgb,var(--c) 55%,transparent)}70%{box-shadow:0 0 0 2px var(--c),0 0 0 12px color-mix(in srgb,var(--c) 0%,transparent)}100%{box-shadow:0 0 0 2px var(--c),0 0 0 2px color-mix(in srgb,var(--c) 0%,transparent)}}
 .ev.now{animation:nowpulse 1.8s ease-out infinite}
 .ev.now{position:relative;overflow:hidden}
 .ev.now .rail b{animation:nowtxt 1.6s ease-in-out infinite}
-@keyframes nowtxt{0%,100%{text-shadow:0 0 0 rgba(36,160,90,0);color:#fff}50%{text-shadow:0 0 6px #5dff9f,0 0 14px #2ee66f,0 0 26px rgba(46,230,111,.8);color:#eafff1}}
-.ev.now::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(110deg,rgba(46,200,110,0) 30%,rgba(46,200,110,.16) 50%,rgba(46,200,110,0) 70%);background-size:250% 100%;animation:nowsweep 3s linear infinite}
+@keyframes nowtxt{0%,100%{text-shadow:0 0 0 color-mix(in srgb,var(--c) 0%,transparent);color:inherit}50%{text-shadow:0 0 6px color-mix(in srgb,var(--c) 45%,#fff),0 0 14px var(--c),0 0 26px color-mix(in srgb,var(--c) 80%,transparent)}}
+.ev.now::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(110deg,color-mix(in srgb,var(--c) 0%,transparent) 30%,color-mix(in srgb,var(--c) 18%,transparent) 50%,color-mix(in srgb,var(--c) 0%,transparent) 70%);background-size:250% 100%;animation:nowsweep 3s linear infinite}
 @keyframes nowsweep{from{background-position:150% 0}to{background-position:-100% 0}}
 
 
@@ -90,7 +90,7 @@ button{cursor:pointer}
 
 .pill.now{animation:nowblink 1.4s ease-in-out infinite}@keyframes nowblink{50%{opacity:.6}}
 .rail{background:var(--c);color:#fff;padding:12px 10px;display:flex;flex-direction:column;gap:2px;justify-content:center;text-align:center;font-variant-numeric:tabular-nums}
-.rail.prog{position:relative;overflow:hidden}.rail.prog>*{position:relative;z-index:1}.rail .fill{position:absolute!important;left:0;right:0;top:0;z-index:0!important;background:linear-gradient(180deg,#1f9d57,#33c26f);box-shadow:0 2px 10px rgba(51,194,111,.9);transition:height 1s linear}.rail .fill::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:#b6ffd3;box-shadow:0 0 8px #b6ffd3}
+.rail.prog{position:relative;overflow:hidden}.rail.prog>*{position:relative;z-index:1}.rail .fill{position:absolute!important;left:0;right:0;top:0;z-index:0!important;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 62%,#000),color-mix(in srgb,var(--c) 78%,#000));box-shadow:0 2px 10px color-mix(in srgb,var(--c) 80%,transparent);transition:height 1s linear}.rail .fill::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:color-mix(in srgb,var(--c) 35%,#fff);box-shadow:0 0 8px color-mix(in srgb,var(--c) 35%,#fff)}
 .rail b{font-size:16px;font-family:var(--display)} .rail span{font-size:12px;opacity:.92}
 .body{padding:12px 14px;display:flex;flex-direction:column;gap:7px;min-width:0}
 .top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
@@ -363,7 +363,7 @@ body{
 .ev .rail{position:relative;z-index:4}
 .ev .rail{flex-direction:row!important;justify-content:flex-start!important;align-items:baseline;gap:8px!important;padding:7px 12px!important;text-align:left!important}
 .ev .rail b{font-size:15px}.ev .rail span{font-size:13px;opacity:.95}
-.rail .fill{top:0!important;bottom:0!important;left:0!important;right:auto!important;height:auto!important;transition:width 1s linear;background:linear-gradient(90deg,#1f9d57,#33c26f)!important;box-shadow:2px 0 10px rgba(51,194,111,.9)!important}
+.rail .fill{top:0!important;bottom:0!important;left:0!important;right:auto!important;height:auto!important;transition:width 1s linear;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 62%,#000),color-mix(in srgb,var(--c) 78%,#000))!important;box-shadow:2px 0 10px color-mix(in srgb,var(--c) 80%,transparent)!important}
 .rail .fill::after{left:auto!important;right:0!important;top:0!important;bottom:0!important;width:3px!important;height:auto!important}
 .mtag{top:5px!important;background:rgba(255,255,255,.22)!important;color:#fff!important;border-color:rgba(255,255,255,.55)!important}
 .ksticker.k-padramani,.ksticker.k-padramani.now{left:0!important;width:100%!important;top:34px!important;bottom:0!important;height:auto!important}
@@ -386,7 +386,7 @@ body{
 .ksticker.k-pothiyatra.now{opacity:.78!important}
 .ev.now.t-pothiyatra .body{min-height:112px!important}
 .ev .aarti{z-index:8!important}
-.ev .rail .pill.now{margin-left:auto;background:#fff;color:#1b7a45;animation:none;box-shadow:0 0 8px rgba(255,255,255,.8);align-self:center;padding:2px 10px}
+.ev .rail .pill.now{margin-left:auto;background:#fff;color:color-mix(in srgb,var(--c) 65%,#000);animation:none;box-shadow:0 0 8px rgba(255,255,255,.8);align-self:center;padding:2px 10px}
 .ev .rail .mtag{position:static!important;margin-left:auto;align-self:center}
 .ev .rail .mtag+.pill.now{margin-left:6px}
 :root{--c-lunch:#F2C512;--c-rest:#6EBBF2}
