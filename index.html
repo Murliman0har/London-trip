@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><meta name="color-scheme" content="only light"><meta name="theme-color" content="#a94712"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="કાર્યક્રમ"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
-.t-lunch .rail,.t-rest .rail,.t-vastu .rail{color:#3f2414}
+.t-lunch .rail,.t-vastu .rail{color:#3f2414}
 .ev.t-flight .body{position:relative;overflow:hidden;background:linear-gradient(180deg,#4fb0f2 0%,#8fd0fb 55%,#dff2ff 100%)}
 .ev.t-flight .body>*{position:relative;z-index:1}
 .ev.t-flight .body::before,.ev.t-flight .body::after{content:'';position:absolute;left:0;right:0;pointer-events:none;background-repeat:repeat-x;z-index:0}
@@ -30,6 +30,19 @@
 .ev.t-rest .body .title{color:#fff6d8}
 .ev.t-rest .body .tag{color:#ffe9a8;background:rgba(255,215,106,.14);border-color:rgba(255,215,106,.45)}
 @media (prefers-reduced-motion:reduce){.ev.t-rest .body::before,.ev.t-rest .body::after,.ev.t-rest .moon{animation:none}}
+.ev.t-rest .rail{background:linear-gradient(160deg,#16161d,#050508);position:relative;overflow:hidden}
+.ev.t-rest .rail::before,.ev.t-rest .rail::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background-repeat:no-repeat;filter:drop-shadow(0 0 3px #ffd76a) drop-shadow(0 0 6px rgba(255,200,80,.8))}
+.ev.t-rest .rail::before{background-image:radial-gradient(circle at 8% 30%,#ffd76a 0,#ffd76a 1.4px,transparent 2.4px),radial-gradient(circle at 18% 72%,#ffd76a 0,#ffd76a 1px,transparent 2px),radial-gradient(circle at 30% 20%,#ffd76a 0,#ffd76a 1.2px,transparent 2.2px),radial-gradient(circle at 42% 64%,#ffd76a 0,#ffd76a 1.6px,transparent 2.6px),radial-gradient(circle at 55% 30%,#ffd76a 0,#ffd76a 1px,transparent 2px),radial-gradient(circle at 66% 76%,#ffd76a 0,#ffd76a 1.3px,transparent 2.3px),radial-gradient(circle at 78% 22%,#ffd76a 0,#ffd76a 1.1px,transparent 2.1px),radial-gradient(circle at 90% 60%,#ffd76a 0,#ffd76a 1.5px,transparent 2.5px),radial-gradient(circle at 96% 18%,#ffd76a 0,#ffd76a 1px,transparent 2px);animation:twk 2.4s ease-in-out infinite alternate}
+.ev.t-rest .rail::after{background-image:radial-gradient(circle at 13% 50%,#fff1bd 0,#fff1bd 1px,transparent 2px),radial-gradient(circle at 24% 14%,#fff1bd 0,#fff1bd 1.3px,transparent 2.3px),radial-gradient(circle at 36% 84%,#fff1bd 0,#fff1bd 1px,transparent 2px),radial-gradient(circle at 49% 12%,#fff1bd 0,#fff1bd 1.1px,transparent 2.1px),radial-gradient(circle at 61% 56%,#fff1bd 0,#fff1bd 1.4px,transparent 2.4px),radial-gradient(circle at 72% 88%,#fff1bd 0,#fff1bd 1px,transparent 2px),radial-gradient(circle at 84% 40%,#fff1bd 0,#fff1bd 1.2px,transparent 2.2px),radial-gradient(circle at 93% 84%,#fff1bd 0,#fff1bd 1px,transparent 2px);animation:twk 3.1s ease-in-out -1.2s infinite alternate}
+.ev.t-rest .rail>*{position:relative;z-index:1}
+.ev.t-rest .rail .fill{z-index:0!important;background:linear-gradient(90deg,#2a2412,#4a3b12)!important;box-shadow:2px 0 10px rgba(255,215,106,.7)!important}
+.ev.now.t-rest{border-color:#ffd76a;animation:restpulse 1.8s ease-out infinite}
+@keyframes restpulse{0%{box-shadow:0 0 0 2px #ffd76a,0 0 0 2px rgba(255,215,106,.6)}70%{box-shadow:0 0 0 2px #ffd76a,0 0 0 12px rgba(255,215,106,0)}100%{box-shadow:0 0 0 2px #ffd76a,0 0 0 2px rgba(255,215,106,0)}}
+.ev.now.t-rest .rail b{animation:none;color:#ffe9a8;text-shadow:0 0 8px rgba(255,215,106,.9)}
+.ev .rail .pill.now{}
+.ev.t-rest .rail .pill.now{background:#ffd76a;color:#1a1305;box-shadow:0 0 10px rgba(255,215,106,.9)}
+.ev.t-rest .tag{--cc:#ffd76a}
+@media (prefers-reduced-motion:reduce){.ev.t-rest .rail::before,.ev.t-rest .rail::after{animation:none}}
 </style></head><body>
 <title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover"><style id="css">
 /* Layout: one narrow column, day-at-a-time program with a colour-block time rail on each event. */
@@ -419,7 +432,7 @@ body{
 .ev .rail .pill.now{margin-left:auto;background:#fff;color:color-mix(in srgb,var(--c) 65%,#000);animation:none;box-shadow:0 0 8px rgba(255,255,255,.8);align-self:center;padding:2px 10px}
 .ev .rail .mtag{position:static!important;margin-left:auto;align-self:center}
 .ev .rail .mtag+.pill.now{margin-left:6px}
-:root{--c-lunch:#F2C512;--c-rest:#6EBBF2}
+:root{--c-lunch:#F2C512;--c-rest:#0A0A0F}
 .t-lunch{--c:var(--c-lunch)}.t-rest{--c:var(--c-rest)}
 </style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap"><div id="root"></div><script id="seed" type="application/json">{"tripStart":"2026-12-22","tripEnd":"2027-06-19","stays":[],"events":[],"saints":[]}</script><script id="app">
 (function(){
