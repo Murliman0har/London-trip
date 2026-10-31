@@ -86,8 +86,8 @@
 .ev.t-pravachan .rail{flex-wrap:nowrap!important;font-size:13px;gap:.3em!important;padding-left:.7em!important;padding-right:.55em!important}
 .ev.t-pravachan .rail b{font-size:1em!important}
 .ev.t-pravachan .rail>span:not(.rtag):not(.mtag):not(.pill){font-size:.86em!important}
-.ev.t-pravachan .rail .rtag,.ev.t-pravachan .rail .mtag{font-size:.8em!important;padding:.1em .5em!important;margin-left:0!important}
-.ev.t-pravachan .rail .pill.now{font-size:.7em!important;padding:.1em .5em!important;margin-left:auto!important}
+.ev.t-pravachan .rail .rtag,.ev.t-pravachan .rail .mtag{font-size:.87em!important;padding:.1em .5em!important;margin-left:0!important}
+.ev.t-pravachan .rail .pill.now{font-size:.85em!important;padding:.1em .5em!important;margin-left:auto!important}
 </style></head><body>
 <title>કાર્યક્રમ</title><meta name="claude:viewport-fit-sides" content="cover"><style id="css">
 /* Layout: one narrow column, day-at-a-time program with a colour-block time rail on each event. */
@@ -1179,7 +1179,7 @@ function save(){
  var pass=getPass();if(!pass||!ui.canEdit)return;
  ui.saving=true;ui.msg='';render();
  rpc('save_tour_state',{p_passcode:pass,p_data:state}).then(function(){try{localStorage.setItem('tourCache',JSON.stringify({pass:pass,res:{data:state,role:ui.role}}));prefetchPics()}catch(x){}ui.dirty=0;ui.saving=false;ui.msg='Saved';render()}).catch(function(err){ui.saving=false;ui.msg=/bad_passcode/.test(JSON.stringify(err||{}))?'Wrong password.':'Could not save.';render()})}
-function fitRails(){[].slice.call(document.querySelectorAll('.ev.t-pravachan .rail')).forEach(function(r){var lo=9,hi=19,w=r.clientWidth;if(!w)return;
+function fitRails(){[].slice.call(document.querySelectorAll('.ev.t-pravachan .rail')).forEach(function(r){var lo=9,hi=15,w=r.clientWidth;if(!w)return;
   while(hi-lo>.25){var mid=(lo+hi)/2;r.style.fontSize=mid+'px';if(r.scrollWidth>r.clientWidth+.5)hi=mid;else lo=mid}
   r.style.fontSize=lo+'px'})}
 window.addEventListener('resize',fitRails);
